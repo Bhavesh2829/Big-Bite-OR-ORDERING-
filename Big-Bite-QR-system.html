@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Spice & Crave | Premium Mobile</title>
+
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: { 50: '#fff7ed', 100: '#ffedd5', 500: '#f97316', 600: '#ea580c', 900: '#111827' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Native App Utilities */
+        html {
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        .safe-pt {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+
+        /* Smooth Bottom Sheet Transition */
+        .bottom-sheet-enter {
+            transform: translateY(100%);
+        }
+
+        .bottom-sheet-active {
+            transform: translateY(0);
+        }
+
+        .backdrop-enter {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .backdrop-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-[#fcfcfc] text-brand-900 font-sans antialiased w-full min-h-screen relative selection:bg-brand-500 selection:text-white">
+
+<!-- ========================================== -->
+<!-- FIXED HEADER (Big Bite & Header Cart Option) -->
+<!-- ========================================== -->
+<header id="appHeader" class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs safe-pt hidden">
+    <div class="px-5 py-3 mx-auto max-w-md w-full flex justify-between items-center">
+        
+        <!-- Brand & Details (Icon + Big Bite / FAMILY RESTAURANT) -->
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-red-600 text-white rounded-2xl flex items-center justify-center shadow-md shadow-red-600/25">
+                <i class="ph-fill ph-fork-knife text-xl" aria-hidden="true"></i>
+            </div>
+            <div class="flex flex-col justify-center">
+                <h1 class="text-base font-black text-slate-900 leading-tight tracking-tight">Big Bite</h1>
+                <span class="text-[10px] font-extrabold text-red-600 tracking-wider uppercase mt-0.5">FAMILY RESTAURANT</span>
+            </div>
+        </div>
+
+        <!-- Right Side: Live Badge + Table Number -->
+        <div class="flex items-center gap-2">
+            <!-- Live Indicator Badge -->
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold shadow-2xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Live
+            </div>
+
+            <!-- Clickable Table Indicator Badge -->
+            <button type="button" id="tableBadge"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-red-50 hover:bg-red-100 text-red-600 tracking-wider uppercase transition-all border border-red-200/50 active:scale-95 cursor-pointer" title="Change Table">
+                Table 01
+            </button>
+        </div>
+        
+    </div>
+</header>
+
+
+
+
+
+<!-- ========================================== -->
+    <!-- 0. STUDIO TABLE SELECTION VIEW (15 Tables) -->
+    <!-- ========================================== -->
+    <main id="tableSelectionView" class="w-full min-h-screen pt-8 pb-12 px-5 max-w-md mx-auto bg-[#FAFAFA] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] flex flex-col justify-between selection:bg-red-600 selection:text-white font-sans antialiased">
+        <div>
+            <!-- Top Restaurant Brand Profile (Studio Look) -->
+            <div class="flex items-center justify-between mb-6 bg-white/90 backdrop-blur-md px-4 py-3.5 rounded-2xl border border-slate-200/85 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-md shadow-red-600/25">
+                        <i class="ph-fill ph-fork-knife text-xl" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-sm font-bold text-slate-900 tracking-tight leading-none">Big Bite</h1>
+                        <p class="text-[10px] font-bold text-red-600 tracking-wider uppercase mt-1">Family Restaurant</p>
+                    </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200/60 text-[10px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Live</span>
+                </div>
+            </div>
+
+            <!-- Hero Editorial Banner (Webtizo Grid & Badge Aesthetic) -->
+            <div class="bg-white rounded-3xl p-6 mb-6 border border-slate-200/85 shadow-xl shadow-slate-900/5 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <!-- Studio Badge -->
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 border border-red-200/60 text-[10px] font-bold tracking-wider uppercase mb-3.5 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                    <span>Next-Gen QR Ordering</span>
+                </div>
+
+                <h2 class="text-3xl font-extrabold font-serif text-slate-900 leading-tight tracking-tight">
+                    Good Food<br>
+                    <span class="text-red-600 italic font-normal">Great Mood</span>
+                </h2>
+                
+                <p class="text-xs text-slate-500 font-medium mt-3 leading-relaxed">
+                    Fresh Ingredients. Authentic Flavors. Select your table below to launch your digital dining experience.
+                </p>
+            </div>
+
+            <!-- Section Header & Legend -->
+            <div class="flex items-center justify-between mb-3 px-1">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 tracking-tight">Select Table</h3>
+                    <p class="text-[11px] text-slate-400 font-medium">Choose your table number (1-15)</p>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] text-slate-600 font-medium bg-white px-3 py-1.5 rounded-full border border-slate-200/80 shadow-2xs">
+                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Free</span>
+                    <span class="w-px h-3 bg-slate-200"></span>
+                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Busy</span>
+                </div>
+            </div>
+
+            <!-- 15 Tables Grid Cards Container -->
+            <div id="tablesGrid" class="grid grid-cols-3 gap-3.5 pb-6">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Studio Footer -->
+        <div class="pt-5 border-t border-slate-200/70 text-center">
+            <p class="text-[11px] font-medium text-slate-400 tracking-wide">
+                Digital Dining Experience • Powered by <span class="font-semibold text-slate-700">Webtizo</span>
+            </p>
+        </div>
+    </main>
+
+<!-- ========================================== -->
+    <!-- 1. CUSTOMER MENU VIEW (Studio Bento Edition) -->
+    <!-- ========================================== -->
+    <main id="customerView" class="hidden w-full max-w-md mx-auto pt-[76px] pb-32 font-sans antialiased bg-[#FAFAFA]">
+        
+<!-- ========================================== -->
+    <!-- STUDIO FEATURED CAROUSEL / BENTO HEADER    -->
+    <!-- ========================================== -->
+
+    <div class="px-5 mt-6 font-sans antialiased">
+        <div class="flex items-end justify-between mb-4">
+            <div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-wider mb-2 border border-red-100 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                    <span>Curated Daily</span>
+                </div>
+                <h2 class="text-2xl font-bold font-serif text-slate-900 tracking-tight">Chef's Masterpieces</h2>
+            </div>
+            <!-- Interactive Carousel Navigation Controls (Fully Working) -->
+            <div class="flex items-center gap-1.5">
+                <button onclick="scrollChefCarousel('left')" class="w-8 h-8 rounded-xl bg-white border border-slate-200/80 text-slate-600 flex items-center justify-center shadow-2xs hover:bg-slate-50 transition-all cursor-pointer active:scale-95">
+                    <i class="ph ph-arrow-left text-sm font-semibold"></i>
+                </button>
+                <button onclick="scrollChefCarousel('right')" class="w-8 h-8 rounded-xl bg-white border border-slate-200/80 text-slate-600 flex items-center justify-center shadow-2xs hover:bg-slate-50 transition-all cursor-pointer active:scale-95">
+                    <i class="ph ph-arrow-right text-sm font-semibold"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Immersive Swipe Cards Carousel -->
+        <div id="chefCarousel" class="overflow-x-auto no-scrollbar flex space-x-4 pb-3 -mx-5 px-5 scroll-smooth">
+            
+            <!-- Signature Card 1: Awadhi Chicken Biryani -->
+            <div class="w-[280px] shrink-0 rounded-[2rem] bg-slate-950 text-white p-5 relative overflow-hidden shadow-xl shadow-slate-900/10 group cursor-pointer border border-slate-800/80 transition-all duration-300 hover:border-red-500/40">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80" alt="Awadhi Biryani" class="w-full h-full object-cover opacity-65 group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+                </div>
+                <div class="relative z-10 flex flex-col justify-between h-[220px]">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-lg border border-red-400/30">
+                            <i class="ph-fill ph-fire text-xs"></i> Bestseller #1
+                        </span>
+                        <div class="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] font-semibold text-amber-400 flex items-center gap-1 border border-white/10 shadow-sm">
+                            <i class="ph-fill ph-star"></i> 4.9
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-serif font-normal text-white leading-snug">Awadhi Chicken Biryani</h3>
+                        <p class="text-[11px] text-slate-300 mt-1.5 line-clamp-2 leading-relaxed font-normal">Slow-cooked fragrant basmati rice with tender marinated chicken.</p>
+                        <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-white/15">
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase tracking-wider block leading-none">Price</span>
+                                <span class="font-bold text-lg text-white">₹450</span>
+                            </div>
+                            <button onclick="addToCart('Awadhi Chicken Biryani', 450)" class="w-10 h-10 bg-white text-slate-900 rounded-2xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer">
+                                <i class="ph ph-plus font-bold text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature Card 2: Velvet Butter Chicken -->
+            <div class="w-[280px] shrink-0 rounded-[2rem] bg-slate-950 text-white p-5 relative overflow-hidden shadow-xl shadow-slate-900/10 group cursor-pointer border border-slate-800/80 transition-all duration-300 hover:border-red-500/40">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=500&q=80" alt="Butter Chicken" class="w-full h-full object-cover opacity-65 group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+                </div>
+                <div class="relative z-10 flex flex-col justify-between h-[220px]">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-lg border border-red-400/30">
+                            <i class="ph-fill ph-sparkle text-xs"></i> Chef's Choice
+                        </span>
+                        <div class="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] font-semibold text-amber-400 flex items-center gap-1 border border-white/10 shadow-sm">
+                            <i class="ph-fill ph-star"></i> 4.8
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-serif font-normal text-white leading-snug">Velvet Butter Chicken</h3>
+                        <p class="text-[11px] text-slate-300 mt-1.5 line-clamp-2 leading-relaxed font-normal">Rich buttery tomato gravy with succulent, juicy chicken chunks.</p>
+                        <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-white/15">
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase tracking-wider block leading-none">Price</span>
+                                <span class="font-bold text-lg text-white">₹390</span>
+                            </div>
+                            <button onclick="addToCart('Butter Chicken', 390)" class="w-10 h-10 bg-white text-slate-900 rounded-2xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer">
+                                <i class="ph ph-plus font-bold text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature Card 3: Mutton Seekh Kebab -->
+            <div class="w-[280px] shrink-0 rounded-[2rem] bg-slate-950 text-white p-5 relative overflow-hidden shadow-xl shadow-slate-900/10 group cursor-pointer border border-slate-800/80 transition-all duration-300 hover:border-red-500/40">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80" alt="Mutton Seekh Kebab" class="w-full h-full object-cover opacity-65 group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+                </div>
+                <div class="relative z-10 flex flex-col justify-between h-[220px]">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-lg border border-red-400/30">
+                            <i class="ph-fill ph-fire text-xs"></i> Tandoor Special
+                        </span>
+                        <div class="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] font-semibold text-amber-400 flex items-center gap-1 border border-white/10 shadow-sm">
+                            <i class="ph-fill ph-star"></i> 4.9
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-serif font-normal text-white leading-snug">Mutton Seekh Kebab</h3>
+                        <p class="text-[11px] text-slate-300 mt-1.5 line-clamp-2 leading-relaxed font-normal">Minced lamb skewers roasted in traditional tandoor spices.</p>
+                        <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-white/15">
+                            <div>
+                                <span class="text-[9px] text-slate-400 uppercase tracking-wider block leading-none">Price</span>
+                                <span class="font-bold text-lg text-white">₹420</span>
+                            </div>
+                            <button onclick="addToCart('Mutton Seekh Kebab', 420)" class="w-10 h-10 bg-white text-slate-900 rounded-2xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer">
+                                <i class="ph ph-plus font-bold text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Working Scroll Handler Script -->
+    <script>
+        function scrollChefCarousel(direction) {
+            const container = document.getElementById('chefCarousel');
+            const scrollAmount = 300; // Card width + gap
+            if (container) {
+                if (direction === 'left') {
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }
+        }
+    </script>
+
+
+<!-- ========================================== -->
+<!-- STUDIO STICKY SEARCH & WORKING VEG TOGGLE  -->
+<!-- ========================================== -->
+<div class="mt-5 px-5 sticky top-[64px] z-40 bg-[#FAFAFA]/95 backdrop-blur-xl pt-2 pb-3.5 border-b border-slate-200/80 font-sans antialiased">
+    <div class="flex items-center gap-2.5">
+        <!-- Search Bar Input -->
+        <div class="flex-1 relative">
+            <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" aria-hidden="true"></i>
+            <input type="text" id="menuSearchInput" oninput="filterMenuItems()" placeholder="Search dishes, beverages..." class="w-full bg-white border border-slate-200/80 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/10 shadow-2xs transition-all">
+        </div>
+
+        <!-- Fully Working Veg Only Toggle Button -->
+        <button type="button" onclick="toggleVegOnly()" id="vegToggleBtn" aria-pressed="false" class="flex items-center gap-2 bg-white border border-slate-200/80 px-3 py-2.5 rounded-2xl shadow-2xs shrink-0 cursor-pointer active:scale-95 transition-all">
+            <div class="w-4 h-4 rounded-[4px] border border-emerald-600 flex items-center justify-center shrink-0">
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-600"></div>
+            </div>
+            <span class="text-[11px] font-bold text-slate-800 tracking-tight">Veg Only</span>
+            <div id="vegSwitchTrack" class="w-7 h-4 bg-slate-200 rounded-full relative transition-colors duration-200">
+                <div id="vegSwitchThumb" class="w-3 h-3 bg-white rounded-full absolute left-0.5 top-0.5 shadow-xs transition-transform duration-200"></div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Categories Scrollable Pill Bar -->
+    <div class="flex space-x-2 overflow-x-auto no-scrollbar mt-3 pt-0.5 pb-1">
+        <button type="button" onclick="setCategoryFilter('all', this)" class="category-pill px-4 py-2 bg-red-600 text-white rounded-xl text-[12px] font-semibold whitespace-nowrap shadow-md shadow-red-600/25 transition-all cursor-pointer active:scale-95">
+            All Items
+        </button>
+        <button type="button" onclick="setCategoryFilter('Starters', this)" class="category-pill px-4 py-2 bg-white text-slate-600 rounded-xl text-[12px] font-medium whitespace-nowrap border border-slate-200/80 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer active:scale-95">
+            Starters
+        </button>
+        <button type="button" onclick="setCategoryFilter('Mains', this)" class="category-pill px-4 py-2 bg-white text-slate-600 rounded-xl text-[12px] font-medium whitespace-nowrap border border-slate-200/80 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer active:scale-95">
+            Mains
+        </button>
+        <button type="button" onclick="setCategoryFilter('Breads', this)" class="category-pill px-4 py-2 bg-white text-slate-600 rounded-xl text-[12px] font-medium whitespace-nowrap border border-slate-200/80 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer active:scale-95">
+            Breads & Rice
+        </button>
+        <button type="button" onclick="setCategoryFilter('Beverages', this)" class="category-pill px-4 py-2 bg-white text-slate-600 rounded-xl text-[12px] font-medium whitespace-nowrap border border-slate-200/80 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer active:scale-95">
+            Beverages
+        </button>
+    </div>
+</div>
+
+<!-- JavaScript Controller for Button & Combined Filters -->
+<script>
+    let isVegOnly = false;
+    let currentCategory = 'all';
+
+    function toggleVegOnly() {
+        isVegOnly = !isVegOnly;
+        const track = document.getElementById('vegSwitchTrack');
+        const thumb = document.getElementById('vegSwitchThumb');
+        const btn = document.getElementById('vegToggleBtn');
+
+        btn.setAttribute('aria-pressed', isVegOnly);
+
+        if (isVegOnly) {
+            track.classList.replace('bg-slate-200', 'bg-emerald-600');
+            thumb.style.transform = 'translateX(12px)';
+            btn.classList.add('border-emerald-500', 'bg-emerald-50/40');
+        } else {
+            track.classList.replace('bg-emerald-600', 'bg-slate-200');
+            thumb.style.transform = 'translateX(0px)';
+            btn.classList.remove('border-emerald-500', 'bg-emerald-50/40');
+        }
+        filterMenuItems();
+    }
+
+    function setCategoryFilter(category, element) {
+        currentCategory = category;
+        
+        // Reset all pill styles
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.className = "category-pill px-4 py-2 bg-white text-slate-600 rounded-xl text-[12px] font-medium whitespace-nowrap border border-slate-200/80 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer active:scale-95";
+        });
+        
+        // Highlight active pill
+        element.className = "category-pill px-4 py-2 bg-red-600 text-white rounded-xl text-[12px] font-semibold whitespace-nowrap shadow-md shadow-red-600/25 transition-all cursor-pointer active:scale-95";
+        
+        filterMenuItems();
+    }
+
+    function filterMenuItems() {
+        const query = document.getElementById('menuSearchInput').value.toLowerCase().trim();
+        const items = document.querySelectorAll('.menu-item-card');
+        
+        items.forEach(item => {
+            const name = (item.getAttribute('data-name') || '').toLowerCase();
+            const type = (item.getAttribute('data-type') || '').toLowerCase(); // expects 'veg' or 'nonveg'
+            const category = (item.getAttribute('data-category') || '').toLowerCase(); // expects 'starters', 'mains', 'breads', 'beverages'
+
+            const matchesSearch = name.includes(query);
+            const matchesVeg = !isVegOnly || type === 'veg';
+            const matchesCategory = currentCategory === 'all' || category === currentCategory.toLowerCase();
+
+            // Item must satisfy search query, veg filter, AND selected category simultaneously
+            if (matchesSearch && matchesVeg && matchesCategory) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+
+
+    
+<!-- ========================================== -->
+<!-- STUDIO CLEAN MENU LIST VIEW (All Categories) -->
+<!-- ========================================== -->
+<div id="menuListContainer" class="mt-5 px-5 space-y-3 pb-8 font-sans antialiased">
+        
+    <!-- ================= STARTERS ================= -->
+
+    <!-- Menu Item 1: Paneer 65 (Veg / Starters) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Paneer 65" data-type="veg" data-category="starters">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Veg">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Paneer 65</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Crispy fried cottage cheese cubes, tempered</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Half', 160)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Half <span class="text-red-600 font-bold">₹160</span>
+                </button>
+                <button type="button" onclick="selectPortion(this, 'Full', 290)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    Full <span class="text-slate-700 font-bold">₹290</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Paneer 65', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Menu Item 2: Chicken Tikka (Non-Veg / Starters) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Chicken Tikka" data-type="nonveg" data-category="starters">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-red-50 border border-red-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Non-Veg">
+                    <div class="w-2 h-2 rounded-full bg-red-600"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Chicken Tikka</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Juicy grilled chicken chunks marinated in yogurt & spices</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Half', 210)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Half <span class="text-red-600 font-bold">₹210</span>
+                </button>
+                <button type="button" onclick="selectPortion(this, 'Full', 380)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    Full <span class="text-slate-700 font-bold">₹380</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Chicken Tikka', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= MAINS ================= -->
+
+    <!-- Menu Item 3: Butter Chicken (Non-Veg / Mains) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Butter Chicken" data-type="nonveg" data-category="mains">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-red-50 border border-red-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Non-Veg">
+                    <div class="w-2 h-2 rounded-full bg-red-600"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Butter Chicken</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Rich tomato gravy with tender chicken chunks</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Half', 220)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Half <span class="text-red-600 font-bold">₹220</span>
+                </button>
+                <button type="button" onclick="selectPortion(this, 'Full', 390)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    Full <span class="text-slate-700 font-bold">₹390</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Butter Chicken', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Menu Item 4: Dal Makhani (Veg / Mains) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Dal Makhani" data-type="veg" data-category="mains">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Veg">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Dal Makhani</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Slow-cooked black lentils with butter & cream</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Half', 140)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Half <span class="text-red-600 font-bold">₹140</span>
+                </button>
+                <button type="button" onclick="selectPortion(this, 'Full', 250)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    Full <span class="text-slate-700 font-bold">₹250</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Dal Makhani', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= BREADS & RICE ================= -->
+
+    <!-- Menu Item 5: Chicken Biryani (Non-Veg / Breads & Rice) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Chicken Biryani" data-type="nonveg" data-category="breads">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-red-50 border border-red-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Non-Veg">
+                    <div class="w-2 h-2 rounded-full bg-red-600"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Chicken Biryani</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Fragrant basmati rice layered with spiced chicken</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Half', 200)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Half <span class="text-red-600 font-bold">₹200</span>
+                </button>
+                <button type="button" onclick="selectPortion(this, 'Full', 350)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    Full <span class="text-slate-700 font-bold">₹350</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Chicken Biryani', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Menu Item 6: Butter Naan (Veg / Breads & Rice) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Butter Naan" data-type="veg" data-category="breads">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Veg">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Butter Naan</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Soft tandoori flatbread brushed with butter</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Single', 45)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Single <span class="text-red-600 font-bold">₹45</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Butter Naan', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= BEVERAGES ================= -->
+
+    <!-- Menu Item 7: Sweet Lassi (Veg / Beverages) -->
+    <div class="menu-item-card bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col gap-3 hover:border-red-500/40 transition-all group" data-name="Sweet Lassi" data-type="veg" data-category="beverages">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="w-5 h-5 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs" title="Veg">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-900 text-sm truncate leading-snug">Sweet Lassi</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Traditional chilled yogurt-based sweet drink</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button type="button" onclick="selectPortion(this, 'Regular', 80)" class="portion-btn px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white text-slate-800 shadow-2xs transition-all cursor-pointer">
+                    Regular <span class="text-red-600 font-bold">₹80</span>
+                </button>
+            </div>
+            <button type="button" onclick="addToCartWithPortion('Sweet Lassi', this)" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                <i class="ph ph-plus font-bold"></i> Add
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Portion Selection & Cart Integration Script -->
+<script>
+    function selectPortion(button, portion, price) {
+        const card = button.closest('.menu-item-card');
+        card.querySelectorAll('.portion-btn').forEach(btn => {
+            btn.classList.remove('bg-white', 'text-slate-800', 'shadow-2xs', 'font-semibold');
+            btn.classList.add('text-slate-500', 'font-medium');
+            const span = btn.querySelector('span');
+            if(span) {
+                span.classList.remove('text-red-600');
+                span.classList.add('text-slate-700');
+            }
+        });
+        button.classList.remove('text-slate-500', 'font-medium');
+        button.classList.add('bg-white', 'text-slate-800', 'shadow-2xs', 'font-semibold');
+        const activeSpan = button.querySelector('span');
+        if(activeSpan) {
+            activeSpan.classList.remove('text-slate-700');
+            activeSpan.classList.add('text-red-600');
+        }
+        
+        card.setAttribute('data-selected-portion', portion);
+        card.setAttribute('data-selected-price', price);
+    }
+
+    function addToCartWithPortion(itemName, button) {
+        const card = button.closest('.menu-item-card');
+        const portion = card.getAttribute('data-selected-portion') || 'Regular';
+        const price = parseInt(card.getAttribute('data-selected-price')) || 100;
+        
+        const fullName = portion === 'Regular' || portion === 'Single' ? itemName : `${itemName} (${portion})`;
+        if (typeof addToCart === 'function') {
+            addToCart(fullName, price);
+        } else {
+            console.log(`Added to cart: ${fullName} - ₹${price}`);
+        }
+    }
+
+    // Initialize default selections on load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.menu-item-card').forEach(card => {
+            const firstBtn = card.querySelector('.portion-btn');
+            if (firstBtn) {
+                const text = firstBtn.textContent;
+                let portion = 'Half';
+                if (text.includes('Full')) portion = 'Full';
+                else if (text.includes('Single')) portion = 'Single';
+                else if (text.includes('Regular')) portion = 'Regular';
+                
+                const priceMatch = text.match(/₹(\d+)/);
+                const price = priceMatch ? parseInt(priceMatch[1]) : 100;
+                card.setAttribute('data-selected-portion', portion);
+                card.setAttribute('data-selected-price', price);
+            }
+        });
+    });
+</script>
+    </main>
+
+
+<!-- Floating Action Cart (Mobile Sticky Bottom) -->
+    <div id="cartFAB"
+        class="fixed bottom-6 left-5 right-5 z-40 transform translate-y-[150%] transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+        <div class="max-w-md mx-auto w-full">
+            <button onclick="openCart()"
+                class="w-full bg-brand-900 text-white rounded-[1.5rem] p-2.5 flex justify-between items-center shadow-2xl shadow-brand-900/40 active:scale-[0.98] transition-transform">
+                <div class="flex items-center gap-4 pl-3">
+                    <div class="relative w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                        <i class="ph ph-shopping-bag text-xl"></i>
+                        <span id="cartBadge"
+                            class="absolute -top-1 -right-1 bg-brand-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-brand-900">0</span>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-widest">Current Order</p>
+                        <p id="fabTotal" class="text-lg font-bold leading-none mt-0.5">₹0</p>
+                    </div>
+                </div>
+                <div class="bg-brand-500 hover:bg-brand-600 px-6 py-3.5 rounded-full text-sm font-bold flex items-center gap-2">
+                    View <i class="ph-bold ph-caret-up"></i>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Background Dimmer for Modal -->
+    <div id="modalBackdrop"
+        class="fixed inset-0 bg-brand-900/40 backdrop-blur-sm z-[60] pointer-events-none opacity-0 transition-opacity duration-300"
+        onclick="closeCart()"></div>
+
+    <!-- Bottom Sheet Cart Modal -->
+    <div id="cartModal"
+        class="fixed bottom-0 left-0 right-0 bg-[#f8f9fa] rounded-t-[2rem] z-[70] transform translate-y-full transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+
+        <div class="max-w-md w-full mx-auto flex flex-col h-full">
+            <!-- Drag Handle Indicator -->
+            <div class="w-full flex justify-center pt-3 pb-2 cursor-pointer" onclick="closeCart()">
+                <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
+            </div>
+
+            <div class="px-6 pb-4 pt-2 flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold font-serif text-brand-900">Your Cart</h2>
+                    <p id="modalTableText" class="text-sm text-gray-500 font-medium mt-1">Table 01</p>
+                </div>
+                <button onclick="closeCart()"
+                    class="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:bg-gray-300">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div id="cartItemsList" class="flex-1 overflow-y-auto px-6 py-2 space-y-3 no-scrollbar border-t border-gray-200/50">
+                <!-- Items injected via JS -->
+                <div class="text-center py-10 flex flex-col items-center">
+                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-3">
+                        <i class="ph ph-shopping-bag text-3xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Your cart is empty.</p>
+                </div>
+            </div>
+
+            <div class="p-6 bg-white border-t border-gray-100 safe-pb shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+                <div class="flex justify-between items-center mb-5">
+                    <span class="text-gray-500 font-medium">Grand Total</span>
+                    <span id="sheetTotal" class="font-bold text-2xl text-brand-900">₹0</span>
+                </div>
+                <button onclick="placeOrder()"
+                    class="w-full bg-brand-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-brand-500/30 active:scale-[0.98] transition-transform flex justify-center items-center gap-2">
+                    Place Order <i class="ph-bold ph-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- iOS Native-Style Toast Notification -->
+    <div id="toast"
+        class="fixed top-[88px] left-1/2 -translate-x-1/2 bg-[#2d2d2d] text-white px-4 py-3 rounded-[1.25rem] shadow-2xl flex items-center gap-3 transform -translate-y-12 opacity-0 transition-all duration-300 ease-out z-[100] pointer-events-none">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+            <i class="ph-bold ph-check text-white text-xs"></i>
+        </div>
+        <p id="toastText" class="text-[13px] font-medium tracking-wide whitespace-nowrap pr-2">Added to order</p>
+    </div>
+
+    <script>
+        // Populate 15 Tables on Page Load with Studio-Level Card Styling
+        document.addEventListener("DOMContentLoaded", () => {
+            const tablesGrid = document.getElementById('tablesGrid');
+            if (tablesGrid) {
+                let html = '';
+                for (let i = 1; i <= 15; i++) {
+                    let formattedNum = i < 10 ? '0' + i : i;
+                    html += `
+                        <button onclick="selectTable(${i})" class="bg-white hover:bg-orange-50/60 border border-gray-200/80 hover:border-brand-500 rounded-[1.25rem] py-4 px-2 flex flex-col items-center justify-center shadow-2xs active:scale-95 transition-all group">
+                            <span class="text-lg font-extrabold text-gray-900 group-hover:text-brand-600 transition-colors tracking-tight">T${formattedNum}</span>
+                        </button>
+                    `;
+                }
+                tablesGrid.innerHTML = html;
+            }
+        });
+
+        let currentTable = 1;
+        let cart = [];
+        let toastTimeout;
+
+        function selectTable(tableNum) {
+            currentTable = tableNum;
+            const formatted = tableNum < 10 ? '0' + tableNum : tableNum;
+            
+            // Update Header & Modal Badges
+            const tableBadge = document.getElementById('tableBadge');
+            const modalTableText = document.getElementById('modalTableText');
+            if (tableBadge) tableBadge.innerText = `Table ${formatted}`;
+            if (modalTableText) modalTableText.innerText = `Table ${formatted}`;
+
+            // Hide Table Selection, Show App Header & Menu View
+            document.getElementById('tableSelectionView').classList.add('hidden');
+            document.getElementById('appHeader').classList.remove('hidden');
+            document.getElementById('customerView').classList.remove('hidden');
+
+            if (cart.length > 0) {
+                const fab = document.getElementById('cartFAB');
+                fab.classList.remove('translate-y-[150%]');
+                fab.classList.add('translate-y-0');
+            }
+
+            if (navigator.vibrate) navigator.vibrate(25);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showTableSelection() {
+            document.getElementById('customerView').classList.add('hidden');
+            document.getElementById('ownerView').classList.add('hidden');
+            document.getElementById('appHeader').classList.add('hidden');
+            document.getElementById('cartFAB').classList.add('translate-y-[150%]');
+            document.getElementById('tableSelectionView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchView(view) {
+            const customerView = document.getElementById('customerView');
+            const ownerView = document.getElementById('ownerView');
+            const fab = document.getElementById('cartFAB');
+            const btnCustomer = document.getElementById('btnCustomer');
+            const btnOwner = document.getElementById('btnOwner');
+
+            const activeClass = "px-3 py-1.5 rounded-md text-xs font-semibold bg-white shadow-sm text-gray-900 ring-1 ring-gray-900/5 transition-all duration-200";
+            const inactiveClass = "px-3 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-900 transition-all duration-200";
+
+            if (view === 'owner') {
+                customerView.classList.add('hidden');
+                ownerView.classList.remove('hidden');
+                fab.style.display = 'none';
+
+                if (btnOwner) btnOwner.className = activeClass;
+                if (btnCustomer) btnCustomer.className = inactiveClass;
+            } else {
+                ownerView.classList.add('hidden');
+                customerView.classList.remove('hidden');
+                fab.style.display = 'block';
+
+                if (btnCustomer) btnCustomer.className = activeClass;
+                if (btnOwner) btnOwner.className = inactiveClass;
+            }
+
+            if (navigator.vibrate) navigator.vibrate(20);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function addToCart(itemName, price) {
+            const existing = cart.find(i => i.name === itemName);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ name: itemName, price: price, qty: 1 });
+            }
+
+            updateCartEngine();
+
+            const fab = document.getElementById('cartFAB');
+            if (cart.length > 0) {
+                fab.classList.remove('translate-y-[150%]');
+                fab.classList.add('translate-y-0');
+            }
+
+            triggerToast("Added to order");
+            if (navigator.vibrate) navigator.vibrate([10, 30, 10]);
+        }
+
+        function updateQuantity(itemName, change) {
+            const item = cart.find(i => i.name === itemName);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.name !== itemName);
+                }
+            }
+            updateCartEngine();
+
+            if (cart.length === 0) {
+                const fab = document.getElementById('cartFAB');
+                fab.classList.add('translate-y-[150%]');
+                closeCart();
+            }
+            if (navigator.vibrate) navigator.vibrate(15);
+        }
+
+        function updateCartEngine() {
+            let count = 0;
+            let total = 0;
+            const list = document.getElementById('cartItemsList');
+
+            if (cart.length === 0) {
+                list.innerHTML = `
+                <div class="text-center py-10 flex flex-col items-center">
+                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-3">
+                        <i class="ph ph-shopping-bag text-3xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Your cart is empty.</p>
+                </div>`;
+            } else {
+                list.innerHTML = '';
+                cart.forEach((item) => {
+                    count += item.qty;
+                    total += (item.price * item.qty);
+                    list.innerHTML += `
+                    <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-brand-900 text-sm">${item.name}</h4>
+                            <p class="text-xs text-brand-500 font-bold mt-0.5">₹${item.price}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center bg-gray-100 rounded-xl p-1 gap-2">
+                                <button onclick="updateQuantity('${item.name}', -1)" class="w-7 h-7 bg-white rounded-lg shadow-2xs flex items-center justify-center text-gray-700 active:scale-95 transition-transform">
+                                    <i class="ph-bold ph-minus text-xs"></i>
+                                </button>
+                                <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+                                <button onclick="updateQuantity('${item.name}', 1)" class="w-7 h-7 bg-white rounded-lg shadow-2xs flex items-center justify-center text-gray-700 active:scale-95 transition-transform">
+                                    <i class="ph-bold ph-plus text-xs"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-sm text-brand-900 min-w-[50px] text-right">₹${item.price * item.qty}</span>
+                        </div>
+                    </div>
+                `;
+                });
+            }
+
+            document.getElementById('fabTotal').innerText = '₹' + total;
+            document.getElementById('sheetTotal').innerText = '₹' + total;
+            document.getElementById('cartBadge').innerText = count;
+        }
+
+        function openCart() {
+            const backdrop = document.getElementById('modalBackdrop');
+            const modal = document.getElementById('cartModal');
+            
+            backdrop.classList.remove('pointer-events-none', 'opacity-0');
+            backdrop.classList.add('opacity-100');
+            
+            modal.classList.remove('translate-y-full');
+            modal.classList.add('translate-y-0');
+
+            if (navigator.vibrate) navigator.vibrate(15);
+        }
+
+        function closeCart() {
+            const backdrop = document.getElementById('modalBackdrop');
+            const modal = document.getElementById('cartModal');
+            
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            
+            modal.classList.remove('translate-y-0');
+            modal.classList.add('translate-y-full');
+        }
+
+        function placeOrder() {
+            if (cart.length === 0) return;
+            closeCart();
+            triggerToast("Order placed successfully! 🚀");
+            cart = [];
+            updateCartEngine();
+            document.getElementById('cartFAB').classList.add('translate-y-[150%]');
+        }
+
+        function triggerToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').innerText = text;
+            toast.style.transform = 'translate(-50%, 0)';
+            toast.style.opacity = '1';
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.transform = 'translate(-50%, -48px)';
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
