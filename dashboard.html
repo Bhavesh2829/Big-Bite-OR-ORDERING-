@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Bite - Live Dashboard</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444', // Signature Red
+                            600: '#dc2626',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc; /* bg-slate-50 */
+            color: #0f172a; /* text-slate-900 */
+        }
+        
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10B981;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #10B981;
+        }
+        
+        /* Toast Animation */
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        .toast-exit {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+
+
+    <script>
+        const KEY = new URLSearchParams(location.search).get('key') || '';
+const api = (url, opt = {}) => fetch(url, {
+  ...opt,
+  headers: { 'Content-Type': 'application/json', 'x-owner-key': KEY }
+}).then(r => r.json());
+    </script>
+
+
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
+                Big Bite <span class="text-brand-500">.</span>
+            </h1>
+            <div class="mt-2 flex items-center gap-2">
+                <span class="text-sm font-medium text-slate-500">QR Ordering System</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-semibold uppercase tracking-wide">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Dashboard
+                </span>
+            </div>
+        </div>
+        <div class="text-right flex items-center gap-3">
+            <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">
+                Powered by <span class="text-slate-600">Webtizo Studio</span>
+            </div>
+            <div class="h-8 w-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Row 1: Overview Cards (Spans full width) -->
+        <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden">
+                <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
+<div class="text-3xl font-extrabold text-slate-900" id="today-sales">₹ 42,500</div>
+                <div class="text-xs text-emerald-600 mt-2 flex items-center gap-1 font-medium">
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden">
+                <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
+                    Active Orders
+                    <span class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
+                </h3>
+                <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">8</div>
+                <div class="text-xs text-slate-500 mt-2 font-medium">Currently being prepared</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden">
+                <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
+<div class="text-3xl font-extrabold text-slate-900" id="items-served">184</div>
+<div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Across 45 completed orders</div>
+            </div>
+        </div>
+
+        <!-- Row 2, Col 1: Live Orders Feed (Spans 2 cols) -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    Incoming Orders
+                </h2>
+                <button class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">View All</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="live-orders-container">
+                <!-- Order Card 1 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE 14</span>
+                            <span class="text-xs font-medium text-slate-500">Just now</span>
+                        </div>
+                        <div class="text-right flex items-center gap-2">
+                            <span class="text-sm font-extrabold text-slate-900">₹ 1,250</span>
+                        </div>
+                    </div>
+                    
+                    <ul class="text-sm text-slate-700 space-y-2 mb-5 font-medium">
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-red-500"></span> 1x Butter Chicken</span> 
+                            <span class="text-slate-500">₹ 350</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> 2x Garlic Naan</span> 
+                            <span class="text-slate-500">₹ 120</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> 1x Paneer 65</span> 
+                            <span class="text-slate-500">₹ 300</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> 2x Sweet Corn Soup</span> 
+                            <span class="text-slate-500">₹ 240</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="flex gap-3">
+                        <button onclick="handleOrderAction('order-1', 'accepted')" class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors">
+                            Accept Order
+                        </button>
+                        <button onclick="handleOrderAction('order-1', 'declined')" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors">
+                            Decline
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order Card 2 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-2">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE 03</span>
+                            <span class="text-xs font-medium text-slate-500">2 mins ago</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-extrabold text-slate-900">₹ 450</span>
+                        </div>
+                    </div>
+                    
+                    <ul class="text-sm text-slate-700 space-y-2 mb-5 font-medium">
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> 1x Veg Manchurian</span> 
+                            <span class="text-slate-500">₹ 250</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> 1x Hakka Noodles</span> 
+                            <span class="text-slate-500">₹ 200</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="flex gap-3">
+                        <button onclick="handleOrderAction('order-2', 'accepted')" class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors">
+                            Accept Order
+                        </button>
+                        <button onclick="handleOrderAction('order-2', 'declined')" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors">
+                            Decline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2, Col 2: Revenue Chart -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
+            <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
+            <div class="flex-1 relative w-full h-full">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Row 3, Col 1: Menu Configuration (Spans 2 cols) -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
+            <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
+            
+            <!-- Add Item Form -->
+            <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end" onsubmit="addMenuItem(event)">
+                <div class="flex-1 w-full">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
+                    <input type="text" id="dishName" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm" placeholder="e.g. Tandoori Chicken">
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (₹)</label>
+                    <input type="number" id="dishPrice" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm" placeholder="0.00">
+                </div>
+                <div class="w-full md:w-48">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
+                    <select id="dishCategory" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm appearance-none">
+                        <option value="Starters">Starters</option>
+                        <option value="Main Course">Main Course</option>
+                        <option value="Soups">Soups</option>
+                        <option value="Salads">Salads</option>
+                        <option value="Beverages">Beverages</option>
+                    </select>
+                </div>
+                <div class="w-full md:w-auto flex flex-col justify-center pb-2">
+                    <label class="flex items-center cursor-pointer">
+                        <div class="relative">
+                            <input type="checkbox" id="vegToggle" class="sr-only">
+                            <div class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner"></div>
+                            <div class="dot absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-transform duration-200 shadow-sm" id="vegDot"></div>
+                        </div>
+                        <div class="ml-3 text-xs font-bold text-slate-500 uppercase" id="vegLabel">Non-Veg</div>
+                    </label>
+                </div>
+                <div class="w-full md:w-auto">
+                    <button type="submit" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
+                        ADD ITEM
+                    </button>
+                </div>
+            </form>
+
+            <!-- Menu List Table -->
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
+                        <tr>
+                            <th scope="col" class="px-5 py-4">Dish Name</th>
+                            <th scope="col" class="px-5 py-4">Category</th>
+                            <th scope="col" class="px-5 py-4">Type</th>
+                            <th scope="col" class="px-5 py-4">Price</th>
+                            <th scope="col" class="px-5 py-4 text-right">Configuration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menu-table-body" class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-5 py-4 font-bold text-slate-900">Paneer 65</td>
+                            <td class="px-5 py-4 font-medium">Starters</td>
+                            <td class="px-5 py-4 font-medium"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-2 shadow-sm"></span>Veg</td>
+                            <td class="px-5 py-4 font-bold text-slate-900">₹ 300</td>
+                            <td class="px-5 py-4 text-right">
+                                <button class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors">Edit</button>
+                                <button class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors" onclick="deleteMenuItem(this)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-5 py-4 font-bold text-slate-900">Butter Chicken</td>
+                            <td class="px-5 py-4 font-medium">Main Course</td>
+                            <td class="px-5 py-4 font-medium"><span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 mr-2 shadow-sm"></span>Non-Veg</td>
+                            <td class="px-5 py-4 font-bold text-slate-900">₹ 350</td>
+                            <td class="px-5 py-4 text-right">
+                                <button class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors">Edit</button>
+                                <button class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors" onclick="deleteMenuItem(this)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Row 3, Col 2: Top Sellers -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1">
+            <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
+            <div class="space-y-3" id="top-sellers">
+                <!-- Item 1 -->
+                <div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-brand-500 shadow-sm flex items-center justify-center text-sm font-bold text-white">1</div>
+                        <span class="text-sm font-bold text-brand-900">Butter Chicken</span>
+                    </div>
+                    <span class="text-sm font-extrabold text-brand-600">₹ 33.5k</span>
+                </div>
+                <!-- Item 2 -->
+                <div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">2</div>
+                        <span class="text-sm font-bold text-slate-700">Garlic Naan</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-500">₹ 28.2k</span>
+                </div>
+                <!-- Item 3 -->
+                <div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">3</div>
+                        <span class="text-sm font-bold text-slate-700">Paneer Tikka</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-500">₹ 21.0k</span>
+                </div>
+                <!-- Item 4 -->
+                <div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">4</div>
+                        <span class="text-sm font-bold text-slate-700">Sweet Corn Soup</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-500">₹ 15.4k</span>
+                </div>
+                <!-- Item 5 -->
+                <div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">5</div>
+                        <span class="text-sm font-bold text-slate-700">Chicken Biryani</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-500">₹ 12.8k</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+<script>
+        // ===== Helpers =====
+        const money = n => '₹ ' + Number(n || 0).toLocaleString('en-IN');
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        const $ = id => document.getElementById(id);
+        function timeAgo(iso) {
+            const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+            if (m < 1) return 'Just now';
+            if (m < 60) return m + ' min ago';
+            return Math.floor(m / 60) + ' hr ago';
+        }
+
+        // --- Custom Toast Notification System ---
+        function showToast(message, type = 'success') {
+            const container = $('toast-container');
+            const toast = document.createElement('div');
+            const isSuccess = type === 'success';
+            const iconColor = isSuccess ? 'text-emerald-500' : 'text-red-500';
+            const bgColor = isSuccess ? 'bg-emerald-50' : 'bg-red-50';
+            const borderColor = isSuccess ? 'border-emerald-200' : 'border-red-200';
+            const iconSvg = isSuccess
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${borderColor} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
+            toast.innerHTML = `<div class="${iconColor} ${bgColor} p-1 rounded-full">${iconSvg}</div><div>${esc(message)}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-exit');
+                setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 300);
+            }, 3000);
+        }
+
+        // ===== LIVE ORDERS =====
+        function renderOrder(o) {
+            const items = o.items.map(i => {
+                const dot = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
+                const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
+                return `<li class="flex justify-between">
+                    <span class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full ${dot}"></span> ${i.qty}x ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}</span>
+                    <span class="text-slate-500">${money(i.price)}</span></li>`;
+            }).join('');
+            return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-${o.id}">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${String(o.table).padStart(2, '0')}</span>
+                        <span class="text-xs font-medium text-slate-500">#${o.orderNo} · ${timeAgo(o.createdAt)}</span>
+                    </div>
+                    <span class="text-sm font-extrabold text-slate-900">${money(o.total)}</span>
+                </div>
+                <ul class="text-sm text-slate-700 space-y-2 mb-3 font-medium">${items}</ul>
+                ${o.note ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">Note: ${esc(o.note)}</div>` : '<div class="mb-2"></div>'}
+                <div class="flex gap-3">
+                    <button onclick="handleOrderAction(${o.id}, 'accepted')" class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors">Accept Order</button>
+                    <button onclick="handleOrderAction(${o.id}, 'declined')" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors">Decline</button>
+                </div>
+            </div>`;
+        }
+
+        const EMPTY_ORDERS = `<div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <p class="text-sm font-bold text-slate-500">No new orders right now.</p></div>`;
+
+        let knownOrderIds = null, shownAuthError = false;
+
+        async function loadOrders() {
+            try {
+                const orders = await api('/api/orders');
+                if (!Array.isArray(orders)) {
+                    if (!shownAuthError) { showToast('Wrong or missing private link key', 'error'); shownAuthError = true; }
+                    return;
+                }
+                $('live-orders-container').innerHTML = orders.length ? orders.map(renderOrder).join('') : EMPTY_ORDERS;
+                // toast when a brand-new order arrives
+                const ids = new Set(orders.map(o => o.id));
+                if (knownOrderIds) {
+                    const fresh = orders.filter(o => !knownOrderIds.has(o.id));
+                    if (fresh.length) showToast(`New order from Table ${fresh[0].table}!`);
+                }
+                knownOrderIds = ids;
+            } catch (e) { console.error(e); }
+        }
+
+        async function handleOrderAction(orderId, action) {
+            const el = $('order-' + orderId);
+            if (el) { el.style.opacity = '0.5'; el.style.transform = 'scale(0.98)'; }
+            const status = action === 'accepted' ? 'preparing' : 'cancelled';
+            const tableText = el ? el.querySelector('span.bg-brand-50').innerText : 'Order';
+            const r = await api('/api/orders/' + orderId, { method: 'PATCH', body: JSON.stringify({ status }) });
+            if (r.ok) {
+                showToast(action === 'accepted' ? `${tableText} order accepted.` : `${tableText} order declined.`,
+                          action === 'accepted' ? 'success' : 'error');
+                await loadOrders();
+                loadStats();
+            } else {
+                if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
+                showToast('Could not update order', 'error');
+            }
+        }
+
+        // ===== STATS (cards, chart, top sellers) =====
+        let revenueChart;
+        async function loadStats() {
+            try {
+                const s = await api('/api/stats');
+                if (s.error) return;
+                $('today-sales').innerText = money(s.todaySales);
+                $('active-order-count').innerText = s.activeOrders;
+                $('items-served').innerText = s.itemsServed;
+                $('completed-text').innerText = `Across ${s.completedOrders} completed orders`;
+
+                if (revenueChart) {
+                    revenueChart.data.labels = s.revenue.labels;
+                    revenueChart.data.datasets[0].data = s.revenue.values;
+                    revenueChart.update();
+                }
+
+                const fmt = n => n >= 1000 ? '₹ ' + (n / 1000).toFixed(1) + 'k' : money(n);
+                $('top-sellers').innerHTML = s.topSellers.length ? s.topSellers.map((t, i) => i === 0
+                    ? `<div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
+                        <div class="flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-brand-500 shadow-sm flex items-center justify-center text-sm font-bold text-white">1</div>
+                        <span class="text-sm font-bold text-brand-900">${esc(t.name)}</span></div>
+                        <span class="text-sm font-extrabold text-brand-600">${fmt(t.revenue)}</span></div>`
+                    : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                        <div class="flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i + 1}</div>
+                        <span class="text-sm font-bold text-slate-700">${esc(t.name)}</span></div>
+                        <span class="text-sm font-semibold text-slate-500">${fmt(t.revenue)}</span></div>`
+                ).join('') : '<p class="text-sm text-slate-400 font-medium p-3">No sales yet.</p>';
+            } catch (e) { console.error(e); }
+        }
+
+        // ===== MENU =====
+        const vegToggle = $('vegToggle'), vegDot = $('vegDot'), vegLabel = $('vegLabel');
+        vegToggle.addEventListener('change', function () {
+            if (this.checked) {
+                vegDot.style.transform = 'translateX(100%)';
+                vegDot.classList.replace('bg-red-500', 'bg-green-500');
+                vegLabel.textContent = 'Veg';
+                vegLabel.classList.replace('text-slate-500', 'text-emerald-600');
+            } else {
+                vegDot.style.transform = 'translateX(0)';
+                vegDot.classList.replace('bg-green-500', 'bg-red-500');
+                vegLabel.textContent = 'Non-Veg';
+                vegLabel.classList.replace('text-emerald-600', 'text-slate-500');
+            }
+        });
+
+        let menuCache = {};
+        async function loadMenu() {
+            try {
+                const items = await api('/api/menu');
+                if (!Array.isArray(items)) return;
+                menuCache = Object.fromEntries(items.map(m => [m.id, m]));
+                $('menu-table-body').innerHTML = items.map(m => `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-5 py-4 font-bold text-slate-900">${esc(m.name)}</td>
+                        <td class="px-5 py-4 font-medium">${esc(m.category)}</td>
+                        <td class="px-5 py-4 font-medium"><span class="inline-block w-2.5 h-2.5 rounded-full ${m.is_veg ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>${m.is_veg ? 'Veg' : 'Non-Veg'}</td>
+                        <td class="px-5 py-4 font-bold text-slate-900">${money(m.price)}</td>
+                        <td class="px-5 py-4 text-right">
+                            <button class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors" onclick="editMenuItem(${m.id})">Edit</button>
+                            <button class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors" onclick="deleteMenuItem(${m.id})">Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function addMenuItem(e) {
+            e.preventDefault();
+            const body = {
+                name: $('dishName').value.trim(),
+                price: $('dishPrice').value,
+                category: $('dishCategory').value,
+                isVeg: vegToggle.checked
+            };
+            const r = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
+            if (r.error) return showToast(r.error.includes('duplicate') ? 'Dish already exists' : 'Could not add dish', 'error');
+            $('add-menu-form').reset();
+            vegToggle.checked = false;
+            vegToggle.dispatchEvent(new Event('change'));
+            showToast(`"${body.name}" added to menu!`);
+            loadMenu();
+        }
+
+        async function editMenuItem(id) {
+            const m = menuCache[id]; if (!m) return;
+            const name = prompt('Dish name:', m.name); if (name === null) return;
+            const price = prompt('Price (₹):', m.price); if (price === null) return;
+            const r = await api('/api/menu/' + id, { method: 'PATCH', body: JSON.stringify({ name, price }) });
+            if (r.ok) { showToast('Menu item updated.'); loadMenu(); } else showToast('Could not update', 'error');
+        }
+
+        async function deleteMenuItem(id) {
+            const m = menuCache[id]; if (!m) return;
+            if (!confirm(`Delete "${m.name}" from the menu?`)) return;
+            const r = await api('/api/menu/' + id, { method: 'DELETE' });
+            if (r.ok) { showToast(`"${m.name}" removed from menu.`, 'error'); loadMenu(); } else showToast('Could not delete', 'error');
+        }
+
+        // ===== Chart.js =====
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = $('revenueChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(239, 68, 68, 0.9)');
+            gradient.addColorStop(1, 'rgba(239, 68, 68, 0.2)');
+
+            revenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: [], datasets: [{
+                    label: 'Revenue (₹)', data: [], backgroundColor: gradient,
+                    borderColor: 'rgba(239, 68, 68, 1)', borderWidth: 1, borderRadius: 6,
+                    barThickness: 'flex', maxBarThickness: 45 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
+                            borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
+                            titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
+                            callbacks: { label: c => '₹ ' + c.parsed.y.toLocaleString('en-IN') }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' },
+                             ticks: { color: '#64748b', font: { weight: '600' }, callback: v => '₹' + (v / 1000) + 'k' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } }
+                    },
+                    animation: { duration: 1000, easing: 'easeOutQuart' }
+                }
+            });
+
+            // ===== START =====
+            if (!KEY) showToast('Open this page with your private link', 'error');
+            loadOrders(); loadStats(); loadMenu();
+            setInterval(loadOrders, 5000);   // new orders every 5 sec
+            setInterval(loadStats, 15000);   // numbers + chart every 15 sec
+        });
+    </script>
+</body>
+</html>
