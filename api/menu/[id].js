@@ -74,8 +74,8 @@ export default async function handler(req, res) {
     // Secure the route
     if (!isOwner(req)) return res.status(401).json({ error: 'Unauthorized access' });
 
-    // Target the correct Supabase table
-    const tableName = 'menu_items';
+// Target the correct Supabase table
+const tableName = 'menu';
 
     /* ---------- PATCH (Edit/Update Dish) ---------- */
     if (req.method === 'PATCH') {
