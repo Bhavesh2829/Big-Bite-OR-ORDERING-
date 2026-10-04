@@ -128,10 +128,10 @@ export default async function handler(req, res) {
       if (raw.isVeg !== undefined) updates.is_veg = Boolean(raw.isVeg);
       if (raw.is_veg !== undefined) updates.is_veg = Boolean(raw.is_veg);
 
-      if (raw.available !== undefined)
-        updates.is_available = Boolean(raw.available);
-      if (raw.is_available !== undefined)
-        updates.is_available = Boolean(raw.is_available);
+if (raw.available !== undefined)
+  updates.available = Boolean(raw.available);
+if (raw.is_available !== undefined)
+  updates.available = Boolean(raw.is_available);
 
       if (Object.keys(updates).length === 0)
         return res
