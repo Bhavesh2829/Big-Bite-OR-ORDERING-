@@ -4,656 +4,665 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Big Bite · Owner Dashboard</title>
-​
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-​
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-​
   <script>
     tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] },
-        colors: { brand: { 50:'#fef2f2',100:'#fee2e2',500:'#ef4444',600:'#dc2626' } } } }
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#fef2f2', 100:'#fee2e2', 200:'#fecaca', 500:'#ef4444', 600:'#dc2626', 700:'#b91c1c' }
+          }
+        }
+      }
     };
   </script>
-​
   <style>
-    body { background:#f8fafc; color:#0f172a; }
-    ::-webkit-scrollbar { width:6px; height:6px; }
-    ::-webkit-scrollbar-track { background:#f1f5f9; }
-    ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
-    ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
-    @keyframes slideIn  { from { transform:translateY(100%); opacity:0; } to { transform:translateY(0); opacity:1; } }
-    @keyframes fadeOut  { from { opacity:1; } to { opacity:0; } }
-    .toast-enter { animation: slideIn 0.3s ease-out forwards; }
-    .toast-exit  { animation: fadeOut 0.3s ease-out forwards; }
-    #loginScreen { display:none; }  /* hidden by default, JS shows it only when no key */
+    body { background: #f8fafc; color: #0f172a; font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    .toast-in  { animation: slideUp 0.3s ease forwards; }
+    .toast-out { animation: fadeOut 0.3s ease forwards; }
+    .stat-card { transition: box-shadow 0.2s; }
+    .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .tab-btn.active { background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
   </style>
 </head>
+<body class="min-h-screen">
 ​
-<body class="min-h-screen antialiased font-sans">
-​
-<!-- ============================================================
-     LOGIN / AUTH GATE
-     Owner opens: https://yoursite.vercel.app/dashboard.html?key=SECRET
-     The key is read from URL and sent as x-owner-key header on every request.
-     If missing or wrong, this screen is shown.
-============================================================ -->
-<div id="loginScreen" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4 hidden">
+<!-- ==================== LOCK SCREEN ==================== -->
+<div id="lockScreen" style="display:none" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-70 backdrop-blur-sm flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
-    <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-red-500"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
+      <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
     </div>
-    <h2 class="text-xl font-black text-slate-900 mb-1">Owner Access Required</h2>
-    <p class="text-sm text-slate-500 mb-6">Open this page using your unique private dashboard link.</p>
-    <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 text-left mb-4">
-      <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Your link format</p>
-      <p class="text-xs font-mono text-slate-700 break-all">https://yourdomain.vercel.app/dashboard.html?key=<span class="text-red-500">YOUR_SECRET_KEY</span></p>
+    <h2 class="text-xl font-black text-slate-900 mb-2">Owner Access Required</h2>
+    <p class="text-sm text-slate-500 mb-5">Open this page using your unique private dashboard link.</p>
+    <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 text-left">
+      <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Your Link Format</p>
+      <p class="text-xs font-mono text-slate-600 break-all">
+        .../dashboard.html?key=<span class="text-red-500 font-bold">YOUR_SECRET_KEY</span>
+      </p>
     </div>
-    <p class="text-xs text-slate-400">Contact your developer if you lost your link.</p>
+    <p class="text-xs text-slate-400 mt-4">Contact your developer if you lost your link.</p>
   </div>
 </div>
 ​
-​
-<!-- ============================================================
-     MAIN DASHBOARD
-============================================================ -->
-<div id="dashboardApp" class="min-h-screen p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+<!-- ==================== MAIN APP ==================== -->
+<div id="app">
 ​
   <!-- Header -->
-  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
-    <div>
-      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
-        Big Bite <span class="text-brand-500">.</span>
-      </h1>
-      <div class="mt-2 flex items-center gap-2">
-        <span class="text-sm font-medium text-slate-500">QR Ordering System</span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-semibold uppercase tracking-wide">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          Live Dashboard
-        </span>
-      </div>
-    </div>
-    <div class="flex items-center gap-3">
-      <!-- Auto-refresh indicator -->
-      <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-        <span id="refreshDot" class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="refreshLabel">Live</span>
-      </div>
-      <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">
-        Powered by <span class="text-slate-600">Webtizo Studio</span>
-      </div>
-      <div class="h-8 w-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div>
+            <h1 class="text-xl font-black text-slate-900">Big Bite <span class="text-brand-500">.</span></h1>
+            <p class="text-xs text-slate-400 font-medium -mt-0.5">Owner Dashboard</p>
+          </div>
+          <span class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-700">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Live
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden md:block text-xs text-slate-400">Auto-refresh ON</span>
+          <button onclick="manualRefresh()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
       </div>
     </div>
   </header>
 ​
-  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-​
-    <!-- ── ROW 1: Stats Cards ── -->
-    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-​
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
-        <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&mdash;</div>
-        <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 s</div>
-      </div>
-​
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
-          Active Orders
-          <span class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
-        </h3>
-        <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
-        <div class="text-xs text-slate-500 mt-2 font-medium">Currently being prepared</div>
-      </div>
-​
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
-        <div class="text-3xl font-extrabold text-slate-900" id="items-served">&mdash;</div>
-        <div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Loading&hellip;</div>
+  <!-- Tab Nav -->
+  <div class="bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-1 py-2">
+        <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 transition-all">&#128203; Orders</button>
+        <button onclick="switchTab('stats')"  id="tab-stats"  class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all">&#128200; Analytics</button>
+        <button onclick="switchTab('menu')"   id="tab-menu"   class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all">&#127860; Menu</button>
       </div>
     </div>
+  </div>
 ​
-    <!-- ── ROW 2 Col 1: Live Orders (2/3 width) ── -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg font-bold text-slate-900">Incoming Orders</h2>
-        <button onclick="loadOrders()" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">Refresh</button>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+​
+    <!-- ===== ORDERS TAB ===== -->
+    <div id="view-orders">
+​
+      <!-- Stat cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+​
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Today's Sales</p>
+          <p id="today-sales" class="text-2xl font-black text-slate-900">&#8377;&#160;&#8212;</p>
+          <p class="text-xs text-slate-400 mt-1">Updates every 15s</p>
+        </div>
+​
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Active Orders</p>
+          <p id="active-orders" class="text-2xl font-black text-brand-500">&#8212;</p>
+          <p class="text-xs text-slate-400 mt-1">Currently being prepared</p>
+        </div>
+​
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Items Served</p>
+          <p id="items-served" class="text-2xl font-black text-slate-900">&#8212;</p>
+          <p class="text-xs text-slate-400 mt-1">Today's total items</p>
+        </div>
+​
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Completed</p>
+          <p id="completed-orders" class="text-2xl font-black text-emerald-600">&#8212;</p>
+          <p class="text-xs text-slate-400 mt-1">Orders served today</p>
+        </div>
+​
       </div>
-      <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="live-orders-container">
-        <!-- orders rendered by JS -->
-        <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
-          <div class="w-8 h-8 border-2 border-slate-200 border-t-brand-500 rounded-full animate-spin mb-4"></div>
-          <p class="text-sm font-medium">Loading orders&hellip;</p>
-        </div>
-      </div>
-    </div>
 ​
-    <!-- ── ROW 2 Col 2: Revenue Chart ── -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
-      <div class="flex-1 relative">
-        <canvas id="revenueChart"></canvas>
-      </div>
-    </div>
-​
-    <!-- ── ROW 3 Col 1: Menu Configuration (2/3 width) ── -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
-​
-      <!-- Add Item Form -->
-      <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end" onsubmit="addMenuItem(event)">
-        <div class="flex-1 w-full">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
-          <input type="text" id="dishName" required
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
-            placeholder="e.g. Tandoori Chicken" />
+      <!-- Incoming Orders -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+            <h2 class="text-base font-bold text-slate-900">Incoming Orders</h2>
+          </div>
+          <span id="order-count-badge" class="hidden items-center justify-center w-6 h-6 rounded-full bg-brand-500 text-white text-xs font-bold">0</span>
         </div>
-        <div class="w-full md:w-32">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
-          <input type="number" id="dishPrice" min="0" required
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
-            placeholder="0" />
-        </div>
-        <div class="w-full md:w-48">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
-          <select id="dishCategory"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm appearance-none">
-            <option>Soups</option>
-            <option>Salads</option>
-            <option>Veg Starters</option>
-            <option>Non Veg Starters</option>
-            <option>Tandoori / Kebabs</option>
-            <option>Veg Main Course</option>
-            <option>Non Veg Main Course</option>
-            <option>Rice Dishes</option>
-            <option>Biryani</option>
-            <option>Thali</option>
-            <option>Fish Fry Side Dishes</option>
-            <option>Noodles</option>
-            <option>Momo</option>
-            <option>Thai Special</option>
-            <option>Indian Breads</option>
-            <option>Grilled Sandwiches</option>
-            <option>Wraps</option>
-            <option>Burger Special</option>
-            <option>Delicious Twist</option>
-            <option>Pizza Special</option>
-            <option>Mojitos</option>
-            <option>Shakes</option>
-            <option>Fresh Juices</option>
-            <option>Hot Beverages</option>
-            <option>Fruit Salad</option>
-          </select>
-        </div>
-        <div class="w-full md:w-auto flex flex-col justify-center pb-2">
-          <label class="flex items-center cursor-pointer gap-3 select-none">
-            <div class="relative">
-              <input type="checkbox" id="vegToggle" class="sr-only" />
-              <div class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner"></div>
-              <div id="vegDot" class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-transform duration-200 shadow-sm"></div>
+        <div id="orders-container" class="p-4 min-h-48">
+          <div class="flex items-center justify-center h-32 text-slate-400">
+            <div class="text-center">
+              <div class="w-8 h-8 border-2 border-brand-200 border-t-brand-500 rounded-full animate-spin mx-auto mb-2"></div>
+              <p class="text-sm font-medium">Loading orders...</p>
             </div>
-            <span class="text-xs font-bold text-slate-500 uppercase" id="vegLabel">Non-Veg</span>
-          </label>
+          </div>
         </div>
-        <div class="w-full md:w-auto">
-          <button type="submit" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
-            ADD ITEM
-          </button>
-        </div>
-      </form>
-​
-      <!-- Menu Table -->
-      <div class="overflow-x-auto rounded-lg border border-slate-200">
-        <table class="w-full text-left text-sm text-slate-600">
-          <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
-            <tr>
-              <th class="px-5 py-4">Dish Name</th>
-              <th class="px-5 py-4">Category</th>
-              <th class="px-5 py-4">Type</th>
-              <th class="px-5 py-4">Price</th>
-              <th class="px-5 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="menu-table-body" class="divide-y divide-slate-100">
-            <tr>
-              <td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
+​
     </div>
 ​
-    <!-- ── ROW 3 Col 2: Top Sellers ── -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
-      <div class="space-y-3" id="top-sellers">
-        <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
+    <!-- ===== ANALYTICS TAB ===== -->
+    <div id="view-stats" style="display:none">
+​
+      <!-- Top stat row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Today's Sales</p>
+          <p id="stats-today-sales" class="text-2xl font-black text-slate-900">&#8377;&#160;&#8212;</p>
+        </div>
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Active Orders</p>
+          <p id="stats-active" class="text-2xl font-black text-brand-500">&#8212;</p>
+        </div>
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Items Served</p>
+          <p id="stats-items" class="text-2xl font-black text-slate-900">&#8212;</p>
+        </div>
+        <div class="stat-card bg-white rounded-2xl border border-slate-200 p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Completed</p>
+          <p id="stats-completed" class="text-2xl font-black text-emerald-600">&#8212;</p>
+        </div>
       </div>
+​
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Revenue Chart -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5">
+          <h3 class="text-sm font-bold text-slate-700 mb-4">6-Day Revenue Trend</h3>
+          <div class="relative h-52">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+        <!-- Top Sellers -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5">
+          <h3 class="text-sm font-bold text-slate-700 mb-4">Top Sellers</h3>
+          <div id="top-sellers"><p class="text-sm text-slate-400">Loading...</p></div>
+        </div>
+      </div>
+​
+    </div>
+​
+    <!-- ===== MENU TAB ===== -->
+    <div id="view-menu" style="display:none">
+​
+      <!-- Add dish form -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 mb-5">
+        <h3 class="text-sm font-bold text-slate-700 mb-4">&#10133; Add New Dish</h3>
+        <form id="add-menu-form" onsubmit="addMenuItem(event)">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+            <input id="dishName" placeholder="Dish name" required
+              class="col-span-2 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <input id="dishCategory" placeholder="Category (e.g. Soups)" required
+              class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <input id="dishPrice" type="number" placeholder="Price (&#8377;)" min="1" required
+              class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <div class="relative">
+                <input id="vegToggle" type="checkbox" class="sr-only" onchange="toggleVeg()" />
+                <div id="vegTrack" class="w-10 h-5 rounded-full bg-red-400 transition-colors"></div>
+                <div id="vegThumb" class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform"></div>
+              </div>
+              <span id="vegLabel" class="text-sm font-semibold text-slate-500">Non-Veg</span>
+            </label>
+            <button type="submit" class="ml-auto px-5 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold rounded-lg transition-colors">
+              Add Dish
+            </button>
+          </div>
+        </form>
+      </div>
+​
+      <!-- Menu table -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100">
+          <h3 class="text-sm font-bold text-slate-700">Menu Items</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th class="text-left px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                <th class="text-left px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Category</th>
+                <th class="text-left px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
+                <th class="text-left px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
+                <th class="text-right px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="menu-table-body">
+              <tr><td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+​
     </div>
 ​
   </main>
 </div>
 ​
-​
 <!-- Toast Container -->
-<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
-​
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
 ​
 <script>
-"use strict";
-​
-/* ============================================================
-   BACKEND CONFIG
-   ──────────────────────────────────────────────────────────
-   API_BASE   : Leave empty if frontend & backend on same domain.
-                Set to "https://yourapp.vercel.app" for separate deploy.
-​
-   OWNER AUTH : The owner opens dashboard.html?key=SECRET_KEY
-                The key is sent as the x-owner-key header on every
-                API request. Your backend must validate it.
-                Generate your key: crypto.randomUUID() in browser console,
-                or use any random string (32+ chars).
-​
-   REFRESH    : Intervals in ms for auto-polling.
-​
-   API ENDPOINTS USED:
-     GET    /api/orders            — list pending orders (auth required)
-     PATCH  /api/orders/:id        — update order status (auth required)
-     GET    /api/stats             — dashboard stats    (auth required)
-     GET    /api/menu              — list menu items    (auth required)
-     POST   /api/menu              — add menu item      (auth required)
-     PATCH  /api/menu/:id          — edit menu item     (auth required)
-     DELETE /api/menu/:id          — delete menu item   (auth required)
-​
-   PATCH /api/orders/:id body:    { status: "preparing"|"cancelled" }
-   POST  /api/menu body:          { name, price, category, isVeg }
-   PATCH /api/menu/:id body:      { name?, price? }
-============================================================ */
-const CONFIG = {
-  API_BASE:            "",     // ← "https://yourapi.vercel.app" if separate
-  ORDERS_POLL_MS:      5000,   // how often to refresh incoming orders
-  STATS_POLL_MS:       15000,  // how often to refresh stats & chart
+// ============================================================
+// CONFIG
+// ============================================================
+var CONFIG = {
+  API_BASE: '',
+  ORDERS_POLL_MS: 5000,
+  STATS_POLL_MS: 15000
 };
 ​
-/* ============================================================
-   AUTH: read key from URL ?key=
-   Owner bookmark: https://yourdomain.vercel.app/dashboard.html?key=SECRET
-============================================================ */
-const KEY = new URLSearchParams(location.search).get('key') || '';
+// ============================================================
+// AUTH — read key from ?key= in URL
+// ============================================================
+var KEY = new URLSearchParams(window.location.search).get('key') || '';
 ​
-// Auth gate: show lock screen only if no key in URL
-// dashboardApp is visible by default; loginScreen is hidden by default
-if (!KEY) {
-  document.getElementById('loginScreen').style.display = 'flex';
-}
-​
-/* ============================================================
-   API HELPER
-   Returns: { ok: true/false, data: parsed JSON, status: HTTP status }
-============================================================ */
-async function api(path, opt = {}) {
-  try {
-    const res = await fetch(CONFIG.API_BASE + path, {
-      ...opt,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-owner-key':  KEY,
-        ...(opt.headers || {}),
-      },
-    });
-    const data = await res.json().catch(() => ({}));
-    return { ok: res.ok, status: res.status, data };
-  } catch (e) {
-    console.error('[API]', path, e);
-    return { ok: false, status: 0, data: {} };
+window.addEventListener('DOMContentLoaded', function() {
+  if (!KEY) {
+    document.getElementById('lockScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  } else {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initDashboard();
   }
+});
+​
+// ============================================================
+// HELPERS
+// ============================================================
+function money(n) {
+  return '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
 }
 ​
-/* ============================================================
-   HELPERS
-============================================================ */
-const $     = id => document.getElementById(id);
-const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
-const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
-  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 ​
 function timeAgo(iso) {
-  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  var m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (m < 1)  return 'Just now';
   if (m < 60) return m + ' min ago';
   return Math.floor(m / 60) + ' hr ago';
 }
 ​
-/* ============================================================
-   TOAST
-============================================================ */
-function showToast(message, type = 'success') {
-  const container  = $('toast-container');
-  const isSuccess  = type === 'success';
-  const iconSvg    = isSuccess
-    ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-    : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-  const iconCls  = isSuccess ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50';
-  const bordrCls = isSuccess ? 'border-emerald-200'             : 'border-red-200';
+function getEl(id) {
+  return document.getElementById(id);
+}
 ​
-  const toast = document.createElement('div');
-  toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${bordrCls} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
-  toast.innerHTML = `<div class="${iconCls} p-1 rounded-full">${iconSvg}</div><div>${esc(message)}</div>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.replace('toast-enter', 'toast-exit');
-    setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 300);
+// ============================================================
+// TABS
+// ============================================================
+var currentTab = 'orders';
+​
+function switchTab(name) {
+  ['orders','stats','menu'].forEach(function(t) {
+    getEl('view-' + t).style.display  = (t === name) ? '' : 'none';
+    getEl('tab-' + t).className = 'tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all ' +
+      (t === name ? 'active text-slate-700' : 'text-slate-500 hover:text-slate-700');
+  });
+  currentTab = name;
+  if (name === 'stats')  loadStats();
+  if (name === 'menu')   loadMenu();
+}
+​
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+  var isOk = (type !== 'error');
+  var container = getEl('toast-container');
+  var el = document.createElement('div');
+  el.className = 'toast-in flex items-center gap-3 px-4 py-3 bg-white border rounded-xl shadow-lg text-sm font-semibold max-w-xs ' +
+    (isOk ? 'border-emerald-200 text-emerald-800' : 'border-red-200 text-red-800');
+  el.innerHTML = (isOk ? '&#10003; ' : '&#9888; ') + msg;
+  container.appendChild(el);
+  setTimeout(function() {
+    el.className = el.className.replace('toast-in', 'toast-out');
+    setTimeout(function() { if (container.contains(el)) container.removeChild(el); }, 300);
   }, 3000);
 }
 ​
-/* ============================================================
-   LIVE ORDERS
-============================================================ */
-const EMPTY_ORDERS = `
-  <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
-    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-    <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
-  </div>`;
+// ============================================================
+// API HELPER
+// ============================================================
+function api(path, opts) {
+  opts = opts || {};
+  var headers = Object.assign({ 'Content-Type': 'application/json', 'x-owner-key': KEY }, opts.headers || {});
+  return fetch(CONFIG.API_BASE + path, Object.assign({}, opts, { headers: headers }))
+    .then(function(res) {
+      return res.json().catch(function() { return {}; }).then(function(data) {
+        return { ok: res.ok, status: res.status, data: data };
+      });
+    })
+    .catch(function(e) {
+      console.error('[API]', path, e);
+      return { ok: false, status: 0, data: {} };
+    });
+}
+​
+// ============================================================
+// ORDERS
+// ============================================================
+var knownIds = null;
+var authErrShown = false;
 ​
 function renderOrder(o) {
-  const itemsHtml = o.items.map(i => {
-    const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
-    const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
-    return `<li class="flex justify-between">
-      <span class="flex items-center gap-2">
-        <span class="inline-block w-2 h-2 rounded-full ${dot}"></span>
-        ${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}
-      </span>
-      <span class="text-slate-500">${money(i.price * i.qty)}</span>
-    </li>`;
+  var itemsHtml = (o.items || []).map(function(i) {
+    var dot = (i.veg === false) ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
+    return '<li class="flex justify-between items-center py-1">' +
+      '<span class="flex items-center gap-2 text-slate-700">' +
+        '<span class="inline-block w-2 h-2 rounded-full ' + dot + '"></span>' +
+        esc(i.qty) + '&times; ' + esc(i.name) +
+      '</span>' +
+      '<span class="text-slate-500 font-semibold">' + money(i.price * i.qty) + '</span>' +
+    '</li>';
   }).join('');
 ​
-  const noteHtml = o.note
-    ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
-    : '<div class="mb-2"></div>';
+  var noteHtml = o.note
+    ? '<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-3">' + esc(o.note) + '</div>'
+    : '';
 ​
-  return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-${o.id}">
-    <div class="flex justify-between items-start mb-4">
-      <div class="flex items-center gap-3">
-        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${String(o.table).padStart(2,'0')}</span>
-        <span class="text-xs font-medium text-slate-500">#${esc(String(o.orderNo))} &middot; ${timeAgo(o.createdAt)}</span>
-      </div>
-      <span class="text-sm font-extrabold text-slate-900">${money(o.total)}</span>
-    </div>
-    <ul class="text-sm text-slate-700 space-y-2 mb-3 font-medium">${itemsHtml}</ul>
-    ${noteHtml}
-    <div class="flex gap-3">
-      <button onclick="handleOrderAction('${esc(String(o.id))}','preparing','${esc(String(o.table))}')"
-        class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
-        &#10003; Accept
-      </button>
-      <button onclick="handleOrderAction('${esc(String(o.id))}','cancelled','${esc(String(o.table))}')"
-        class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer">
-        Decline
-      </button>
-      <button onclick="handleOrderAction('${esc(String(o.id))}','served','${esc(String(o.table))}')"
-        class="px-3 bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer" title="Mark Served">
-        &#127869;&#65039;
-      </button>
-    </div>
-  </div>`;
+  var id = esc(String(o.id || ''));
+  var table = esc(String(o.table || o.table_no || ''));
+  var orderNo = esc(String(o.orderNo || o.order_no || ''));
+​
+  return '<div class="bg-white border border-slate-200 rounded-xl p-4 hover:border-brand-300 hover:shadow-sm transition-all" id="order-' + id + '">' +
+    '<div class="flex items-center justify-between mb-3">' +
+      '<div class="flex items-center gap-2">' +
+        '<span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">T-' + table + '</span>' +
+        '<span class="text-xs text-slate-400 font-medium">#' + orderNo + ' &middot; ' + timeAgo(o.createdAt || o.created_at) + '</span>' +
+      '</div>' +
+      '<span class="font-black text-slate-900">' + money(o.total) + '</span>' +
+    '</div>' +
+    '<ul class="space-y-1 mb-3 text-sm">' + itemsHtml + '</ul>' +
+    noteHtml +
+    '<div class="flex gap-2 mt-3">' +
+      '<button onclick="doOrderAction(\'' + id + '\',\'preparing\',' + table + ')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-2 rounded-lg transition-colors">&#10003; Accept</button>' +
+      '<button onclick="doOrderAction(\'' + id + '\',\'served\',' + table + ')" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold py-2 rounded-lg transition-colors">&#127869;</button>' +
+      '<button onclick="doOrderAction(\'' + id + '\',\'cancelled\',' + table + ')" class="px-4 bg-white border border-slate-300 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-slate-600 text-sm font-bold py-2 rounded-lg transition-colors">&#10005;</button>' +
+    '</div>' +
+  '</div>';
 }
 ​
-let knownOrderIds = null;
-let shownAuthError = false;
+function loadOrders() {
+  return api('/api/orders').then(function(r) {
+    var container = getEl('orders-container');
+    if (!r.ok) {
+      if ((r.status === 401 || r.status === 403) && !authErrShown) {
+        showToast('Invalid owner key', 'error');
+        authErrShown = true;
+      }
+      return;
+    }
+    var data = Array.isArray(r.data) ? r.data : [];
 ​
-async function loadOrders() {
-  const { ok, status, data } = await api('/api/orders');
+    if (data.length === 0) {
+      container.innerHTML = '<div class="flex flex-col items-center justify-center h-32 text-slate-400">' +
+        '<span class="text-3xl mb-2">&#128203;</span>' +
+        '<p class="text-sm font-semibold">No new orders right now</p>' +
+        '<p class="text-xs mt-1">Orders will appear here automatically</p>' +
+      '</div>';
+    } else {
+      container.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">' + data.map(renderOrder).join('') + '</div>';
+    }
 ​
-  if (!ok) {
-    if (status === 401 || status === 403) {
-      if (!shownAuthError) {
-        showToast('Invalid or expired dashboard key', 'error');
-        shownAuthError = true;
+    // Badge
+    var badge = getEl('order-count-badge');
+    if (data.length > 0) {
+      badge.style.display = 'flex';
+      badge.textContent = data.length;
+    } else {
+      badge.style.display = 'none';
+    }
+​
+    // Notification for new orders
+    var ids = {};
+    data.forEach(function(o) { ids[String(o.id)] = true; });
+    if (knownIds !== null) {
+      var fresh = data.filter(function(o) { return !knownIds[String(o.id)]; });
+      if (fresh.length) {
+        showToast('New order from Table ' + (fresh[0].table || fresh[0].table_no) + '!');
       }
     }
-    return;
-  }
-​
-  if (!Array.isArray(data)) return;
-​
-  const container = $('live-orders-container');
-  container.innerHTML = data.length ? data.map(renderOrder).join('') : EMPTY_ORDERS;
-​
-  // New-order notification
-  const ids = new Set(data.map(o => String(o.id)));
-  if (knownOrderIds) {
-    const fresh = data.filter(o => !knownOrderIds.has(String(o.id)));
-    if (fresh.length) {
-      showToast(`&#127381; New order from Table ${fresh[0].table}!`);
-      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA==').play().catch(()=>{}); } catch(e) {}
-    }
-  }
-  knownOrderIds = ids;
+    knownIds = ids;
+  });
 }
 ​
-async function handleOrderAction(orderId, status, tableLabel) {
-  const el = $('order-' + orderId);
+function doOrderAction(orderId, status, tableNo) {
+  var el = getEl('order-' + orderId);
   if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
-​
-  const { ok } = await api('/api/orders/' + orderId, {
-    method: 'PATCH',
-    body:   JSON.stringify({ status }),
-  });
-​
-  if (ok) {
-    const msg = status === 'preparing'
-      ? `Table ${tableLabel} — order accepted ✓`
-      : status === 'served'
-      ? `Table ${tableLabel} — marked as served &#127869;&#65039;`
-      : `Table ${tableLabel} — order declined`;
-    showToast(msg, status === 'cancelled' ? 'error' : 'success');
-    await loadOrders();
-    loadStats();
-  } else {
-    if (el) { el.style.opacity = '1'; el.style.pointerEvents = ''; }
-    showToast('Could not update order — try again', 'error');
-  }
+  api('/api/orders/' + orderId, { method: 'PATCH', body: JSON.stringify({ status: status }) })
+    .then(function(r) {
+      if (r.ok) {
+        var msg = status === 'preparing' ? 'Table ' + tableNo + ' — accepted!' :
+                  status === 'served'    ? 'Table ' + tableNo + ' — served!' :
+                                          'Table ' + tableNo + ' — declined';
+        showToast(msg, status === 'cancelled' ? 'error' : 'success');
+        loadOrders();
+        loadStats();
+      } else {
+        if (el) { el.style.opacity = '1'; el.style.pointerEvents = ''; }
+        showToast('Could not update order', 'error');
+      }
+    });
 }
 ​
-/* ============================================================
-   STATS + CHART
-============================================================ */
-let revenueChart;
+// ============================================================
+// STATS
+// ============================================================
+var chart = null;
 ​
-async function loadStats() {
-  const { ok, data: s } = await api('/api/stats');
-  if (!ok || s.error) return;
+function loadStats() {
+  api('/api/stats').then(function(r) {
+    if (!r.ok || r.data.error) return;
+    var s = r.data;
+    var fmt = function(n) { return n >= 1000 ? '\u20B9\u00A0' + (n/1000).toFixed(1)+'k' : money(n); };
 ​
-  $('today-sales').textContent      = money(s.todaySales);
-  $('active-order-count').textContent = s.activeOrders;
-  $('items-served').textContent     = s.itemsServed;
-  $('completed-text').textContent   = `Across ${s.completedOrders} completed orders`;
+    // Update both tabs' stat numbers
+    ['today-sales','stats-today-sales'].forEach(function(id) {
+      var el = getEl(id); if (el) el.textContent = money(s.todaySales);
+    });
+    ['active-orders','stats-active'].forEach(function(id) {
+      var el = getEl(id); if (el) el.textContent = s.activeOrders || 0;
+    });
+    ['items-served','stats-items'].forEach(function(id) {
+      var el = getEl(id); if (el) el.textContent = s.itemsServed || 0;
+    });
+    ['completed-orders','stats-completed'].forEach(function(id) {
+      var el = getEl(id); if (el) el.textContent = s.completedOrders || 0;
+    });
 ​
-  // Chart
-  if (revenueChart && s.revenue) {
-    revenueChart.data.labels              = s.revenue.labels;
-    revenueChart.data.datasets[0].data    = s.revenue.values;
-    revenueChart.update();
-  }
+    // Chart
+    if (chart && s.revenue) {
+      chart.data.labels = s.revenue.labels || [];
+      chart.data.datasets[0].data = s.revenue.values || [];
+      chart.update();
+    }
 ​
-  // Top sellers
-  const fmt = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
-  if (Array.isArray(s.topSellers)) {
-    $('top-sellers').innerHTML = s.topSellers.length
-      ? s.topSellers.map((t, i) => i === 0
-          ? `<div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
-               <div class="flex items-center gap-4">
-                 <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-sm font-bold text-white">1</div>
-                 <span class="text-sm font-bold text-brand-900">${esc(t.name)}</span></div>
-               <span class="text-sm font-extrabold text-brand-600">${fmt(t.revenue)}</span></div>`
-          : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
-               <div class="flex items-center gap-4">
-                 <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i+1}</div>
-                 <span class="text-sm font-bold text-slate-700">${esc(t.name)}</span></div>
-               <span class="text-sm font-semibold text-slate-500">${fmt(t.revenue)}</span></div>`
-        ).join('')
-      : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
-  }
-}
-​
-/* ============================================================
-   MENU
-============================================================ */
-const vegToggle = () => $('vegToggle');
-const vegDot    = () => $('vegDot');
-const vegLabel  = () => $('vegLabel');
-​
-document.addEventListener('DOMContentLoaded', () => {
-  $('vegToggle').addEventListener('change', function () {
-    if (this.checked) {
-      vegDot().style.transform = 'translateX(100%)';
-      vegDot().classList.replace('bg-red-500','bg-green-500');
-      vegLabel().textContent = 'Veg';
-      vegLabel().classList.add('text-emerald-600');
-      vegLabel().classList.remove('text-slate-500');
-    } else {
-      vegDot().style.transform = 'translateX(0)';
-      vegDot().classList.replace('bg-green-500','bg-red-500');
-      vegLabel().textContent = 'Non-Veg';
-      vegLabel().classList.add('text-slate-500');
-      vegLabel().classList.remove('text-emerald-600');
+    // Top sellers
+    if (Array.isArray(s.topSellers)) {
+      var el = getEl('top-sellers');
+      if (el) {
+        if (s.topSellers.length === 0) {
+          el.innerHTML = '<p class="text-sm text-slate-400 py-4 text-center">No sales data yet</p>';
+        } else {
+          el.innerHTML = s.topSellers.map(function(t, i) {
+            return '<div class="flex items-center justify-between py-2 ' + (i < s.topSellers.length-1 ? 'border-b border-slate-100' : '') + '">' +
+              '<div class="flex items-center gap-3">' +
+                '<span class="w-6 h-6 rounded-full ' + (i === 0 ? 'bg-brand-500 text-white' : 'bg-slate-100 text-slate-600') + ' flex items-center justify-center text-xs font-black">' + (i+1) + '</span>' +
+                '<span class="text-sm font-semibold text-slate-800">' + esc(t.name) + '</span>' +
+              '</div>' +
+              '<span class="text-sm font-bold ' + (i === 0 ? 'text-brand-600' : 'text-slate-500') + '">' + fmt(t.revenue) + '</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
     }
   });
-});
-​
-let menuCache = {};
-​
-async function loadMenu() {
-  const { ok, data } = await api('/api/menu');
-  if (!ok || !Array.isArray(data)) {
-    $('menu-table-body').innerHTML = '<tr><td colspan="5" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu.</td></tr>';
-    return;
-  }
-  menuCache = Object.fromEntries(data.map(m => [m.id, m]));
-  $('menu-table-body').innerHTML = data.length
-    ? data.map(m => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="px-5 py-4 font-bold text-slate-900">${esc(m.name)}</td>
-          <td class="px-5 py-4 font-medium text-slate-600">${esc(m.category)}</td>
-          <td class="px-5 py-4 font-medium">
-            <span class="inline-block w-2.5 h-2.5 rounded-full ${m.is_veg ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>
-            ${m.is_veg ? 'Veg' : 'Non-Veg'}
-          </td>
-          <td class="px-5 py-4 font-bold text-slate-900">${money(m.price)}</td>
-          <td class="px-5 py-4 text-right">
-            <button onclick="editMenuItem(${m.id})"
-              class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors cursor-pointer">
-              Edit
-            </button>
-            <button onclick="deleteMenuItem(${m.id})"
-              class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">
-              Delete
-            </button>
-          </td>
-        </tr>`).join('')
-    : '<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">No menu items yet. Add one above.</td></tr>';
 }
 ​
-async function addMenuItem(e) {
+// ============================================================
+// MENU
+// ============================================================
+var menuCache = {};
+var vegState = false;
+​
+function toggleVeg() {
+  vegState = !vegState;
+  var track = getEl('vegTrack');
+  var thumb = getEl('vegThumb');
+  var label = getEl('vegLabel');
+  if (vegState) {
+    track.classList.replace('bg-red-400','bg-green-500');
+    thumb.style.transform = 'translateX(20px)';
+    label.textContent = 'Veg';
+    label.className = 'text-sm font-semibold text-emerald-600';
+  } else {
+    track.classList.replace('bg-green-500','bg-red-400');
+    thumb.style.transform = 'translateX(0)';
+    label.textContent = 'Non-Veg';
+    label.className = 'text-sm font-semibold text-slate-500';
+  }
+}
+​
+function loadMenu() {
+  api('/api/menu').then(function(r) {
+    var tbody = getEl('menu-table-body');
+    if (!r.ok || !Array.isArray(r.data)) {
+      tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-red-400 text-sm">Failed to load menu.</td></tr>';
+      return;
+    }
+    var data = r.data;
+    menuCache = {};
+    data.forEach(function(m) { menuCache[m.id] = m; });
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">No menu items yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(function(m) {
+      return '<tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">' +
+        '<td class="px-5 py-3 font-semibold text-slate-900">' + esc(m.name) + '</td>' +
+        '<td class="px-5 py-3 text-slate-500">' + esc(m.category) + '</td>' +
+        '<td class="px-5 py-3">' +
+          '<span class="inline-flex items-center gap-1.5 text-xs font-semibold ' + (m.is_veg ? 'text-emerald-700' : 'text-red-600') + '">' +
+            '<span class="w-2 h-2 rounded-full ' + (m.is_veg ? 'bg-green-500' : 'bg-red-500') + '"></span>' +
+            (m.is_veg ? 'Veg' : 'Non-Veg') +
+          '</span>' +
+        '</td>' +
+        '<td class="px-5 py-3 font-bold text-slate-900">' + money(m.price) + '</td>' +
+        '<td class="px-5 py-3 text-right">' +
+          '<button onclick="editItem(' + m.id + ')" class="text-xs font-semibold text-slate-500 hover:text-brand-500 px-3 py-1.5 border border-slate-200 rounded-md mr-2 transition-colors">Edit</button>' +
+          '<button onclick="deleteItem(' + m.id + ')" class="text-xs font-semibold text-red-500 hover:bg-red-50 px-3 py-1.5 border border-transparent rounded-md transition-colors">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  });
+}
+​
+function addMenuItem(e) {
   e.preventDefault();
-  const body = {
-    name:     $('dishName').value.trim(),
-    price:    Number($('dishPrice').value),
-    category: $('dishCategory').value,
-    isVeg:    $('vegToggle').checked,
+  var body = {
+    name:     getEl('dishName').value.trim(),
+    price:    Number(getEl('dishPrice').value),
+    category: getEl('dishCategory').value.trim(),
+    isVeg:    vegState
   };
-  const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
-  if (!ok) {
-    const msg = (data.error || '').includes('duplicate') ? 'Dish already exists' : (data.error || 'Could not add dish');
-    return showToast(msg, 'error');
-  }
-  $('add-menu-form').reset();
-  $('vegToggle').checked = false;
-  $('vegToggle').dispatchEvent(new Event('change'));
-  showToast(`"${body.name}" added to menu!`);
-  loadMenu();
+  api('/api/menu', { method: 'POST', body: JSON.stringify(body) }).then(function(r) {
+    if (!r.ok) {
+      showToast((r.data.error || '').includes('duplicate') ? 'Dish already exists' : (r.data.error || 'Error adding dish'), 'error');
+      return;
+    }
+    getEl('add-menu-form').reset();
+    vegState = false; toggleVeg(); vegState = false; // reset toggle
+    showToast(body.name + ' added to menu!');
+    loadMenu();
+  });
 }
 ​
-async function editMenuItem(id) {
-  const m = menuCache[id];
-  if (!m) return;
-  const name  = prompt('Dish name:', m.name);  if (name  === null) return;
-  const price = prompt('Price (\u20B9):', m.price); if (price === null) return;
-  const { ok } = await api('/api/menu/' + id, { method: 'PATCH', body: JSON.stringify({ name, price: Number(price) }) });
-  if (ok) { showToast('Menu item updated.'); loadMenu(); }
-  else showToast('Could not update item', 'error');
+function editItem(id) {
+  var m = menuCache[id]; if (!m) return;
+  var name  = window.prompt('Dish name:', m.name);   if (name  === null) return;
+  var price = window.prompt('Price (₹):', m.price); if (price === null) return;
+  api('/api/menu/' + id, { method: 'PATCH', body: JSON.stringify({ name: name, price: Number(price) }) })
+    .then(function(r) {
+      if (r.ok) { showToast('Updated!'); loadMenu(); }
+      else showToast('Could not update', 'error');
+    });
 }
 ​
-async function deleteMenuItem(id) {
-  const m = menuCache[id];
-  if (!m) return;
-  if (!confirm(`Delete "${m.name}" from the menu?`)) return;
-  const { ok } = await api('/api/menu/' + id, { method: 'DELETE' });
-  if (ok) { showToast(`"${m.name}" removed.`); loadMenu(); }
-  else showToast('Could not delete item', 'error');
+function deleteItem(id) {
+  var m = menuCache[id]; if (!m) return;
+  if (!window.confirm('Delete "' + m.name + '" from menu?')) return;
+  api('/api/menu/' + id, { method: 'DELETE' })
+    .then(function(r) {
+      if (r.ok) { showToast(m.name + ' removed.'); loadMenu(); }
+      else showToast('Could not delete', 'error');
+    });
 }
 ​
-/* ============================================================
-   CHART.JS INIT + STARTUP
-============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  if (!KEY) return;  // don't init chart on login screen
+// ============================================================
+// MANUAL REFRESH
+// ============================================================
+function manualRefresh() {
+  loadOrders();
+  if (currentTab === 'stats') loadStats();
+  if (currentTab === 'menu')  loadMenu();
+  showToast('Refreshed!');
+}
 ​
-  const ctx      = $('revenueChart').getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(239,68,68,0.85)');
-  gradient.addColorStop(1, 'rgba(239,68,68,0.1)');
-​
-  revenueChart = new Chart(ctx, {
+// ============================================================
+// INIT CHART + START POLLING
+// ============================================================
+function initDashboard() {
+  // Chart
+  var ctx = getEl('revenueChart').getContext('2d');
+  var grad = ctx.createLinearGradient(0, 0, 0, 200);
+  grad.addColorStop(0, 'rgba(239,68,68,0.8)');
+  grad.addColorStop(1, 'rgba(239,68,68,0.05)');
+  chart = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels: [],
-      datasets: [{
-        label: 'Revenue (\u20B9)',
-        data:  [],
-        backgroundColor: gradient,
-        borderColor:  'rgba(239,68,68,1)',
-        borderWidth:  1,
-        borderRadius: 6,
-        maxBarThickness: 45,
-      }],
-    },
+    data: { labels: [], datasets: [{ label: 'Revenue', data: [], backgroundColor: grad, borderColor: '#ef4444', borderWidth: 1, borderRadius: 6 }] },
     options: {
-      responsive:          true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
-          borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
-          titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
-          callbacks: { label: c => '\u20B9 ' + c.parsed.y.toLocaleString('en-IN') },
-        },
+          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc', padding: 10,
+          callbacks: { label: function(c) { return '\u20B9 ' + c.parsed.y.toLocaleString('en-IN'); } }
+        }
       },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#f1f5f9' },
-             ticks: { color: '#64748b', font: { weight: '600' }, callback: v => '\u20B9' + (v/1000) + 'k' } },
-        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
-      },
-      animation: { duration: 800, easing: 'easeOutQuart' },
-    },
+        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', callback: function(v) { return '\u20B9' + (v >= 1000 ? (v/1000)+'k' : v); } } },
+        x: { grid: { display: false }, ticks: { color: '#64748b' } }
+      }
+    }
   });
 ​
-  // Initial load
+  // Initial data load
   loadOrders();
   loadStats();
-  loadMenu();
 ​
-  // Auto-refresh
+  // Auto-refresh polling
   setInterval(loadOrders, CONFIG.ORDERS_POLL_MS);
   setInterval(loadStats,  CONFIG.STATS_POLL_MS);
-});
+}
 </script>
 ​
 </body>
