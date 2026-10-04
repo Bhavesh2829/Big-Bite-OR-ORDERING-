@@ -521,7 +521,6 @@
     
   </div>
 </div>
-
     <!-- ============================================================
      TOAST NOTIFICATION
 ============================================================ -->
@@ -1290,10 +1289,33 @@
         }, CONFIG.ORDER_POLL_MS);
       }
 
-      function closeOrderSuccess() {
-        $("orderSuccess").classList.add("hidden");
-        clearInterval(pollTimer);
-      }
+function closeOrderSuccess() {
+  // 1. Hide the success modal
+  const successModal = document.getElementById('orderSuccess');
+  if (successModal) {
+    successModal.classList.add('hidden');
+  }
+
+  // 2. Clear the cart array and reset cart UI
+  if (typeof cart !== 'undefined') {
+    cart = [];
+  }
+  if (typeof updateCartUI === 'function') {
+    updateCartUI();
+  }
+
+  // 3. Ensure the menu screen is visible and active
+  const menuScreen = document.getElementById('menuScreen');
+  if (menuScreen) {
+    menuScreen.classList.remove('hidden');
+  }
+
+  // 4. Close any lingering checkout or cart modals if open
+  const checkoutModal = document.getElementById('checkoutModal');
+  if (checkoutModal) {
+    checkoutModal.classList.add('hidden');
+  }
+}
 
       async function resumeLastOrder() {
         try {
