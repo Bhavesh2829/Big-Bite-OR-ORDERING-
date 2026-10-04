@@ -1,10 +1,6 @@
-// GET  /api/menu   - owner only: list all dishes
-// POST /api/menu   - owner only: add one dish  { name, price, category, isVeg }
-//                    or many dishes            { items: [ { name, price, category, isVeg }, ... ] }
-// PATCH / DELETE for one dish are in api/menu/[id].js
-
 import { timingSafeEqual } from 'node:crypto';
 
+// Server environment variables
 const SUPABASE_URL = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_KEY;   // service_role key
 const OWNER_KEY    = process.env.OWNER_KEY;
@@ -24,6 +20,7 @@ function isOwner(req) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+// Supabase Fetch Helper
 async function sb(path, opt = {}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...opt,
@@ -41,120 +38,106 @@ async function sb(path, opt = {}) {
   return { ok: res.ok, status: res.status, body };
 }
 
+function parseBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  if (typeof req.body === 'string') { 
+    try { return JSON.parse(req.body); } catch (e) { return {}; } 
+  }
+  return {};
+}
+
 function dbMessage(body) {
   const b = Array.isArray(body) ? body[0] : body;
   return (b && b.message) || (typeof body === 'string' && body.slice(0, 200)) || 'Database error';
 }
 
-function parseBody(req) {
-  if (req.body && typeof req.body === 'object') return req.body;
-  if (typeof req.body === 'string') { try { return JSON.parse(req.body); } catch (e) { return {}; } }
-  return {};
-}
-
-// Returns { dish } or { error }
-function cleanDish(input) {
-  const d = input || {};
-  const name = String(d.name ?? '').trim();
-  const category = String(d.category ?? '').trim();
-  const price = Number(d.price);
-  if (!name || name.length > 80)           return { error: 'Dish name is required (max 80 characters)' };
-  if (!category || category.length > 60)   return { error: `Category is required for "${name}"` };
-  if (!Number.isInteger(price) || price < 0 || price > 100000)
-    return { error: `Price for "${name}" must be a whole number of rupees` };
-  return {
-    dish: {
-      name,
-      category,
-      price,
-      is_veg:    (d.isVeg ?? d.is_veg) === true,
-      available: d.available === false ? false : true,
-    },
-  };
-}
-
 export default async function handler(req, res) {
+  // CORS Configuration
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-owner-key');
   res.setHeader('Cache-Control', 'no-store');
+  
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // Extract the dish ID from the URL (e.g., /api/menu/94)
+  const { id } = req.query;
+  if (!id) return res.status(400).json({ error: 'Missing dish ID in request' });
 
   try {
     const problem = configProblem();
     if (problem) {
-      console.error('[/api/menu] Config error:', problem);
-      return res.status(500).json({ error: 'Server is not configured', detail: problem });
+      console.error('[/api/menu/[id]] Config error:', problem);
+      return res.status(500).json({ error: 'Server configuration error' });
     }
-    if (!isOwner(req)) return res.status(401).json({ error: 'Unauthorized' });
+    
+    // Secure the route
+    if (!isOwner(req)) return res.status(401).json({ error: 'Unauthorized access' });
 
-    /* ---------- GET ---------- */
-    if (req.method === 'GET') {
-      const qs = new URLSearchParams({
-        select: 'id,name,category,price,is_veg,available',
-        order:  'category.asc,name.asc',
-        limit:  '1000',
+    // Target the correct Supabase table
+    const tableName = 'menu_items';
+
+    /* ---------- PATCH (Edit/Update Dish) ---------- */
+    if (req.method === 'PATCH') {
+      const raw = parseBody(req);
+      const updates = {};
+      
+      // Map payload to database columns securely
+      if (raw.name !== undefined) {
+        updates.name = String(raw.name).trim();
+        if (!updates.name || updates.name.length > 80) return res.status(400).json({ error: 'Dish name must be 1-80 characters' });
+      }
+      if (raw.category !== undefined) {
+        updates.category = String(raw.category).trim();
+        if (!updates.category || updates.category.length > 60) return res.status(400).json({ error: 'Category is required (max 60 chars)' });
+      }
+      if (raw.price !== undefined) {
+        updates.price = Number(raw.price);
+        if (!Number.isInteger(updates.price) || updates.price < 0) return res.status(400).json({ error: 'Price must be a valid whole number' });
+      }
+      
+      // Handle booleans mapping to is_veg and is_available
+      if (raw.isVeg !== undefined) updates.is_veg = Boolean(raw.isVeg);
+      if (raw.is_veg !== undefined) updates.is_veg = Boolean(raw.is_veg);
+      
+      if (raw.available !== undefined) updates.is_available = Boolean(raw.available);
+      if (raw.is_available !== undefined) updates.is_available = Boolean(raw.is_available);
+
+      if (Object.keys(updates).length === 0) return res.status(400).json({ error: 'No valid fields provided to update' });
+
+      // Execute update query: UPDATE menu_items SET ... WHERE id = req.query.id
+      const r = await sb(`${tableName}?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body: JSON.stringify(updates)
       });
-      const r = await sb('menu?' + qs.toString());
+
       if (!r.ok) {
-        console.error('[GET /api/menu]', r.status, r.body);
+        console.error('[PATCH /api/menu/[id]] Error:', r.status, r.body);
         return res.status(500).json({ error: dbMessage(r.body) });
       }
-      return res.status(200).json(Array.isArray(r.body) ? r.body : []);
+      return res.status(200).json(Array.isArray(r.body) ? r.body[0] : r.body);
     }
 
-    /* ---------- POST (one or many) ---------- */
-    if (req.method === 'POST') {
-      const body = parseBody(req);
-      const bulk = Array.isArray(body.items);
-      const list = bulk ? body.items : [body];
+    /* ---------- DELETE (Remove Dish) ---------- */
+    if (req.method === 'DELETE') {
+      // Execute delete query: DELETE FROM menu_items WHERE id = req.query.id
+      const r = await sb(`${tableName}?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE'
+      });
 
-      if (list.length === 0)   return res.status(400).json({ error: 'Nothing to add' });
-      if (list.length > 500)   return res.status(400).json({ error: 'Add at most 500 dishes at a time' });
-
-      const dishes = [];
-      for (const raw of list) {
-        const c = cleanDish(raw);
-        if (c.error) return res.status(400).json({ error: c.error });
-        dishes.push(c.dish);
-      }
-
-      // Skip dishes whose name already exists (case-insensitive), also inside the batch.
-      const existing = await sb('menu?' + new URLSearchParams({ select: 'name', limit: '1000' }).toString());
-      if (!existing.ok) {
-        console.error('[POST /api/menu] lookup', existing.status, existing.body);
-        return res.status(500).json({ error: dbMessage(existing.body) });
-      }
-      const seen = new Set((existing.body || []).map(m => String(m.name).trim().toLowerCase()));
-      const fresh = [], skipped = [];
-      for (const d of dishes) {
-        const k = d.name.toLowerCase();
-        if (seen.has(k)) { skipped.push(d.name); continue; }
-        seen.add(k);
-        fresh.push(d);
-      }
-
-      if (!bulk && fresh.length === 0)
-        return res.status(409).json({ error: 'Dish already exists' });
-      if (fresh.length === 0)
-        return res.status(200).json({ added: 0, skipped });
-
-      const r = await sb('menu', { method: 'POST', body: JSON.stringify(fresh) });
       if (!r.ok) {
-        console.error('[POST /api/menu]', r.status, r.body);
-        const b = Array.isArray(r.body) ? r.body[0] : r.body;
-        if (b && b.code === '23505') return res.status(409).json({ error: 'Dish already exists' });
+        console.error('[DELETE /api/menu/[id]] Error:', r.status, r.body);
         return res.status(500).json({ error: dbMessage(r.body) });
       }
-
-      if (!bulk) return res.status(201).json(Array.isArray(r.body) ? r.body[0] : r.body);
-      return res.status(201).json({ added: fresh.length, skipped });
+      return res.status(200).json({ success: true, deleted_id: id });
     }
 
-    res.setHeader('Allow', 'GET,POST,OPTIONS');
+    // Reject any other methods
+    res.setHeader('Allow', 'PATCH,DELETE,OPTIONS');
     return res.status(405).json({ error: 'Method not allowed' });
+
   } catch (e) {
-    console.error('[/api/menu] Unexpected error:', e);
+    console.error('[/api/menu/[id]] Unexpected error:', e);
     return res.status(500).json({ error: 'Server error', detail: e.message });
   }
 }
