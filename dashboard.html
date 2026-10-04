@@ -4,18 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Big Bite · Owner Dashboard</title>
+  <meta name="robots" content="noindex,nofollow" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
   <script>
     tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] },
-        colors: { brand: { 50:'#fef2f2',100:'#fee2e2',500:'#ef4444',600:'#dc2626' } } } }
+      theme: { extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: { brand: {
+          50:'#fef2f2', 100:'#fee2e2', 200:'#fecaca', 500:'#ef4444', 600:'#dc2626', 700:'#b91c1c', 900:'#7f1d1d'
+        } }
+      } }
     };
   </script>
 
@@ -25,34 +30,42 @@
     ::-webkit-scrollbar-track { background:#f1f5f9; }
     ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
     ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
-    @keyframes slideIn  { from { transform:translateY(100%); opacity:0; } to { transform:translateY(0); opacity:1; } }
-    @keyframes fadeOut  { from { opacity:1; } to { opacity:0; } }
+    @keyframes slideIn { from { transform:translateY(100%); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
     .toast-enter { animation: slideIn 0.3s ease-out forwards; }
     .toast-exit  { animation: fadeOut 0.3s ease-out forwards; }
-    #loginScreen { display:flex; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline:2px solid #ef4444; outline-offset:2px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+    }
   </style>
 </head>
 
 <body class="min-h-screen antialiased font-sans">
 
 <!-- ============================================================
-     LOGIN / AUTH GATE
-     Owner opens: https://yoursite.vercel.app/dashboard.html?key=SECRET
-     The key is read from URL and sent as x-owner-key header on every request.
-     If missing or wrong, this screen is shown.
+     LOGIN SCREEN
+     Owner can open  /dashboard.html?key=SECRET  (key is saved on this device)
+     or just type the key here.
 ============================================================ -->
-<div id="loginScreen" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4 hidden">
+<div id="loginScreen" class="fixed inset-0 z-[999] bg-slate-100 items-center justify-center p-4" style="display:none">
   <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
     <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-red-500"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     </div>
-    <h2 class="text-xl font-black text-slate-900 mb-1">Owner Access Required</h2>
-    <p class="text-sm text-slate-500 mb-6">Open this page using your unique private dashboard link.</p>
-    <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 text-left mb-4">
-      <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Your link format</p>
-      <p class="text-xs font-mono text-slate-700 break-all">https://yourdomain.vercel.app/dashboard.html?key=<span class="text-red-500">YOUR_SECRET_KEY</span></p>
-    </div>
-    <p class="text-xs text-slate-400">Contact your developer if you lost your link.</p>
+    <h2 class="text-xl font-black text-slate-900 mb-1">Owner access required</h2>
+    <p class="text-sm text-slate-500 mb-6">Enter your private dashboard key to continue.</p>
+    <form id="loginForm" class="text-left">
+      <label for="keyInput" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dashboard key</label>
+      <input id="keyInput" type="password" autocomplete="current-password" required
+        class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm"
+        placeholder="Paste your key" />
+      <p id="loginError" class="text-xs font-semibold text-red-500 mt-2 min-h-[1rem]"></p>
+      <button type="submit" class="w-full mt-3 bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
+        Open dashboard
+      </button>
+    </form>
+    <p class="text-xs text-slate-400 mt-5">Lost your key? Contact your developer.</p>
   </div>
 </div>
 
@@ -60,7 +73,7 @@
 <!-- ============================================================
      MAIN DASHBOARD
 ============================================================ -->
-<div id="dashboardApp" class="hidden min-h-screen p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+<div id="dashboardApp" class="min-h-screen p-4 md:p-6 lg:p-8 flex-col gap-6" style="display:none">
 
   <!-- Header -->
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
@@ -76,30 +89,32 @@
         </span>
       </div>
     </div>
-    <div class="flex items-center gap-3">
-      <!-- Auto-refresh indicator -->
-      <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-        <span id="refreshDot" class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="refreshLabel">Live</span>
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium" aria-live="polite">
+        <span id="refreshDot" class="h-2 w-2 rounded-full bg-slate-300"></span>
+        <span id="refreshLabel">Connecting&hellip;</span>
       </div>
+      <button id="soundBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors" title="Play a sound when a new order arrives">
+        &#128276; Sound on
+      </button>
+      <button id="logoutBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors">
+        Log out
+      </button>
       <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">
         Powered by <span class="text-slate-600">Webtizo Studio</span>
-      </div>
-      <div class="h-8 w-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
     </div>
   </header>
 
   <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <!-- ── ROW 1: Stats Cards ── -->
+    <!-- Stats cards -->
     <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
 
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
-        <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&mdash;</div>
-        <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 s</div>
+        <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&nbsp;&mdash;</div>
+        <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 seconds</div>
       </div>
 
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -118,14 +133,16 @@
       </div>
     </div>
 
-    <!-- ── ROW 2 Col 1: Live Orders (2/3 width) ── -->
+    <!-- Live orders -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg font-bold text-slate-900">Incoming Orders</h2>
-        <button onclick="loadOrders()" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">Refresh</button>
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          Incoming Orders
+          <span id="orderCount" class="hidden text-xs font-bold bg-brand-500 text-white rounded-full px-2 py-0.5">0</span>
+        </h2>
+        <button id="refreshOrdersBtn" type="button" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">Refresh</button>
       </div>
       <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="live-orders-container">
-        <!-- orders rendered by JS -->
         <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
           <div class="w-8 h-8 border-2 border-slate-200 border-t-brand-500 rounded-full animate-spin mb-4"></div>
           <p class="text-sm font-medium">Loading orders&hellip;</p>
@@ -133,36 +150,35 @@
       </div>
     </div>
 
-    <!-- ── ROW 2 Col 2: Revenue Chart ── -->
+    <!-- Revenue chart -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
       <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
-      <div class="flex-1 relative">
+      <div class="flex-1 relative min-h-0">
         <canvas id="revenueChart"></canvas>
       </div>
     </div>
 
-    <!-- ── ROW 3 Col 1: Menu Configuration (2/3 width) ── -->
+    <!-- Menu configuration -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
 
-      <!-- Add Item Form -->
-      <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end" onsubmit="addMenuItem(event)">
+      <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1 w-full">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
-          <input type="text" id="dishName" required
+          <label for="dishName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
+          <input type="text" id="dishName" required maxlength="80"
             class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
             placeholder="e.g. Tandoori Chicken" />
         </div>
         <div class="w-full md:w-32">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
-          <input type="number" id="dishPrice" min="0" required
+          <label for="dishPrice" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
+          <input type="number" id="dishPrice" min="0" step="1" required inputmode="numeric"
             class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
             placeholder="0" />
         </div>
         <div class="w-full md:w-48">
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
+          <label for="dishCategory" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
           <select id="dishCategory"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm appearance-none">
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm">
             <option>Soups</option>
             <option>Salads</option>
             <option>Veg Starters</option>
@@ -194,23 +210,29 @@
           <label class="flex items-center cursor-pointer gap-3 select-none">
             <div class="relative">
               <input type="checkbox" id="vegToggle" class="sr-only" />
-              <div class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner"></div>
-              <div id="vegDot" class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-transform duration-200 shadow-sm"></div>
+              <div id="vegTrack" class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner transition-colors"></div>
+              <div id="vegDot" class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-all duration-200 shadow-sm"></div>
             </div>
             <span class="text-xs font-bold text-slate-500 uppercase" id="vegLabel">Non-Veg</span>
           </label>
         </div>
         <div class="w-full md:w-auto">
-          <button type="submit" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
-            ADD ITEM
+          <button type="submit" id="addBtn" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors disabled:opacity-60">
+            Add item
           </button>
         </div>
       </form>
 
-      <!-- Menu Table -->
-      <div class="overflow-x-auto rounded-lg border border-slate-200">
+      <!-- Search -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+        <input type="search" id="menuSearch" placeholder="Search dish or category&hellip;"
+          class="w-full sm:w-72 bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm" />
+        <span id="menuCount" class="text-xs font-semibold text-slate-400"></span>
+      </div>
+
+      <div class="overflow-x-auto rounded-lg border border-slate-200 max-h-[520px] overflow-y-auto">
         <table class="w-full text-left text-sm text-slate-600">
-          <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
+          <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0">
             <tr>
               <th class="px-5 py-4">Dish Name</th>
               <th class="px-5 py-4">Category</th>
@@ -220,16 +242,14 @@
             </tr>
           </thead>
           <tbody id="menu-table-body" class="divide-y divide-slate-100">
-            <tr>
-              <td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td>
-            </tr>
+            <tr><td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── ROW 3 Col 2: Top Sellers ── -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1">
+    <!-- Top sellers -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 self-start">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
       <div class="space-y-3" id="top-sellers">
         <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
@@ -240,116 +260,256 @@
 </div>
 
 
-<!-- Toast Container -->
-<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+<!-- ── Edit dish modal ── -->
+<div id="editModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4" style="display:none">
+  <form id="editForm" class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+    <h3 class="text-lg font-bold text-slate-900 mb-4">Edit dish</h3>
+    <label for="editName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish name</label>
+    <input id="editName" type="text" required maxlength="80"
+      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
+    <label for="editPrice" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
+    <input id="editPrice" type="number" min="0" step="1" required
+      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-6 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
+    <div class="flex gap-3">
+      <button type="button" data-close="editModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+      <button type="submit" id="editSaveBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60">Save changes</button>
+    </div>
+  </form>
+</div>
+
+<!-- ── Delete confirm modal ── -->
+<div id="deleteModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4" style="display:none">
+  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Delete this dish?</h3>
+    <p class="text-sm text-slate-500 mb-6" id="deleteText"></p>
+    <div class="flex gap-3">
+      <button type="button" data-close="deleteModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Keep it</button>
+      <button type="button" id="deleteConfirmBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60">Delete dish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3"></div>
 
 
 <script>
 "use strict";
 
 /* ============================================================
-   BACKEND CONFIG
+   CONFIG
    ──────────────────────────────────────────────────────────
-   API_BASE   : Leave empty if frontend & backend on same domain.
-                Set to "https://yourapp.vercel.app" for separate deploy.
+   API_BASE : leave "" when this page and your /api routes are on
+              the same Vercel project. If they are on different
+              domains, set e.g. "https://yourapi.vercel.app" and
+              enable CORS (allow header x-owner-key + methods
+              GET, POST, PATCH, DELETE, OPTIONS) on the API.
 
-   OWNER AUTH : The owner opens dashboard.html?key=SECRET_KEY
-                The key is sent as the x-owner-key header on every
-                API request. Your backend must validate it.
-                Generate your key: crypto.randomUUID() in browser console,
-                or use any random string (32+ chars).
-
-   REFRESH    : Intervals in ms for auto-polling.
-
-   API ENDPOINTS USED:
-     GET    /api/orders            — list pending orders (auth required)
-     PATCH  /api/orders/:id        — update order status (auth required)
-     GET    /api/stats             — dashboard stats    (auth required)
-     GET    /api/menu              — list menu items    (auth required)
-     POST   /api/menu              — add menu item      (auth required)
-     PATCH  /api/menu/:id          — edit menu item     (auth required)
-     DELETE /api/menu/:id          — delete menu item   (auth required)
-
-   PATCH /api/orders/:id body:    { status: "preparing"|"cancelled" }
-   POST  /api/menu body:          { name, price, category, isVeg }
-   PATCH /api/menu/:id body:      { name?, price? }
+   API ENDPOINTS USED (all need header x-owner-key):
+     GET    /api/orders       GET   /api/stats
+     PATCH  /api/orders/:id   body { status: "preparing" | "cancelled" | "served" }
+     GET    /api/menu         POST  /api/menu        body { name, price, category, isVeg }
+     PATCH  /api/menu/:id     body { name, price }
+     DELETE /api/menu/:id
 ============================================================ */
 const CONFIG = {
-  API_BASE:            "",     // ← "https://yourapi.vercel.app" if separate
-  ORDERS_POLL_MS:      5000,   // how often to refresh incoming orders
-  STATS_POLL_MS:       15000,  // how often to refresh stats & chart
+  API_BASE:       "",
+  ORDERS_POLL_MS: 5000,
+  STATS_POLL_MS:  15000,
+  TIMEOUT_MS:     12000,
 };
 
 /* ============================================================
-   AUTH: read key from URL ?key=
-   Owner bookmark: https://yourdomain.vercel.app/dashboard.html?key=SECRET
-============================================================ */
-const KEY = new URLSearchParams(location.search).get('key') || '';
-
-if (!KEY) {
-  document.getElementById('loginScreen').style.display = 'flex';
-} else {
-  document.getElementById('dashboardApp').classList.remove('hidden');
-}
-
-/* ============================================================
-   API HELPER
-   Returns: { ok: true/false, data: parsed JSON, status: HTTP status }
-============================================================ */
-async function api(path, opt = {}) {
-  try {
-    const res = await fetch(CONFIG.API_BASE + path, {
-      ...opt,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-owner-key':  KEY,
-        ...(opt.headers || {}),
-      },
-    });
-    const data = await res.json().catch(() => ({}));
-    return { ok: res.ok, status: res.status, data };
-  } catch (e) {
-    console.error('[API]', path, e);
-    return { ok: false, status: 0, data: {} };
-  }
-}
-
-/* ============================================================
-   HELPERS
+   SMALL HELPERS
 ============================================================ */
 const $     = id => document.getElementById(id);
 const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
 const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
-  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const store = {
+  get(k)    { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+  del(k)    { try { localStorage.removeItem(k); } catch (e) {} },
+};
 
 function timeAgo(iso) {
-  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  const t = new Date(iso).getTime();
+  if (!iso || isNaN(t)) return '';
+  const m = Math.max(0, Math.floor((Date.now() - t) / 60000));
   if (m < 1)  return 'Just now';
   if (m < 60) return m + ' min ago';
-  return Math.floor(m / 60) + ' hr ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' hr ago';
+  return Math.floor(h / 24) + ' d ago';
+}
+
+/* ============================================================
+   AUTH  (key from ?key= in the URL, saved on this device)
+============================================================ */
+const KEY_STORE = 'bigbite_owner_key';
+let KEY = '';
+
+(function readKey() {
+  const urlKey = new URLSearchParams(location.search).get('key');
+  if (urlKey) {
+    KEY = urlKey;
+    // Save it and remove it from the address bar / history if saving worked.
+    if (store.set(KEY_STORE, urlKey) && store.get(KEY_STORE) === urlKey) {
+      history.replaceState(null, '', location.pathname + location.hash);
+    }
+  } else {
+    KEY = store.get(KEY_STORE) || '';
+  }
+})();
+
+let timers = [];
+function stopPolling() { timers.forEach(clearInterval); timers = []; }
+
+function showLogin(msg) {
+  stopPolling();
+  $('dashboardApp').style.display = 'none';
+  $('loginScreen').style.display  = 'flex';
+  $('loginError').textContent     = msg || '';
+  $('keyInput').value = '';
+  setTimeout(() => $('keyInput').focus(), 50);
+}
+
+function handleAuthFail(usedKey) {
+  if (!KEY || usedKey !== KEY) return;      // ignore stale responses
+  KEY = '';
+  store.del(KEY_STORE);
+  knownOrderIds = null;
+  showLogin('That key is invalid or has expired. Enter the correct key.');
+}
+
+$('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const k = $('keyInput').value.trim();
+  if (!k) return;
+  KEY = k;
+  store.set(KEY_STORE, k);
+  startApp();
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  KEY = '';
+  store.del(KEY_STORE);
+  knownOrderIds = null;
+  showLogin('You have been logged out.');
+});
+
+/* ============================================================
+   API HELPER  →  { ok, status, data }
+============================================================ */
+async function api(path, opt = {}) {
+  const usedKey = KEY;
+  const ctrl = new AbortController();
+  const timeout = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT_MS);
+  try {
+    const res = await fetch(CONFIG.API_BASE + path, {
+      ...opt,
+      signal: ctrl.signal,
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-owner-key': usedKey,
+        ...(opt.headers || {}),
+      },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401 || res.status === 403) handleAuthFail(usedKey);
+    else setConn(res.ok ? 'live' : 'error');
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    console.error('[API]', path, e);
+    setConn('offline');
+    return { ok: false, status: 0, data: {} };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/* Connection indicator */
+function setConn(state) {
+  const dot = $('refreshDot'), label = $('refreshLabel');
+  if (!dot || !label) return;
+  if (state === 'live') {
+    dot.className = 'h-2 w-2 rounded-full bg-emerald-400 animate-pulse';
+    label.textContent = 'Live · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } else if (state === 'offline') {
+    dot.className = 'h-2 w-2 rounded-full bg-red-500';
+    label.textContent = 'Offline · retrying';
+  } else {
+    dot.className = 'h-2 w-2 rounded-full bg-amber-400';
+    label.textContent = 'Server error · retrying';
+  }
 }
 
 /* ============================================================
    TOAST
 ============================================================ */
 function showToast(message, type = 'success') {
-  const container  = $('toast-container');
-  const isSuccess  = type === 'success';
-  const iconSvg    = isSuccess
+  const container = $('toast-container');
+  const ok = type === 'success';
+  const icon = ok
     ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
     : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-  const iconCls  = isSuccess ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50';
-  const bordrCls = isSuccess ? 'border-emerald-200'             : 'border-red-200';
 
   const toast = document.createElement('div');
-  toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${bordrCls} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
-  toast.innerHTML = `<div class="${iconCls} p-1 rounded-full">${iconSvg}</div><div>${esc(message)}</div>`;
+  toast.setAttribute('role', 'status');
+  toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${ok ? 'border-emerald-200' : 'border-red-200'} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
+  toast.innerHTML = `<div class="${ok ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50'} p-1 rounded-full">${icon}</div><div>${esc(message)}</div>`;
   container.appendChild(toast);
   setTimeout(() => {
     toast.classList.replace('toast-enter', 'toast-exit');
-    setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 300);
-  }, 3000);
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
 }
+
+/* ============================================================
+   SOUND  (browsers only allow audio after a click, so we keep
+   an AudioContext that is unlocked by the first interaction)
+============================================================ */
+let audioCtx = null;
+let soundOn  = store.get('bigbite_sound') !== 'off';
+
+function getAudio() {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch (e) { audioCtx = null; }
+  return audioCtx;
+}
+
+function beep() {
+  if (!soundOn) return;
+  const ctx = getAudio();
+  if (!ctx) return;
+  const t0 = ctx.currentTime;
+  [880, 1175].forEach((freq, i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain(), s = t0 + i * 0.2;
+    o.type = 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, s);
+    g.gain.exponentialRampToValueAtTime(0.25, s + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + 0.18);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(s); o.stop(s + 0.2);
+  });
+}
+
+function paintSoundBtn() {
+  $('soundBtn').innerHTML = soundOn ? '&#128276; Sound on' : '&#128263; Sound off';
+}
+$('soundBtn').addEventListener('click', () => {
+  soundOn = !soundOn;
+  store.set('bigbite_sound', soundOn ? 'on' : 'off');
+  paintSoundBtn();
+  if (soundOn) beep();
+});
+document.addEventListener('click', () => { if (soundOn) getAudio(); }, { once: true });
+paintSoundBtn();
 
 /* ============================================================
    LIVE ORDERS
@@ -360,130 +520,241 @@ const EMPTY_ORDERS = `
     <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
   </div>`;
 
+/* Accept both camelCase and snake_case from the API, and a JSON-string "items". */
+function normOrder(o) {
+  let items = o.items;
+  if (typeof items === 'string') { try { items = JSON.parse(items); } catch (e) { items = []; } }
+  if (!Array.isArray(items)) items = [];
+  items = items.map(i => ({
+    name:       i.name ?? 'Item',
+    qty:        Number(i.qty ?? i.quantity ?? 1) || 1,
+    price:      Number(i.price ?? 0) || 0,
+    veg:        i.veg ?? i.isVeg ?? i.is_veg,
+    size:       i.size,
+    extraCheese:i.extraCheese ?? i.extra_cheese,
+  }));
+  const computed = items.reduce((sum, i) => sum + i.price * i.qty, 0);
+  return {
+    id:        o.id,
+    table:     o.table ?? o.table_no ?? '?',
+    orderNo:   o.orderNo ?? o.order_no ?? '',
+    createdAt: o.createdAt ?? o.created_at ?? '',
+    total:     o.total ?? computed,
+    note:      o.note ?? o.notes ?? '',
+    status:    String(o.status || 'pending').toLowerCase(),
+    items,
+  };
+}
+
+const pendingActions = new Set();   // order ids currently being updated
+
 function renderOrder(o) {
+  const id = String(o.id);
+  const busy = pendingActions.has(id);
+  const preparing = o.status === 'preparing';
+
   const itemsHtml = o.items.map(i => {
     const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
     const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
-    return `<li class="flex justify-between">
+    return `<li class="flex justify-between gap-3">
       <span class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full ${dot}"></span>
-        ${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}
+        <span>${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}</span>
       </span>
-      <span class="text-slate-500">${money(i.price * i.qty)}</span>
+      <span class="text-slate-500 whitespace-nowrap">${money(i.price * i.qty)}</span>
     </li>`;
-  }).join('');
+  }).join('') || '<li class="text-slate-400">No item details</li>';
 
   const noteHtml = o.note
     ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
     : '<div class="mb-2"></div>';
 
-  return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-${o.id}">
-    <div class="flex justify-between items-start mb-4">
-      <div class="flex items-center gap-3">
-        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${String(o.table ?? o.table_no ?? '?').padStart(2,'0')}</span>
-        <span class="text-xs font-medium text-slate-500">#${esc(String(( o.orderNo ?? o.order_no)))} &middot; ${timeAgo((o.createdAt ?? o.created_at))}</span>
+  const actions = preparing
+    ? `<button data-act="served" data-id="${esc(id)}" data-table="${esc(o.table)}"
+         class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
+         &#127869;&#65039; Mark served
+       </button>`
+    : `<button data-act="preparing" data-id="${esc(id)}" data-table="${esc(o.table)}"
+         class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
+         &#10003; Accept
+       </button>
+       <button data-act="cancelled" data-id="${esc(id)}" data-table="${esc(o.table)}"
+         class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer">
+         Decline
+       </button>
+       <button data-act="served" data-id="${esc(id)}" data-table="${esc(o.table)}" title="Mark served" aria-label="Mark served"
+         class="px-3 bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer">
+         &#127869;&#65039;
+       </button>`;
+
+  return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm ${busy ? 'opacity-50 pointer-events-none' : ''}" id="order-${esc(id)}">
+    <div class="flex justify-between items-start mb-4 gap-3">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${esc(String(o.table).padStart(2, '0'))}</span>
+        ${preparing ? '<span class="bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">PREPARING</span>' : ''}
+        <span class="text-xs font-medium text-slate-500">${o.orderNo !== '' ? '#' + esc(o.orderNo) + ' &middot; ' : ''}<span class="time-ago" data-t="${esc(o.createdAt)}">${esc(timeAgo(o.createdAt))}</span></span>
       </div>
-      <span class="text-sm font-extrabold text-slate-900">${money(o.total)}</span>
+      <span class="text-sm font-extrabold text-slate-900 whitespace-nowrap">${money(o.total)}</span>
     </div>
     <ul class="text-sm text-slate-700 space-y-2 mb-3 font-medium">${itemsHtml}</ul>
     ${noteHtml}
-    <div class="flex gap-3">
-      <button onclick="handleOrderAction('${esc(String(o.id))}','preparing','${esc(String(o.table ?? o.table_no ?? 0))}')"
-        class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
-        &#10003; Accept
-      </button>
-      <button onclick="handleOrderAction('${esc(String(o.id))}','cancelled','${esc(String(o.table ?? o.table_no ?? 0))}')"
-        class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer">
-        Decline
-      </button>
-      <button onclick="handleOrderAction('${esc(String(o.id))}','served','${esc(String(o.table ?? o.table_no ?? 0))}')"
-        class="px-3 bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer" title="Mark Served">
-        &#127869;&#65039;
-      </button>
-    </div>
+    <div class="flex gap-3">${actions}</div>
   </div>`;
 }
 
 let knownOrderIds = null;
-let shownAuthError = false;
+let lastOrdersSig = '';
+let ordersSeq = 0;
 
-async function loadOrders() {
-  const { ok, status, data } = await api('/api/orders');
+async function loadOrders(force = false) {
+  if (!KEY) return;
+  const seq = ++ordersSeq;
+  const { ok, data } = await api('/api/orders');
+  if (seq !== ordersSeq || !ok) return;           // stale or failed
 
-  if (!ok) {
-    if (status === 401 || status === 403) {
-      if (!shownAuthError) {
-        showToast('Invalid or expired dashboard key', 'error');
-        shownAuthError = true;
-      }
-    }
-    return;
+  const list = Array.isArray(data) ? data : (Array.isArray(data.orders) ? data.orders : null);
+  if (!list) return;
+
+  const orders = list.map(normOrder).filter(o => o.id !== undefined && o.id !== null);
+
+  // Only touch the DOM when something changed (avoids flicker / lost hover).
+  const sig = JSON.stringify(orders) + [...pendingActions].join(',');
+  if (force || sig !== lastOrdersSig) {
+    $('live-orders-container').innerHTML = orders.length ? orders.map(renderOrder).join('') : EMPTY_ORDERS;
+    lastOrdersSig = sig;
   }
 
-  if (!Array.isArray(data)) return;
+  // Badge + tab title
+  const waiting = orders.filter(o => o.status === 'pending').length;
+  const badge = $('orderCount');
+  badge.textContent = orders.length;
+  badge.classList.toggle('hidden', orders.length === 0);
+  document.title = (waiting ? `(${waiting}) ` : '') + 'Big Bite · Owner Dashboard';
 
-  const container = $('live-orders-container');
-  container.innerHTML = data.length ? data.map(renderOrder).join('') : EMPTY_ORDERS;
-
-  // New-order notification
-  const ids = new Set(data.map(o => String(o.id)));
+  // New-order alert
+  const ids = new Set(orders.map(o => String(o.id)));
   if (knownOrderIds) {
-    const fresh = data.filter(o => !knownOrderIds.has(String(o.id)));
+    const fresh = orders.filter(o => !knownOrderIds.has(String(o.id)));
     if (fresh.length) {
-      showToast(`&#127381; New order from Table ${fresh[0].table}!`);
-      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA==').play().catch(()=>{}); } catch(e) {}
+      showToast(fresh.length > 1
+        ? `\u{1F195} ${fresh.length} new orders!`
+        : `\u{1F195} New order from Table ${fresh[0].table}!`);
+      beep();
     }
   }
   knownOrderIds = ids;
 }
 
 async function handleOrderAction(orderId, status, tableLabel) {
+  if (pendingActions.has(orderId)) return;
+  pendingActions.add(orderId);
   const el = $('order-' + orderId);
-  if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+  if (el) el.classList.add('opacity-50', 'pointer-events-none');
 
-  const { ok } = await api('/api/orders/' + orderId, {
+  const { ok, data } = await api('/api/orders/' + encodeURIComponent(orderId), {
     method: 'PATCH',
-    body:   JSON.stringify({ status }),
+    body: JSON.stringify({ status }),
   });
+  pendingActions.delete(orderId);
 
   if (ok) {
-    const msg = status === 'preparing'
-      ? `Table ${tableLabel} — order accepted ✓`
-      : status === 'served'
-      ? `Table ${tableLabel} — marked as served &#127869;&#65039;`
-      : `Table ${tableLabel} — order declined`;
+    const msg = status === 'preparing' ? `Table ${tableLabel} — order accepted`
+              : status === 'served'    ? `Table ${tableLabel} — marked as served`
+              :                          `Table ${tableLabel} — order declined`;
     showToast(msg, status === 'cancelled' ? 'error' : 'success');
-    await loadOrders();
+    await loadOrders(true);
     loadStats();
   } else {
-    if (el) { el.style.opacity = '1'; el.style.pointerEvents = ''; }
-    showToast('Could not update order — try again', 'error');
+    if (el) el.classList.remove('opacity-50', 'pointer-events-none');
+    if (KEY) showToast(data && data.error ? String(data.error) : 'Could not update order — try again', 'error');
   }
+}
+
+$('live-orders-container').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  handleOrderAction(btn.dataset.id, btn.dataset.act, btn.dataset.table);
+});
+$('refreshOrdersBtn').addEventListener('click', () => loadOrders(true));
+
+/* keep "x min ago" labels fresh between polls */
+function tickTimes() {
+  document.querySelectorAll('.time-ago').forEach(el => { el.textContent = timeAgo(el.dataset.t); });
 }
 
 /* ============================================================
    STATS + CHART
 ============================================================ */
-let revenueChart;
+let revenueChart = null;
+
+function initChart() {
+  const ctx = $('revenueChart').getContext('2d');
+  revenueChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Revenue (\u20B9)',
+        data: [],
+        backgroundColor: c => {
+          const area = c.chart.chartArea;
+          if (!area) return 'rgba(239,68,68,0.8)';
+          const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+          g.addColorStop(0, 'rgba(239,68,68,0.85)');
+          g.addColorStop(1, 'rgba(239,68,68,0.1)');
+          return g;
+        },
+        borderColor: 'rgba(239,68,68,1)',
+        borderWidth: 1,
+        borderRadius: 6,
+        maxBarThickness: 45,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
+          borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
+          titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
+          callbacks: { label: c => '\u20B9 ' + Number(c.parsed.y).toLocaleString('en-IN') },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true, grid: { color: '#f1f5f9' },
+          ticks: {
+            color: '#64748b', font: { weight: '600' },
+            callback: v => '\u20B9' + (v >= 1000 ? (+(v / 1000).toFixed(1)) + 'k' : v),
+          },
+        },
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
+      },
+      animation: { duration: 800, easing: 'easeOutQuart' },
+    },
+  });
+}
+
+const fmtShort = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
 
 async function loadStats() {
+  if (!KEY) return;
   const { ok, data: s } = await api('/api/stats');
-  if (!ok || s.error) return;
+  if (!ok || !s || s.error) return;
 
-  $('today-sales').textContent      = money(s.todaySales);
-  $('active-order-count').textContent = s.activeOrders;
-  $('items-served').textContent     = s.itemsServed;
-  $('completed-text').textContent   = `Across ${s.completedOrders} completed orders`;
+  $('today-sales').textContent        = money(s.todaySales);
+  $('active-order-count').textContent = s.activeOrders ?? 0;
+  $('items-served').textContent       = s.itemsServed ?? 0;
+  $('completed-text').textContent     = `Across ${s.completedOrders ?? 0} completed orders`;
 
-  // Chart
-  if (revenueChart && s.revenue) {
-    revenueChart.data.labels              = s.revenue.labels;
-    revenueChart.data.datasets[0].data    = s.revenue.values;
+  if (revenueChart && s.revenue && Array.isArray(s.revenue.labels)) {
+    revenueChart.data.labels           = s.revenue.labels;
+    revenueChart.data.datasets[0].data = s.revenue.values || [];
     revenueChart.update();
   }
 
-  // Top sellers
-  const fmt = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
   if (Array.isArray(s.topSellers)) {
     $('top-sellers').innerHTML = s.topSellers.length
       ? s.topSellers.map((t, i) => i === 0
@@ -491,12 +762,12 @@ async function loadStats() {
                <div class="flex items-center gap-4">
                  <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-sm font-bold text-white">1</div>
                  <span class="text-sm font-bold text-brand-900">${esc(t.name)}</span></div>
-               <span class="text-sm font-extrabold text-brand-600">${fmt(t.revenue)}</span></div>`
+               <span class="text-sm font-extrabold text-brand-600">${fmtShort(t.revenue)}</span></div>`
           : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
                <div class="flex items-center gap-4">
-                 <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i+1}</div>
+                 <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i + 1}</div>
                  <span class="text-sm font-bold text-slate-700">${esc(t.name)}</span></div>
-               <span class="text-sm font-semibold text-slate-500">${fmt(t.revenue)}</span></div>`
+               <span class="text-sm font-semibold text-slate-500">${fmtShort(t.revenue)}</span></div>`
         ).join('')
       : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
   }
@@ -505,155 +776,180 @@ async function loadStats() {
 /* ============================================================
    MENU
 ============================================================ */
-const vegToggle = () => $('vegToggle');
-const vegDot    = () => $('vegDot');
-const vegLabel  = () => $('vegLabel');
+function setVegUI(isVeg) {
+  $('vegToggle').checked = isVeg;
+  $('vegDot').style.transform = isVeg ? 'translateX(16px)' : 'translateX(0)';
+  $('vegDot').classList.toggle('bg-green-500', isVeg);
+  $('vegDot').classList.toggle('bg-red-500', !isVeg);
+  $('vegTrack').classList.toggle('bg-green-100', isVeg);
+  $('vegTrack').classList.toggle('bg-slate-200', !isVeg);
+  $('vegLabel').textContent = isVeg ? 'Veg' : 'Non-Veg';
+  $('vegLabel').classList.toggle('text-emerald-600', isVeg);
+  $('vegLabel').classList.toggle('text-slate-500', !isVeg);
+}
+$('vegToggle').addEventListener('change', e => setVegUI(e.target.checked));
 
-document.addEventListener('DOMContentLoaded', () => {
-  $('vegToggle').addEventListener('change', function () {
-    if (this.checked) {
-      vegDot().style.transform = 'translateX(100%)';
-      vegDot().classList.replace('bg-red-500','bg-green-500');
-      vegLabel().textContent = 'Veg';
-      vegLabel().classList.add('text-emerald-600');
-      vegLabel().classList.remove('text-slate-500');
-    } else {
-      vegDot().style.transform = 'translateX(0)';
-      vegDot().classList.replace('bg-green-500','bg-red-500');
-      vegLabel().textContent = 'Non-Veg';
-      vegLabel().classList.add('text-slate-500');
-      vegLabel().classList.remove('text-emerald-600');
-    }
-  });
-});
+let menuItems = [];
+const menuById = new Map();
+const isVegItem = m => (m.is_veg ?? m.isVeg) === true;
 
-let menuCache = {};
+function renderMenu() {
+  const q = $('menuSearch').value.trim().toLowerCase();
+  const rows = q
+    ? menuItems.filter(m => String(m.name).toLowerCase().includes(q) || String(m.category).toLowerCase().includes(q))
+    : menuItems;
 
-async function loadMenu() {
-  const { ok, data } = await api('/api/menu');
-  if (!ok || !Array.isArray(data)) {
-    $('menu-table-body').innerHTML = '<tr><td colspan="5" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu.</td></tr>';
-    return;
-  }
-  menuCache = Object.fromEntries(data.map(m => [m.id, m]));
-  $('menu-table-body').innerHTML = data.length
-    ? data.map(m => `
+  $('menuCount').textContent = q ? `${rows.length} of ${menuItems.length} dishes` : `${menuItems.length} dishes`;
+
+  $('menu-table-body').innerHTML = rows.length
+    ? rows.map(m => `
         <tr class="hover:bg-slate-50 transition-colors">
           <td class="px-5 py-4 font-bold text-slate-900">${esc(m.name)}</td>
           <td class="px-5 py-4 font-medium text-slate-600">${esc(m.category)}</td>
-          <td class="px-5 py-4 font-medium">
-            <span class="inline-block w-2.5 h-2.5 rounded-full ${m.is_veg ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>
-            ${m.is_veg ? 'Veg' : 'Non-Veg'}
+          <td class="px-5 py-4 font-medium whitespace-nowrap">
+            <span class="inline-block w-2.5 h-2.5 rounded-full ${isVegItem(m) ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>${isVegItem(m) ? 'Veg' : 'Non-Veg'}
           </td>
-          <td class="px-5 py-4 font-bold text-slate-900">${money(m.price)}</td>
-          <td class="px-5 py-4 text-right">
-            <button onclick="editMenuItem(${m.id})"
-              class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors cursor-pointer">
-              Edit
-            </button>
-            <button onclick="deleteMenuItem(${m.id})"
-              class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">
-              Delete
-            </button>
+          <td class="px-5 py-4 font-bold text-slate-900 whitespace-nowrap">${money(m.price)}</td>
+          <td class="px-5 py-4 text-right whitespace-nowrap">
+            <button data-act="edit" data-id="${esc(m.id)}"
+              class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors cursor-pointer">Edit</button>
+            <button data-act="delete" data-id="${esc(m.id)}"
+              class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">Delete</button>
           </td>
         </tr>`).join('')
-    : '<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">No menu items yet. Add one above.</td></tr>';
+    : `<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? 'No dishes match your search.' : 'No menu items yet. Add one above.'}</td></tr>`;
 }
 
-async function addMenuItem(e) {
+async function loadMenu() {
+  if (!KEY) return;
+  const { ok, data } = await api('/api/menu');
+  const list = Array.isArray(data) ? data : (data && Array.isArray(data.menu) ? data.menu : null);
+  if (!ok || !list) {
+    if (KEY) $('menu-table-body').innerHTML = '<tr><td colspan="5" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
+    return;
+  }
+  menuItems = list;
+  menuById.clear();
+  list.forEach(m => menuById.set(String(m.id), m));
+  renderMenu();
+}
+
+$('menuSearch').addEventListener('input', renderMenu);
+
+/* Add dish */
+$('add-menu-form').addEventListener('submit', async e => {
   e.preventDefault();
+  const btn = $('addBtn');
   const body = {
     name:     $('dishName').value.trim(),
     price:    Number($('dishPrice').value),
     category: $('dishCategory').value,
     isVeg:    $('vegToggle').checked,
   };
+  if (!body.name) return showToast('Enter a dish name', 'error');
+  if (!Number.isFinite(body.price) || body.price < 0) return showToast('Enter a valid price', 'error');
+
+  btn.disabled = true;
   const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
+  btn.disabled = false;
+
   if (!ok) {
-    const msg = (data.error || '').includes('duplicate') ? 'Dish already exists' : (data.error || 'Could not add dish');
-    return showToast(msg, 'error');
+    const err = String((data && data.error) || '');
+    return showToast(/duplicate|exists|unique/i.test(err) ? 'This dish already exists' : (err || 'Could not add dish'), 'error');
   }
   $('add-menu-form').reset();
-  $('vegToggle').checked = false;
-  $('vegToggle').dispatchEvent(new Event('change'));
-  showToast(`"${body.name}" added to menu!`);
+  setVegUI(false);
+  showToast(`"${body.name}" added to menu`);
   loadMenu();
-}
+});
 
-async function editMenuItem(id) {
-  const m = menuCache[id];
-  if (!m) return;
-  const name  = prompt('Dish name:', m.name);  if (name  === null) return;
-  const price = prompt('Price (\u20B9):', m.price); if (price === null) return;
-  const { ok } = await api('/api/menu/' + id, { method: 'PATCH', body: JSON.stringify({ name, price: Number(price) }) });
-  if (ok) { showToast('Menu item updated.'); loadMenu(); }
-  else showToast('Could not update item', 'error');
-}
+/* Menu table buttons (event delegation) */
+let editingId = null, deletingId = null;
 
-async function deleteMenuItem(id) {
-  const m = menuCache[id];
+$('menu-table-body').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const m = menuById.get(btn.dataset.id);
   if (!m) return;
-  if (!confirm(`Delete "${m.name}" from the menu?`)) return;
-  const { ok } = await api('/api/menu/' + id, { method: 'DELETE' });
-  if (ok) { showToast(`"${m.name}" removed.`); loadMenu(); }
-  else showToast('Could not delete item', 'error');
-}
+  if (btn.dataset.act === 'edit') {
+    editingId = String(m.id);
+    $('editName').value  = m.name;
+    $('editPrice').value = m.price;
+    openModal('editModal');
+    setTimeout(() => $('editName').focus(), 50);
+  } else {
+    deletingId = String(m.id);
+    $('deleteText').textContent = `"${m.name}" will be removed from the menu. This can't be undone.`;
+    openModal('deleteModal');
+  }
+});
+
+/* Edit dish */
+$('editForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = $('editName').value.trim();
+  const price = Number($('editPrice').value);
+  if (!name) return showToast('Enter a dish name', 'error');
+  if (!Number.isFinite(price) || price < 0) return showToast('Enter a valid price', 'error');
+
+  const btn = $('editSaveBtn');
+  btn.disabled = true;
+  const { ok, data } = await api('/api/menu/' + encodeURIComponent(editingId), {
+    method: 'PATCH', body: JSON.stringify({ name, price }),
+  });
+  btn.disabled = false;
+
+  if (ok) { closeModal('editModal'); showToast('Menu item updated'); loadMenu(); }
+  else showToast((data && data.error) ? String(data.error) : 'Could not update item', 'error');
+});
+
+/* Delete dish */
+$('deleteConfirmBtn').addEventListener('click', async () => {
+  const m = menuById.get(deletingId);
+  const btn = $('deleteConfirmBtn');
+  btn.disabled = true;
+  const { ok, data } = await api('/api/menu/' + encodeURIComponent(deletingId), { method: 'DELETE' });
+  btn.disabled = false;
+
+  if (ok) { closeModal('deleteModal'); showToast(`"${m ? m.name : 'Dish'}" removed`); loadMenu(); }
+  else showToast((data && data.error) ? String(data.error) : 'Could not delete item', 'error');
+});
+
+/* Modal helpers */
+function openModal(id)  { $(id).style.display = 'flex'; }
+function closeModal(id) { $(id).style.display = 'none'; }
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.close)));
+['editModal', 'deleteModal'].forEach(id => $(id).addEventListener('click', e => { if (e.target === $(id)) closeModal(id); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('editModal'); closeModal('deleteModal'); } });
 
 /* ============================================================
-   CHART.JS INIT + STARTUP
+   STARTUP
 ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  if (!KEY) return;  // don't init chart on login screen
+function startApp() {
+  $('loginScreen').style.display  = 'none';
+  $('dashboardApp').style.display = 'flex';
+  $('loginError').textContent = '';
 
-  const ctx      = $('revenueChart').getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(239,68,68,0.85)');
-  gradient.addColorStop(1, 'rgba(239,68,68,0.1)');
+  if (!revenueChart) initChart();
 
-  revenueChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: [],
-      datasets: [{
-        label: 'Revenue (\u20B9)',
-        data:  [],
-        backgroundColor: gradient,
-        borderColor:  'rgba(239,68,68,1)',
-        borderWidth:  1,
-        borderRadius: 6,
-        maxBarThickness: 45,
-      }],
-    },
-    options: {
-      responsive:          true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
-          borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
-          titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
-          callbacks: { label: c => '\u20B9 ' + c.parsed.y.toLocaleString('en-IN') },
-        },
-      },
-      scales: {
-        y: { beginAtZero: true, grid: { color: '#f1f5f9' },
-             ticks: { color: '#64748b', font: { weight: '600' }, callback: v => '\u20B9' + (v/1000) + 'k' } },
-        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
-      },
-      animation: { duration: 800, easing: 'easeOutQuart' },
-    },
-  });
-
-  // Initial load
-  loadOrders();
+  loadOrders(true);
   loadStats();
   loadMenu();
 
-  // Auto-refresh
-  setInterval(loadOrders, CONFIG.ORDERS_POLL_MS);
-  setInterval(loadStats,  CONFIG.STATS_POLL_MS);
+  stopPolling();
+  timers = [
+    setInterval(loadOrders, CONFIG.ORDERS_POLL_MS),
+    setInterval(loadStats,  CONFIG.STATS_POLL_MS),
+    setInterval(tickTimes,  30000),
+  ];
+}
+
+/* Refresh immediately when the owner comes back to this tab */
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && KEY) { loadOrders(); loadStats(); }
 });
+
+if (KEY) startApp(); else showLogin();
 </script>
 
 </body>
