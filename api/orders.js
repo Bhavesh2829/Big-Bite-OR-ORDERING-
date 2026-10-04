@@ -113,7 +113,7 @@ async function listOrders(req, res) {
 /* ---------- POST: customer places an order ---------- */
 
 async function findByKey(key) {
-  const q = new URLSearchParams({ idempotency_key: 'eq.' + key, select: 'id,order_no,total,status', limit: '1' });
+  const q = new URLSearchParams({ idempotency_key: 'eq.' + key, select: 'id,public_token,order_no,total,status', limit: '1' });
   const r = await sb('orders?' + q.toString());
   return r.ok && Array.isArray(r.body) && r.body[0] ? r.body[0] : null;
 }
@@ -150,7 +150,7 @@ async function createOrder(req, res) {
   const key = typeof idempotencyKey === 'string' && idempotencyKey ? idempotencyKey.slice(0, 100) : null;
   if (key) {
     const row = await findByKey(key);
-    if (row) return res.status(200).json({ id: row.id, orderNo: row.order_no, total: row.total, status: row.status });
+    if (row) return res.status(200).json({ id: row.public_token, orderNo: row.order_no, total: row.total, status: row.status });
   }
 
   /* 4. real prices come from menu_items, never from the phone */
@@ -211,7 +211,7 @@ async function createOrder(req, res) {
     // Two identical requests at the same moment: the unique key stops the 2nd one
     if (key && dbError(o.body).code === '23505') {
       const row = await findByKey(key);
-      if (row) return res.status(200).json({ id: row.id, orderNo: row.order_no, total: row.total, status: row.status });
+      if (row) return res.status(200).json({ id: row.public_token, orderNo: row.order_no, total: row.total, status: row.status });
     }
     const e = dbError(o.body);
     console.error('[POST /api/orders] order insert failed:', o.status, o.body);
@@ -232,7 +232,7 @@ async function createOrder(req, res) {
     return res.status(500).json({ error: e.message, hint: e.hint, code: e.code });
   }
 
-  return res.status(201).json({ id: order.id, orderNo: order.order_no, total: order.total, status: order.status });
+  return res.status(201).json({ id: order.public_token, orderNo: order.order_no, total: order.total, status: order.status });
 }
 
 /* ---------- entry point ---------- */
