@@ -1321,5 +1321,91 @@
         resumeLastOrder();
       });
     </script>
+
+    <!-- Paste this <script> just before </body> in index.html -->
+<script>
+/* ---------- Load menu from the database (same table the dashboard edits) ---------- */
+const CAT_ORDER = [
+  'Soups','Salads','Veg Starters','Non Veg Starters','Tandoori / Kebabs','Veg Main Course',
+  'Non Veg Main Course','Rice Dishes','Biryani','Thali','Fish Fry Side Dishes','Noodles','Momo',
+  'Thai Special','Indian Breads','Grilled Sandwiches','Wraps','Burger Special','Delicious Twist',
+  'Pizza Special','Mojitos','Shakes','Fresh Juices','Hot Beverages','Fruit Salad'
+].map(c => c.toLowerCase());
+
+const escH = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CARD = 'menu-item-card bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200/60 transition-all';
+
+function vegBox(isVeg) {
+  return isVeg
+    ? '<div class="w-3.5 h-3.5 rounded-[3px] border-[1.5px] border-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><div class="w-1.5 h-1.5 rounded-full bg-emerald-600"></div></div>'
+    : '<div class="w-3.5 h-3.5 rounded-[3px] border-[1.5px] border-red-600 flex items-center justify-center shrink-0 mt-0.5"><div class="w-1.5 h-1.5 rounded-full bg-red-600"></div></div>';
+}
+
+function simpleCard(m) {
+  const right = m.price > 0
+    ? `<span class="font-semibold text-slate-800 text-[14px]">&#8377;${m.price}</span>
+       <button type="button" class="bg-red-50 text-red-600 border border-red-100 px-4 py-1.5 rounded-lg text-[11px] font-bold active:scale-95 transition-all uppercase tracking-wide" onclick="addToCartSimple(this.closest('.menu-item-card').dataset.name,${m.price},this)">ADD</button>`
+    : `<button type="button" class="bg-slate-100 text-slate-700 border border-slate-200 px-4 py-1.5 rounded-lg text-[11px] font-bold active:scale-95 transition-all" onclick="askPrice()">Ask Price</button>`;
+  return `
+<div class="${CARD}" data-name="${escH(m.name)}" data-type="${m.is_veg ? 'veg' : 'nonveg'}" data-category="${escH(String(m.category).toLowerCase())}">
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex items-start gap-3 min-w-0 flex-1">
+      ${vegBox(m.is_veg)}
+      <h3 class="font-bold text-slate-900 text-[14px] leading-snug break-words min-w-0">${escH(m.name)}</h3>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">${right}</div>
+  </div>
+</div>`;
+}
+
+/* Pizza: DB price = Regular. Medium = +50, Large = +90 (same as your old menu). Cheese 80/100/120 */
+function pizzaCard(m) {
+  const p = m.price, sel = 'bg-slate-900 text-white border-slate-900', off = 'bg-white text-slate-600 border-slate-200';
+  const sz = (name, price, cheese, cls) =>
+    `<button type="button" class="size-btn px-3 py-1 rounded-full border text-[11px] font-bold transition-all ${cls}" data-size="${name}" data-p="${price}" data-c="${cheese}" onclick="pickSize(this)">${name}</button>`;
+  return `
+<div class="${CARD} flex flex-col gap-3" data-name="${escH(m.name)}" data-type="${m.is_veg ? 'veg' : 'nonveg'}" data-category="pizza special" data-cheese="80,100,120">
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex items-start gap-3 min-w-0 flex-1">
+      ${vegBox(m.is_veg)}
+      <div class="min-w-0 flex-1"><h3 class="font-bold text-slate-900 text-[14px] leading-snug break-words">${escH(m.name)}</h3></div>
+    </div>
+    <span class="pizza-price font-semibold text-slate-800 text-[14px] shrink-0">&#8377;${p}</span>
+  </div>
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div class="flex items-center gap-1.5 flex-wrap">
+      ${sz('Regular', p, 80, sel)}${sz('Medium', p + 50, 100, off)}${sz('Large', p + 90, 120, off)}
+    </div>
+    <label class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 select-none">
+      <input type="checkbox" class="cheese-chk accent-amber-500 w-3.5 h-3.5" onchange="pickSize(this)" />
+      Extra cheese <span class="cheese-amt text-slate-400">+&#8377;80</span>
+    </label>
+    <button type="button" class="bg-red-50 text-red-600 border border-red-100 px-4 py-1.5 rounded-lg text-[11px] font-bold active:scale-95 transition-all uppercase tracking-wide" onclick="addPizza(this)">ADD</button>
+  </div>
+</div>`;
+}
+
+async function loadMenuFromDB() {
+  const box = document.getElementById('menuList');
+  try {
+    const r = await fetch('/api/public-menu', { cache: 'no-store' });
+    if (!r.ok) throw new Error('bad status');
+    const items = await r.json();
+
+    const rank = c => { const i = CAT_ORDER.indexOf(String(c).toLowerCase()); return i === -1 ? 999 : i; };
+    items.sort((a, b) => rank(a.category) - rank(b.category));   // stable: keeps DB order inside a category
+
+    box.innerHTML = items.map(m =>
+      String(m.category).toLowerCase() === 'pizza special' && m.price > 0 ? pizzaCard(m) : simpleCard(m)
+    ).join('');
+
+    // Re-run your existing search / category / veg filter after the cards exist:
+    // if (typeof applyFilters === 'function') applyFilters();    <-- use YOUR function name here
+  } catch (e) {
+    box.innerHTML = '<p class="text-center text-slate-500 text-sm py-10">Could not load the menu. Please refresh the page.</p>';
+  }
+}
+loadMenuFromDB();
+</script>
   </body>
 </html>
