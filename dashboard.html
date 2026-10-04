@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Big Bite · Owner Dashboard</title>
+<<<<<<< HEAD
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,13 +13,27 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+=======
+​
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+​
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   <script>
     tailwind.config = {
       theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] },
         colors: { brand: { 50:'#fef2f2',100:'#fee2e2',500:'#ef4444',600:'#dc2626' } } } }
     };
   </script>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   <style>
     body { background:#f8fafc; color:#0f172a; }
     ::-webkit-scrollbar { width:6px; height:6px; }
@@ -32,9 +47,15 @@
     #loginScreen { display:none; }
   </style>
 </head>
+<<<<<<< HEAD
 
 <body class="min-h-screen antialiased font-sans">
 
+=======
+​
+<body class="min-h-screen antialiased font-sans">
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 <!-- ============================================================
      LOGIN / AUTH GATE
      Owner opens: https://yoursite.vercel.app/dashboard.html?key=SECRET
@@ -55,13 +76,22 @@
     <p class="text-xs text-slate-400">Contact your developer if you lost your link.</p>
   </div>
 </div>
+<<<<<<< HEAD
 
 
+=======
+​
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 <!-- ============================================================
      MAIN DASHBOARD
 ============================================================ -->
 <div id="dashboardApp" class="min-h-screen p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   <!-- Header -->
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
     <div>
@@ -90,18 +120,31 @@
       </div>
     </div>
   </header>
+<<<<<<< HEAD
 
   <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <!-- -- ROW 1: Stats Cards -- -->
     <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
 
+=======
+​
+  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+​
+    <!-- -- ROW 1: Stats Cards -- -->
+    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
         <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&mdash;</div>
         <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 s</div>
       </div>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
           Active Orders
@@ -110,14 +153,22 @@
         <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
         <div class="text-xs text-slate-500 mt-2 font-medium">Currently being prepared</div>
       </div>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
         <div class="text-3xl font-extrabold text-slate-900" id="items-served">&mdash;</div>
         <div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Loading&hellip;</div>
       </div>
     </div>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
     <!-- -- ROW 2 Col 1: Live Orders (2/3 width) -- -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
       <div class="flex justify-between items-center mb-6">
@@ -132,7 +183,11 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
     <!-- -- ROW 2 Col 2: Revenue Chart -- -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
       <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
@@ -140,11 +195,19 @@
         <canvas id="revenueChart"></canvas>
       </div>
     </div>
+<<<<<<< HEAD
 
     <!-- -- ROW 3 Col 1: Menu Configuration (2/3 width) -- -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
 
+=======
+​
+    <!-- -- ROW 3 Col 1: Menu Configuration (2/3 width) -- -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
+      <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
       <!-- Add Item Form -->
       <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end" onsubmit="addMenuItem(event)">
         <div class="flex-1 w-full">
@@ -206,7 +269,11 @@
           </button>
         </div>
       </form>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
       <!-- Menu Table -->
       <div class="overflow-x-auto rounded-lg border border-slate-200">
         <table class="w-full text-left text-sm text-slate-600">
@@ -227,7 +294,11 @@
         </table>
       </div>
     </div>
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
     <!-- -- ROW 3 Col 2: Top Sellers -- -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
@@ -235,6 +306,7 @@
         <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
       </div>
     </div>
+<<<<<<< HEAD
 
   </main>
 </div>
@@ -247,20 +319,44 @@
 <script>
 /* strict mode removed for global scope */
 
+=======
+​
+  </main>
+</div>
+​
+​
+<!-- Toast Container -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+​
+​
+<script>
+/* strict mode removed for global scope */
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    BACKEND CONFIG
    ----------------------------------------------------------
    API_BASE   : Leave empty if frontend & backend on same domain.
                 Set to "https://yourapp.vercel.app" for separate deploy.
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
    OWNER AUTH : The owner opens dashboard.html?key=SECRET_KEY
                 The key is sent as the x-owner-key header on every
                 API request. Your backend must validate it.
                 Generate your key: crypto.randomUUID() in browser console,
                 or use any random string (32+ chars).
+<<<<<<< HEAD
 
    REFRESH    : Intervals in ms for auto-polling.
 
+=======
+​
+   REFRESH    : Intervals in ms for auto-polling.
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
    API ENDPOINTS USED:
      GET    /api/orders            -- list pending orders (auth required)
      PATCH  /api/orders/:id        -- update order status (auth required)
@@ -269,7 +365,11 @@
      POST   /api/menu              -- add menu item      (auth required)
      PATCH  /api/menu/:id          -- edit menu item     (auth required)
      DELETE /api/menu/:id          -- delete menu item   (auth required)
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
    PATCH /api/orders/:id body:    { status: "preparing"|"cancelled" }
    POST  /api/menu body:          { name, price, category, isVeg }
    PATCH /api/menu/:id body:      { name?, price? }
@@ -279,13 +379,21 @@ var CONFIG = {
   ORDERS_POLL_MS:      5000,   // how often to refresh incoming orders
   STATS_POLL_MS:       15000,  // how often to refresh stats & chart
 };
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    AUTH: read key from URL ?key=
    Owner bookmark: https://yourdomain.vercel.app/dashboard.html?key=SECRET
 ============================================================ */
 var KEY = (new URLSearchParams(window.location.search)).get('key') || '';
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 // Show lock screen if no key; otherwise show dashboard
 (function() {
   var ls = document.getElementById('loginScreen');
@@ -296,6 +404,7 @@ var KEY = (new URLSearchParams(window.location.search)).get('key') || '';
   } else {
     ls.style.display = 'none';
     if (da) da.style.removeProperty('display');
+<<<<<<< HEAD
   }
 })();
 
@@ -321,6 +430,33 @@ async function api(path, opt = {}) {
   }
 }
 
+=======
+  }
+})();
+​
+/* ============================================================
+   API HELPER
+   Returns: { ok: true/false, data: parsed JSON, status: HTTP status }
+============================================================ */
+async function api(path, opt = {}) {
+  try {
+    const res = await fetch(CONFIG.API_BASE + path, {
+      ...opt,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-owner-key':  KEY,
+        ...(opt.headers || {}),
+      },
+    });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    console.error('[API]', path, e);
+    return { ok: false, status: 0, data: {} };
+  }
+}
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    HELPERS
 ============================================================ */
@@ -328,14 +464,22 @@ const $     = id => document.getElementById(id);
 const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
 const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 function timeAgo(iso) {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (m < 1)  return 'Just now';
   if (m < 60) return m + ' min ago';
   return Math.floor(m / 60) + ' hr ago';
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    TOAST
 ============================================================ */
@@ -347,7 +491,11 @@ function showToast(message, type = 'success') {
     : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
   const iconCls  = isSuccess ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50';
   const bordrCls = isSuccess ? 'border-emerald-200'             : 'border-red-200';
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   const toast = document.createElement('div');
   toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${bordrCls} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
   toast.innerHTML = `<div class="${iconCls} p-1 rounded-full">${iconSvg}</div><div>${esc(message)}</div>`;
@@ -357,7 +505,11 @@ function showToast(message, type = 'success') {
     setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 300);
   }, 3000);
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    LIVE ORDERS
 ============================================================ */
@@ -366,7 +518,11 @@ const EMPTY_ORDERS = `
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
     <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
   </div>`;
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 function renderOrder(o) {
   const itemsHtml = o.items.map(i => {
     const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
@@ -379,11 +535,19 @@ function renderOrder(o) {
       <span class="text-slate-500">${money(i.price * i.qty)}</span>
     </li>`;
   }).join('');
+<<<<<<< HEAD
 
   const noteHtml = o.note
     ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
     : '<div class="mb-2"></div>';
 
+=======
+​
+  const noteHtml = o.note
+    ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
+    : '<div class="mb-2"></div>';
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-${o.id}">
     <div class="flex justify-between items-start mb-4">
       <div class="flex items-center gap-3">
@@ -410,6 +574,7 @@ function renderOrder(o) {
     </div>
   </div>`;
 }
+<<<<<<< HEAD
 
 let knownOrderIds = null;
 let shownAuthError = false;
@@ -417,6 +582,15 @@ let shownAuthError = false;
 async function loadOrders() {
   const { ok, status, data } = await api('/api/orders');
 
+=======
+​
+let knownOrderIds = null;
+let shownAuthError = false;
+​
+async function loadOrders() {
+  const { ok, status, data } = await api('/api/orders');
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   if (!ok) {
     if (status === 401 || status === 403) {
       if (!shownAuthError) {
@@ -426,12 +600,21 @@ async function loadOrders() {
     }
     return;
   }
+<<<<<<< HEAD
 
   if (!Array.isArray(data)) return;
 
   const container = $('live-orders-container');
   container.innerHTML = data.length ? data.map(renderOrder).join('') : EMPTY_ORDERS;
 
+=======
+​
+  if (!Array.isArray(data)) return;
+​
+  const container = $('live-orders-container');
+  container.innerHTML = data.length ? data.map(renderOrder).join('') : EMPTY_ORDERS;
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   // New-order notification
   const ids = new Set(data.map(o => String(o.id)));
   if (knownOrderIds) {
@@ -443,16 +626,28 @@ async function loadOrders() {
   }
   knownOrderIds = ids;
 }
+<<<<<<< HEAD
 
 async function handleOrderAction(orderId, status, tableLabel) {
   const el = $('order-' + orderId);
   if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
 
+=======
+​
+async function handleOrderAction(orderId, status, tableLabel) {
+  const el = $('order-' + orderId);
+  if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   const { ok } = await api('/api/orders/' + orderId, {
     method: 'PATCH',
     body:   JSON.stringify({ status }),
   });
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   if (ok) {
     const msg = status === 'preparing'
       ? `Table ${tableLabel} -- order accepted (OK)`
@@ -467,28 +662,48 @@ async function handleOrderAction(orderId, status, tableLabel) {
     showToast('Could not update order -- try again', 'error');
   }
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    STATS + CHART
 ============================================================ */
 let revenueChart;
+<<<<<<< HEAD
 
 async function loadStats() {
   const { ok, data: s } = await api('/api/stats');
   if (!ok || s.error) return;
 
+=======
+​
+async function loadStats() {
+  const { ok, data: s } = await api('/api/stats');
+  if (!ok || s.error) return;
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   $('today-sales').textContent      = money(s.todaySales);
   $('active-order-count').textContent = s.activeOrders;
   $('items-served').textContent     = s.itemsServed;
   $('completed-text').textContent   = `Across ${s.completedOrders} completed orders`;
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   // Chart
   if (revenueChart && s.revenue) {
     revenueChart.data.labels              = s.revenue.labels;
     revenueChart.data.datasets[0].data    = s.revenue.values;
     revenueChart.update();
   }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   // Top sellers
   const fmt = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
   if (Array.isArray(s.topSellers)) {
@@ -508,14 +723,22 @@ async function loadStats() {
       : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
   }
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    MENU
 ============================================================ */
 const vegToggle = () => $('vegToggle');
 const vegDot    = () => $('vegDot');
 const vegLabel  = () => $('vegLabel');
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 document.addEventListener('DOMContentLoaded', () => {
   $('vegToggle').addEventListener('change', function () {
     if (this.checked) {
@@ -533,9 +756,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+<<<<<<< HEAD
 
 let menuCache = {};
 
+=======
+​
+let menuCache = {};
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 async function loadMenu() {
   const { ok, data } = await api('/api/menu');
   if (!ok || !Array.isArray(data)) {
@@ -566,7 +795,11 @@ async function loadMenu() {
         </tr>`).join('')
     : '<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">No menu items yet. Add one above.</td></tr>';
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 async function addMenuItem(e) {
   e.preventDefault();
   const body = {
@@ -586,7 +819,11 @@ async function addMenuItem(e) {
   showToast(`"${body.name}" added to menu!`);
   loadMenu();
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 async function editMenuItem(id) {
   const m = menuCache[id];
   if (!m) return;
@@ -596,7 +833,11 @@ async function editMenuItem(id) {
   if (ok) { showToast('Menu item updated.'); loadMenu(); }
   else showToast('Could not update item', 'error');
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 async function deleteMenuItem(id) {
   const m = menuCache[id];
   if (!m) return;
@@ -605,18 +846,30 @@ async function deleteMenuItem(id) {
   if (ok) { showToast(`"${m.name}" removed.`); loadMenu(); }
   else showToast('Could not delete item', 'error');
 }
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
 /* ============================================================
    CHART.JS INIT + STARTUP
 ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   if (!KEY) return;  // don't init chart on login screen
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   const ctx      = $('revenueChart').getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 400);
   gradient.addColorStop(0, 'rgba(239,68,68,0.85)');
   gradient.addColorStop(1, 'rgba(239,68,68,0.1)');
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   revenueChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -651,12 +904,20 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: { duration: 800, easing: 'easeOutQuart' },
     },
   });
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   // Initial load
   loadOrders();
   loadStats();
   loadMenu();
+<<<<<<< HEAD
 
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
   // Auto-refresh
   setInterval(loadOrders, CONFIG.ORDERS_POLL_MS);
   setInterval(loadStats,  CONFIG.STATS_POLL_MS);
@@ -665,3 +926,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+​
+>>>>>>> d58ddaa6d679aa226e5504f1437ad297aa3941f5
