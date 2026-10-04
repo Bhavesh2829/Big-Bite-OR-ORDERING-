@@ -625,7 +625,7 @@ async function loadOrders(force = false) {
   }
 
   // Badge + tab title
-  const waiting = orders.filter(o => o.status === 'pending').length;
+ const waiting = orders.filter(o => ['new', 'pending'].includes(o.status)).length; 
   const badge = $('orderCount');
   badge.textContent = orders.length;
   badge.classList.toggle('hidden', orders.length === 0);
