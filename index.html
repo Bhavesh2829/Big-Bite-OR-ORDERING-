@@ -470,57 +470,70 @@
      Shows after a successful POST /api/orders response.
      Polls GET /api/orders/:id every CONFIG.ORDER_POLL_MS ms.
 ============================================================ -->
-<div
-  id="orderSuccess"
-  class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300"
->
-  <div class="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-slate-100 text-center transform transition-all">
-    
-    <!-- Success Icon -->
-    <div class="w-20 h-20 mx-auto mb-5 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-emerald-100">
-      🎉
-    </div>
-    
-    <!-- Heading & Summary -->
-    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Order Placed Successfully!</h2>
-    <p class="text-slate-500 text-sm mt-1.5">
-      Order <span id="osNo" class="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md"></span> 
-      &bull; 
-      Total <span id="osTotal" class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md"></span>
-    </p>
-
-    <!-- Status Box -->
     <div
-      id="osStatus"
-      class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-800 flex items-center justify-center gap-2"
-    ></div>
-
-    <!-- Google Form Review Section -->
-    <div class="mt-6 pt-5 border-t border-slate-100">
-      <p class="text-xs font-semibold text-slate-500 mb-3">Loved the food? Share your feedback!</p>
-      <a
-        href="https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE" 
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-bold text-sm transition-colors border border-blue-100 cursor-pointer"
+      id="orderSuccess"
+      class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300"
+    >
+      <div
+        class="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-slate-100 text-center transform transition-all"
       >
-        <span>⭐</span> Fill Out Google Review Form
-      </a>
-    </div>
+        <!-- Success Icon -->
+        <div
+          class="w-20 h-20 mx-auto mb-5 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-emerald-100"
+        >
+          🎉
+        </div>
 
-    <!-- Action Button -->
-    <div class="mt-5">
-      <button
-        type="button"
-        onclick="closeOrderSuccess()"
-        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-sm font-bold shadow-lg shadow-slate-900/10 cursor-pointer transition-all"
-      >
-        Order More Items
-      </button>
+        <!-- Heading & Summary -->
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+          Order Placed Successfully!
+        </h2>
+        <p class="text-slate-500 text-sm mt-1.5">
+          Order
+          <span
+            id="osNo"
+            class="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md"
+          ></span>
+          &bull; Total
+          <span
+            id="osTotal"
+            class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md"
+          ></span>
+        </p>
+
+        <!-- Status Box -->
+        <div
+          id="osStatus"
+          class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-800 flex items-center justify-center gap-2"
+        ></div>
+
+        <!-- Google Form Review Section -->
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <p class="text-xs font-semibold text-slate-500 mb-3">
+            Loved the food? Share your feedback!
+          </p>
+          <a
+            href="https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-bold text-sm transition-colors border border-blue-100 cursor-pointer"
+          >
+            <span>⭐</span> Fill Out Google Review Form
+          </a>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-5">
+          <button
+            type="button"
+            onclick="closeOrderSuccess()"
+            class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-sm font-bold shadow-lg shadow-slate-900/10 cursor-pointer transition-all"
+          >
+            Order More Items
+          </button>
+        </div>
+      </div>
     </div>
-    
-  </div>
-</div>
     <!-- ============================================================
      TOAST NOTIFICATION
 ============================================================ -->
@@ -1289,33 +1302,33 @@
         }, CONFIG.ORDER_POLL_MS);
       }
 
-function closeOrderSuccess() {
-  // 1. Hide the success modal
-  const successModal = document.getElementById('orderSuccess');
-  if (successModal) {
-    successModal.classList.add('hidden');
-  }
+      function closeOrderSuccess() {
+        // 1. Hide the success modal
+        const successModal = document.getElementById("orderSuccess");
+        if (successModal) {
+          successModal.classList.add("hidden");
+        }
 
-  // 2. Clear the cart array and reset cart UI
-  if (typeof cart !== 'undefined') {
-    cart = [];
-  }
-  if (typeof updateCartUI === 'function') {
-    updateCartUI();
-  }
+        // 2. Clear the cart array and reset cart UI
+        if (typeof cart !== "undefined") {
+          cart = [];
+        }
+        if (typeof updateCartUI === "function") {
+          updateCartUI();
+        }
 
-  // 3. Ensure the menu screen is visible and active
-  const menuScreen = document.getElementById('menuScreen');
-  if (menuScreen) {
-    menuScreen.classList.remove('hidden');
-  }
+        // 3. Ensure the menu screen is visible and active
+        const menuScreen = document.getElementById("menuScreen");
+        if (menuScreen) {
+          menuScreen.classList.remove("hidden");
+        }
 
-  // 4. Close any lingering checkout or cart modals if open
-  const checkoutModal = document.getElementById('checkoutModal');
-  if (checkoutModal) {
-    checkoutModal.classList.add('hidden');
-  }
-}
+        // 4. Close any lingering checkout or cart modals if open
+        const checkoutModal = document.getElementById("checkoutModal");
+        if (checkoutModal) {
+          checkoutModal.classList.add("hidden");
+        }
+      }
 
       async function resumeLastOrder() {
         try {

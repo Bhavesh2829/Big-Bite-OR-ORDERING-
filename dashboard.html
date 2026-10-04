@@ -1,307 +1,681 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Big Bite · Owner Dashboard</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Big Bite · Owner Dashboard</title>
+    <meta name="robots" content="noindex,nofollow" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        fontFamily: { sans: ['Inter', 'sans-serif'] },
-        colors: { brand: {
-          50:'#fef2f2', 100:'#fee2e2', 200:'#fecaca', 500:'#ef4444', 600:'#dc2626', 700:'#b91c1c', 900:'#7f1d1d'
-        } }
-      } }
-    };
-  </script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: {
+                50: "#fef2f2",
+                100: "#fee2e2",
+                200: "#fecaca",
+                500: "#ef4444",
+                600: "#dc2626",
+                700: "#b91c1c",
+                900: "#7f1d1d",
+              },
+            },
+          },
+        },
+      };
+    </script>
 
-  <style>
-    body { background:#f8fafc; color:#0f172a; }
-    ::-webkit-scrollbar { width:6px; height:6px; }
-    ::-webkit-scrollbar-track { background:#f1f5f9; }
-    ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
-    ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
-    @keyframes slideIn { from { transform:translateY(100%); opacity:0; } to { transform:translateY(0); opacity:1; } }
-    @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-    .toast-enter { animation: slideIn 0.3s ease-out forwards; }
-    .toast-exit  { animation: fadeOut 0.3s ease-out forwards; }
-    button:focus-visible, input:focus-visible, select:focus-visible { outline:2px solid #ef4444; outline-offset:2px; }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
-    }
-  </style>
-</head>
+    <style>
+      body {
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+      .toast-enter {
+        animation: slideIn 0.3s ease-out forwards;
+      }
+      .toast-exit {
+        animation: fadeOut 0.3s ease-out forwards;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 2px solid #ef4444;
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
 
-<body class="min-h-screen antialiased font-sans">
-
-<!-- ============================================================
+  <body class="min-h-screen antialiased font-sans">
+    <!-- ============================================================
      LOGIN SCREEN
      Owner can open  /dashboard.html?key=SECRET  (key is saved on this device)
      or just type the key here.
 ============================================================ -->
-<div id="loginScreen" class="fixed inset-0 z-[999] bg-slate-100 items-center justify-center p-4" style="display:none">
-  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
-    <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-red-500"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <div
+      id="loginScreen"
+      class="fixed inset-0 z-[999] bg-slate-100 items-center justify-center p-4"
+      style="display: none"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center"
+      >
+        <div
+          class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            class="text-red-500"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-black text-slate-900 mb-1">
+          Owner access required
+        </h2>
+        <p class="text-sm text-slate-500 mb-6">
+          Enter your private dashboard key to continue.
+        </p>
+        <form id="loginForm" class="text-left">
+          <label
+            for="keyInput"
+            class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+            >Dashboard key</label
+          >
+          <input
+            id="keyInput"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm"
+            placeholder="Paste your key"
+          />
+          <p
+            id="loginError"
+            class="text-xs font-semibold text-red-500 mt-2 min-h-[1rem]"
+          ></p>
+          <button
+            type="submit"
+            class="w-full mt-3 bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors"
+          >
+            Open dashboard
+          </button>
+        </form>
+        <p class="text-xs text-slate-400 mt-5">
+          Lost your key? Contact your developer.
+        </p>
+      </div>
     </div>
-    <h2 class="text-xl font-black text-slate-900 mb-1">Owner access required</h2>
-    <p class="text-sm text-slate-500 mb-6">Enter your private dashboard key to continue.</p>
-    <form id="loginForm" class="text-left">
-      <label for="keyInput" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dashboard key</label>
-      <input id="keyInput" type="password" autocomplete="current-password" required
-        class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm"
-        placeholder="Paste your key" />
-      <p id="loginError" class="text-xs font-semibold text-red-500 mt-2 min-h-[1rem]"></p>
-      <button type="submit" class="w-full mt-3 bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
-        Open dashboard
-      </button>
-    </form>
-    <p class="text-xs text-slate-400 mt-5">Lost your key? Contact your developer.</p>
-  </div>
-</div>
 
-
-<!-- ============================================================
+    <!-- ============================================================
      MAIN DASHBOARD
 ============================================================ -->
-<div id="dashboardApp" class="min-h-screen p-4 md:p-6 lg:p-8 flex-col gap-6" style="display:none">
-
-  <!-- Header -->
-  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
-    <div>
-      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
-        Big Bite <span class="text-brand-500">.</span>
-      </h1>
-      <div class="mt-2 flex items-center gap-2">
-        <span class="text-sm font-medium text-slate-500">QR Ordering System</span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-semibold uppercase tracking-wide">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          Live Dashboard
-        </span>
-      </div>
-    </div>
-    <div class="flex flex-wrap items-center gap-3">
-      <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium" aria-live="polite">
-        <span id="refreshDot" class="h-2 w-2 rounded-full bg-slate-300"></span>
-        <span id="refreshLabel">Connecting&hellip;</span>
-      </div>
-      <button id="soundBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors" title="Play a sound when a new order arrives">
-        &#128276; Sound on
-      </button>
-      <button id="logoutBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors">
-        Log out
-      </button>
-      <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">
-        Powered by <span class="text-slate-600">Webtizo Studio</span>
-      </div>
-    </div>
-  </header>
-
-  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-    <!-- Stats cards -->
-    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
-        <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&nbsp;&mdash;</div>
-        <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 seconds</div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
-          Active Orders
-          <span class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
-        </h3>
-        <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
-        <div class="text-xs text-slate-500 mt-2 font-medium">New and being prepared</div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
-        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
-        <div class="text-3xl font-extrabold text-slate-900" id="items-served">&mdash;</div>
-        <div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Loading&hellip;</div>
-      </div>
-    </div>
-
-    <!-- Live orders -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          Incoming Orders
-          <span id="orderCount" class="hidden text-xs font-bold bg-brand-500 text-white rounded-full px-2 py-0.5">0</span>
-        </h2>
-        <button id="refreshOrdersBtn" type="button" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">Refresh</button>
-      </div>
-      <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="live-orders-container">
-        <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
-          <div class="w-8 h-8 border-2 border-slate-200 border-t-brand-500 rounded-full animate-spin mb-4"></div>
-          <p class="text-sm font-medium">Loading orders&hellip;</p>
+    <div
+      id="dashboardApp"
+      class="min-h-screen p-4 md:p-6 lg:p-8 flex-col gap-6"
+      style="display: none"
+    >
+      <!-- Header -->
+      <header
+        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6"
+      >
+        <div>
+          <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
+            Big Bite <span class="text-brand-500">.</span>
+          </h1>
+          <div class="mt-2 flex items-center gap-2">
+            <span class="text-sm font-medium text-slate-500"
+              >QR Ordering System</span
+            >
+            <span
+              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-semibold uppercase tracking-wide"
+            >
+              <span
+                class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"
+              ></span>
+              Live Dashboard
+            </span>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Revenue chart -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
-      <div class="flex-1 relative min-h-0">
-        <canvas id="revenueChart"></canvas>
-      </div>
-    </div>
-
-    <!-- Menu configuration -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
-
-      <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end">
-        <div class="flex-1 w-full">
-          <label for="dishName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
-          <input type="text" id="dishName" required maxlength="80"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
-            placeholder="e.g. Tandoori Chicken" />
+        <div class="flex flex-wrap items-center gap-3">
+          <div
+            class="flex items-center gap-1.5 text-xs text-slate-500 font-medium"
+            aria-live="polite"
+          >
+            <span
+              id="refreshDot"
+              class="h-2 w-2 rounded-full bg-slate-300"
+            ></span>
+            <span id="refreshLabel">Connecting&hellip;</span>
+          </div>
+          <button
+            id="soundBtn"
+            type="button"
+            class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors"
+            title="Play a sound when a new order arrives"
+          >
+            &#128276; Sound on
+          </button>
+          <button
+            id="logoutBtn"
+            type="button"
+            class="text-xs font-bold px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm transition-colors"
+          >
+            Log out
+          </button>
+          <div
+            class="text-xs text-slate-400 uppercase tracking-widest font-bold"
+          >
+            Powered by <span class="text-slate-600">Webtizo Studio</span>
+          </div>
         </div>
-        <div class="w-full md:w-32">
-          <label for="dishPrice" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
-          <input type="number" id="dishPrice" min="0" step="1" required inputmode="numeric"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
-            placeholder="0" />
-        </div>
-        <div class="w-full md:w-48">
-          <label for="dishCategory" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
-          <select id="dishCategory"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"></select>
-        </div>
-        <div class="w-full md:w-auto flex flex-col justify-center pb-2">
-          <label class="flex items-center cursor-pointer gap-3 select-none">
-            <div class="relative">
-              <input type="checkbox" id="vegToggle" class="sr-only" />
-              <div id="vegTrack" class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner transition-colors"></div>
-              <div id="vegDot" class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-all duration-200 shadow-sm"></div>
+      </header>
+
+      <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Stats cards -->
+        <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between"
+          >
+            <h3
+              class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2"
+            >
+              Today's Sales
+            </h3>
+            <div
+              class="text-3xl font-extrabold text-slate-900"
+              id="today-sales"
+            >
+              &#8377;&nbsp;&mdash;
             </div>
-            <span class="text-xs font-bold text-slate-500 uppercase" id="vegLabel">Non-Veg</span>
-          </label>
+            <div class="text-xs text-slate-400 mt-2 font-medium">
+              Updated every 15 seconds
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between"
+          >
+            <h3
+              class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2"
+            >
+              Active Orders
+              <span
+                class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"
+              ></span>
+            </h3>
+            <div
+              class="text-3xl font-extrabold text-brand-500"
+              id="active-order-count"
+            >
+              &mdash;
+            </div>
+            <div class="text-xs text-slate-500 mt-2 font-medium">
+              New and being prepared
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between"
+          >
+            <h3
+              class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2"
+            >
+              Items Served Today
+            </h3>
+            <div
+              class="text-3xl font-extrabold text-slate-900"
+              id="items-served"
+            >
+              &mdash;
+            </div>
+            <div
+              class="text-xs text-slate-500 mt-2 font-medium"
+              id="completed-text"
+            >
+              Loading&hellip;
+            </div>
+          </div>
         </div>
-        <div class="w-full md:w-auto">
-          <button type="submit" id="addBtn" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors disabled:opacity-60">
-            Add item
+
+        <!-- Live orders -->
+        <div
+          class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]"
+        >
+          <div class="flex justify-between items-center mb-6">
+            <h2
+              class="text-lg font-bold text-slate-900 flex items-center gap-2"
+            >
+              Incoming Orders
+              <span
+                id="orderCount"
+                class="hidden text-xs font-bold bg-brand-500 text-white rounded-full px-2 py-0.5"
+                >0</span
+              >
+            </h2>
+            <button
+              id="refreshOrdersBtn"
+              type="button"
+              class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors"
+            >
+              Refresh
+            </button>
+          </div>
+          <div
+            class="flex-1 overflow-y-auto pr-2 space-y-4"
+            id="live-orders-container"
+          >
+            <div
+              class="h-full flex flex-col items-center justify-center text-slate-400 py-10"
+            >
+              <div
+                class="w-8 h-8 border-2 border-slate-200 border-t-brand-500 rounded-full animate-spin mb-4"
+              ></div>
+              <p class="text-sm font-medium">Loading orders&hellip;</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue chart -->
+        <div
+          class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]"
+        >
+          <h2 class="text-lg font-bold text-slate-900 mb-6">
+            6-Day Revenue Trend
+          </h2>
+          <div class="flex-1 relative min-h-0">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Menu configuration -->
+        <div
+          class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2"
+        >
+          <h2 class="text-lg font-bold text-slate-900 mb-6">
+            Menu Configuration
+          </h2>
+
+          <form
+            id="add-menu-form"
+            class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end"
+          >
+            <div class="flex-1 w-full">
+              <label
+                for="dishName"
+                class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+                >Dish Name</label
+              >
+              <input
+                type="text"
+                id="dishName"
+                required
+                maxlength="80"
+                class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
+                placeholder="e.g. Tandoori Chicken"
+              />
+            </div>
+            <div class="w-full md:w-32">
+              <label
+                for="dishPrice"
+                class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+                >Price (&#8377;)</label
+              >
+              <input
+                type="number"
+                id="dishPrice"
+                min="0"
+                step="1"
+                required
+                inputmode="numeric"
+                class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
+                placeholder="0"
+              />
+            </div>
+            <div class="w-full md:w-48">
+              <label
+                for="dishCategory"
+                class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+                >Category</label
+              >
+              <select
+                id="dishCategory"
+                class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
+              ></select>
+            </div>
+            <div class="w-full md:w-auto flex flex-col justify-center pb-2">
+              <label class="flex items-center cursor-pointer gap-3 select-none">
+                <div class="relative">
+                  <input type="checkbox" id="vegToggle" class="sr-only" />
+                  <div
+                    id="vegTrack"
+                    class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner transition-colors"
+                  ></div>
+                  <div
+                    id="vegDot"
+                    class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-all duration-200 shadow-sm"
+                  ></div>
+                </div>
+                <span
+                  class="text-xs font-bold text-slate-500 uppercase"
+                  id="vegLabel"
+                  >Non-Veg</span
+                >
+              </label>
+            </div>
+            <div class="w-full md:w-auto">
+              <button
+                type="submit"
+                id="addBtn"
+                class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors disabled:opacity-60"
+              >
+                Add item
+              </button>
+            </div>
+          </form>
+
+          <!-- Search -->
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3"
+          >
+            <input
+              type="search"
+              id="menuSearch"
+              placeholder="Search dish or category&hellip;"
+              class="w-full sm:w-72 bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm"
+            />
+            <div class="flex items-center gap-3">
+              <span
+                id="menuCount"
+                class="text-xs font-semibold text-slate-400"
+              ></span>
+              <button
+                type="button"
+                id="importOpenBtn"
+                class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm transition-colors"
+              >
+                Import dishes
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="overflow-x-auto rounded-lg border border-slate-200 max-h-[520px] overflow-y-auto"
+          >
+            <table class="w-full text-left text-sm text-slate-600">
+              <thead
+                class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0"
+              >
+                <tr>
+                  <th class="px-5 py-4">Dish Name</th>
+                  <th class="px-5 py-4">Category</th>
+                  <th class="px-5 py-4">Type</th>
+                  <th class="px-5 py-4">Price</th>
+                  <th class="px-5 py-4">Available</th>
+                  <th class="px-5 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="menu-table-body" class="divide-y divide-slate-100">
+                <tr>
+                  <td
+                    colspan="6"
+                    class="px-5 py-8 text-center text-slate-400 text-sm"
+                  >
+                    Loading menu&hellip;
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top sellers -->
+        <div
+          class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 self-start"
+        >
+          <h2 class="text-lg font-bold text-slate-900 mb-6">
+            Top Sellers This Week
+          </h2>
+          <div class="space-y-3" id="top-sellers">
+            <p class="text-sm text-slate-400 font-medium p-3">
+              Loading&hellip;
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ── Edit dish modal ── -->
+    <div
+      id="editModal"
+      class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto"
+      style="display: none"
+    >
+      <form
+        id="editForm"
+        class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm"
+      >
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Edit dish</h3>
+        <label
+          for="editName"
+          class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+          >Dish name</label
+        >
+        <input
+          id="editName"
+          type="text"
+          required
+          maxlength="80"
+          class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+        />
+        <label
+          for="editPrice"
+          class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+          >Price (&#8377;)</label
+        >
+        <input
+          id="editPrice"
+          type="number"
+          min="0"
+          step="1"
+          required
+          class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+        />
+        <label
+          for="editCategory"
+          class="block text-xs font-bold text-slate-600 uppercase mb-1.5"
+          >Category</label
+        >
+        <select
+          id="editCategory"
+          class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+        ></select>
+        <label
+          class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-6 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            id="editVeg"
+            class="h-4 w-4 accent-green-600"
+          />
+          Vegetarian
+        </label>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            data-close="editModal"
+            class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="editSaveBtn"
+            class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60"
+          >
+            Save changes
           </button>
         </div>
       </form>
+    </div>
 
-      <!-- Search -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-        <input type="search" id="menuSearch" placeholder="Search dish or category&hellip;"
-          class="w-full sm:w-72 bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm" />
-        <div class="flex items-center gap-3">
-          <span id="menuCount" class="text-xs font-semibold text-slate-400"></span>
-          <button type="button" id="importOpenBtn" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm transition-colors">Import dishes</button>
+    <!-- ── Confirm modal (delete dish, decline order) ── -->
+    <div
+      id="confirmModal"
+      class="fixed inset-0 z-[950] bg-slate-900/50 items-center justify-center p-4"
+      style="display: none"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+        <h3
+          class="text-lg font-bold text-slate-900 mb-2"
+          id="confirmTitle"
+        ></h3>
+        <p class="text-sm text-slate-500 mb-6" id="confirmText"></p>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            id="confirmCancelBtn"
+            class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="confirmOkBtn"
+            class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors"
+          >
+            Confirm
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="overflow-x-auto rounded-lg border border-slate-200 max-h-[520px] overflow-y-auto">
-        <table class="w-full text-left text-sm text-slate-600">
-          <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0">
-            <tr>
-              <th class="px-5 py-4">Dish Name</th>
-              <th class="px-5 py-4">Category</th>
-              <th class="px-5 py-4">Type</th>
-              <th class="px-5 py-4">Price</th>
-              <th class="px-5 py-4">Available</th>
-              <th class="px-5 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="menu-table-body" class="divide-y divide-slate-100">
-            <tr><td colspan="6" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td></tr>
-          </tbody>
-        </table>
+    <!-- ── Import dishes modal ── -->
+    <div
+      id="importModal"
+      class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto"
+      style="display: none"
+    >
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg">
+        <h3 class="text-lg font-bold text-slate-900 mb-1">Import dishes</h3>
+        <p class="text-sm text-slate-500 mb-3">
+          Paste one dish per line as
+          <span class="font-mono text-xs bg-slate-100 rounded px-1 py-0.5"
+            >name, price, category, veg or nonveg</span
+          >. You can paste straight from Excel or Google Sheets.
+        </p>
+        <textarea
+          id="importText"
+          rows="9"
+          spellcheck="false"
+          class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+          placeholder="Green Salad, 100, Salads, veg&#10;Chicken Manchow Soup, 140, Soups, nonveg"
+        ></textarea>
+        <div
+          id="importPreview"
+          class="text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500"
+        ></div>
+        <div
+          id="importProblems"
+          class="text-xs text-red-500 max-h-24 overflow-y-auto"
+        ></div>
+        <details class="mt-2">
+          <summary class="text-xs font-semibold text-slate-500 cursor-pointer">
+            Valid categories
+          </summary>
+          <p
+            id="importCats"
+            class="text-xs text-slate-500 mt-1 leading-relaxed"
+          ></p>
+        </details>
+        <div class="flex gap-3 mt-5">
+          <button
+            type="button"
+            data-close="importModal"
+            class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="importBtn"
+            disabled
+            class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-50"
+          >
+            Import dishes
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Top sellers -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 self-start">
-      <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
-      <div class="space-y-3" id="top-sellers">
-        <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
-      </div>
-    </div>
+    <!-- Toast container -->
+    <div
+      id="toast-container"
+      class="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3"
+    ></div>
 
-  </main>
-</div>
+    <script>
+      "use strict";
 
-
-<!-- ── Edit dish modal ── -->
-<div id="editModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
-  <form id="editForm" class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-    <h3 class="text-lg font-bold text-slate-900 mb-4">Edit dish</h3>
-    <label for="editName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish name</label>
-    <input id="editName" type="text" required maxlength="80"
-      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
-    <label for="editPrice" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
-    <input id="editPrice" type="number" min="0" step="1" required
-      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
-    <label for="editCategory" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
-    <select id="editCategory"
-      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"></select>
-    <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-6 cursor-pointer">
-      <input type="checkbox" id="editVeg" class="h-4 w-4 accent-green-600" /> Vegetarian
-    </label>
-    <div class="flex gap-3">
-      <button type="button" data-close="editModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
-      <button type="submit" id="editSaveBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60">Save changes</button>
-    </div>
-  </form>
-</div>
-
-<!-- ── Confirm modal (delete dish, decline order) ── -->
-<div id="confirmModal" class="fixed inset-0 z-[950] bg-slate-900/50 items-center justify-center p-4" style="display:none" role="dialog" aria-modal="true">
-  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-    <h3 class="text-lg font-bold text-slate-900 mb-2" id="confirmTitle"></h3>
-    <p class="text-sm text-slate-500 mb-6" id="confirmText"></p>
-    <div class="flex gap-3">
-      <button type="button" id="confirmCancelBtn" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
-      <button type="button" id="confirmOkBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors">Confirm</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Import dishes modal ── -->
-<div id="importModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
-  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg">
-    <h3 class="text-lg font-bold text-slate-900 mb-1">Import dishes</h3>
-    <p class="text-sm text-slate-500 mb-3">Paste one dish per line as <span class="font-mono text-xs bg-slate-100 rounded px-1 py-0.5">name, price, category, veg or nonveg</span>. You can paste straight from Excel or Google Sheets.</p>
-    <textarea id="importText" rows="9" spellcheck="false"
-      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-      placeholder="Green Salad, 100, Salads, veg&#10;Chicken Manchow Soup, 140, Soups, nonveg"></textarea>
-    <div id="importPreview" class="text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500"></div>
-    <div id="importProblems" class="text-xs text-red-500 max-h-24 overflow-y-auto"></div>
-    <details class="mt-2">
-      <summary class="text-xs font-semibold text-slate-500 cursor-pointer">Valid categories</summary>
-      <p id="importCats" class="text-xs text-slate-500 mt-1 leading-relaxed"></p>
-    </details>
-    <div class="flex gap-3 mt-5">
-      <button type="button" data-close="importModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
-      <button type="button" id="importBtn" disabled class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-50">Import dishes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast container -->
-<div id="toast-container" class="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3"></div>
-
-
-<script>
-"use strict";
-
-/* ============================================================
+      /* ============================================================
    CONFIG
    ──────────────────────────────────────────────────────────
    API_BASE : leave "" when this page and your /api routes are on
@@ -317,270 +691,343 @@
      PATCH  /api/menu/:id     body { name?, price?, category?, isVeg?, available? }   (POST also accepts { items: [...] } to import many)
      DELETE /api/menu/:id
 ============================================================ */
-const CONFIG = {
-  API_BASE:       "",
-  ORDERS_POLL_MS: 5000,
-  STATS_POLL_MS:  15000,
-  TIMEOUT_MS:     12000,
-};
+      const CONFIG = {
+        API_BASE: "",
+        ORDERS_POLL_MS: 5000,
+        STATS_POLL_MS: 15000,
+        TIMEOUT_MS: 12000,
+      };
 
-/* ============================================================
+      /* ============================================================
    SMALL HELPERS
 ============================================================ */
-const $     = id => document.getElementById(id);
-const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
-const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
-  c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+      const $ = (id) => document.getElementById(id);
+      const money = (n) =>
+        "\u20B9\u00A0" + Number(n || 0).toLocaleString("en-IN");
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
 
-const store = {
-  get(k)    { try { return localStorage.getItem(k); } catch (e) { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
-  del(k)    { try { localStorage.removeItem(k); } catch (e) {} },
-};
+      const store = {
+        get(k) {
+          try {
+            return localStorage.getItem(k);
+          } catch (e) {
+            return null;
+          }
+        },
+        set(k, v) {
+          try {
+            localStorage.setItem(k, v);
+            return true;
+          } catch (e) {
+            return false;
+          }
+        },
+        del(k) {
+          try {
+            localStorage.removeItem(k);
+          } catch (e) {}
+        },
+      };
 
-function timeAgo(iso) {
-  const t = new Date(iso).getTime();
-  if (!iso || isNaN(t)) return '';
-  const m = Math.max(0, Math.floor((Date.now() - t) / 60000));
-  if (m < 1)  return 'Just now';
-  if (m < 60) return m + ' min ago';
-  const h = Math.floor(m / 60);
-  if (h < 24) return h + ' hr ago';
-  return Math.floor(h / 24) + ' d ago';
-}
+      function timeAgo(iso) {
+        const t = new Date(iso).getTime();
+        if (!iso || isNaN(t)) return "";
+        const m = Math.max(0, Math.floor((Date.now() - t) / 60000));
+        if (m < 1) return "Just now";
+        if (m < 60) return m + " min ago";
+        const h = Math.floor(m / 60);
+        if (h < 24) return h + " hr ago";
+        return Math.floor(h / 24) + " d ago";
+      }
 
-/* ============================================================
+      /* ============================================================
    AUTH  (key from ?key= in the URL, saved on this device)
 ============================================================ */
-const KEY_STORE = 'bigbite_owner_key';
-let KEY = '';
+      const KEY_STORE = "bigbite_owner_key";
+      let KEY = "";
 
-(function readKey() {
-  const urlKey = new URLSearchParams(location.search).get('key');
-  if (urlKey) {
-    KEY = urlKey;
-    // Save it and remove it from the address bar / history if saving worked.
-    if (store.set(KEY_STORE, urlKey) && store.get(KEY_STORE) === urlKey) {
-      history.replaceState(null, '', location.pathname + location.hash);
-    }
-  } else {
-    KEY = store.get(KEY_STORE) || '';
-  }
-})();
+      (function readKey() {
+        const urlKey = new URLSearchParams(location.search).get("key");
+        if (urlKey) {
+          KEY = urlKey;
+          // Save it and remove it from the address bar / history if saving worked.
+          if (store.set(KEY_STORE, urlKey) && store.get(KEY_STORE) === urlKey) {
+            history.replaceState(null, "", location.pathname + location.hash);
+          }
+        } else {
+          KEY = store.get(KEY_STORE) || "";
+        }
+      })();
 
-let timers = [];
-function stopPolling() { timers.forEach(clearInterval); timers = []; }
+      let timers = [];
+      function stopPolling() {
+        timers.forEach(clearInterval);
+        timers = [];
+      }
 
-function showLogin(msg) {
-  stopPolling();
-  ['editModal', 'confirmModal', 'importModal'].forEach(id => { const m = document.getElementById(id); if (m) m.style.display = 'none'; });
-  $('dashboardApp').style.display = 'none';
-  $('loginScreen').style.display  = 'flex';
-  $('loginError').textContent     = msg || '';
-  $('keyInput').value = '';
-  setTimeout(() => $('keyInput').focus(), 50);
-}
+      function showLogin(msg) {
+        stopPolling();
+        ["editModal", "confirmModal", "importModal"].forEach((id) => {
+          const m = document.getElementById(id);
+          if (m) m.style.display = "none";
+        });
+        $("dashboardApp").style.display = "none";
+        $("loginScreen").style.display = "flex";
+        $("loginError").textContent = msg || "";
+        $("keyInput").value = "";
+        setTimeout(() => $("keyInput").focus(), 50);
+      }
 
-function handleAuthFail(usedKey) {
-  if (!KEY || usedKey !== KEY) return;      // ignore stale responses
-  KEY = '';
-  store.del(KEY_STORE);
-  knownOrderIds = null;
-  showLogin('That key is invalid or has expired. Enter the correct key.');
-}
+      function handleAuthFail(usedKey) {
+        if (!KEY || usedKey !== KEY) return; // ignore stale responses
+        KEY = "";
+        store.del(KEY_STORE);
+        knownOrderIds = null;
+        showLogin("That key is invalid or has expired. Enter the correct key.");
+      }
 
-$('loginForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const k = $('keyInput').value.trim();
-  if (!k) return;
-  KEY = k;
-  store.set(KEY_STORE, k);
-  startApp();
-});
+      $("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const k = $("keyInput").value.trim();
+        if (!k) return;
+        KEY = k;
+        store.set(KEY_STORE, k);
+        startApp();
+      });
 
-$('logoutBtn').addEventListener('click', () => {
-  KEY = '';
-  store.del(KEY_STORE);
-  knownOrderIds = null;
-  showLogin('You have been logged out.');
-});
+      $("logoutBtn").addEventListener("click", () => {
+        KEY = "";
+        store.del(KEY_STORE);
+        knownOrderIds = null;
+        showLogin("You have been logged out.");
+      });
 
-/* ============================================================
+      /* ============================================================
    API HELPER  →  { ok, status, data }
 ============================================================ */
-async function api(path, opt = {}) {
-  const usedKey = KEY;
-  const ctrl = new AbortController();
-  const timeout = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT_MS);
-  try {
-    const res = await fetch(CONFIG.API_BASE + path, {
-      ...opt,
-      signal: ctrl.signal,
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-owner-key': usedKey,
-        ...(opt.headers || {}),
-      },
-    });
-    const data = await res.json().catch(() => ({}));
-    if (res.status === 401 || res.status === 403) handleAuthFail(usedKey);
-    else setConn(res.ok ? 'live' : 'error');
-    return { ok: res.ok, status: res.status, data };
-  } catch (e) {
-    console.error('[API]', path, e);
-    setConn('offline');
-    return { ok: false, status: 0, data: {} };
-  } finally {
-    clearTimeout(timeout);
-  }
-}
+      async function api(path, opt = {}) {
+        const usedKey = KEY;
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT_MS);
+        try {
+          const res = await fetch(CONFIG.API_BASE + path, {
+            ...opt,
+            signal: ctrl.signal,
+            cache: "no-store",
+            headers: {
+              "Content-Type": "application/json",
+              "x-owner-key": usedKey,
+              ...(opt.headers || {}),
+            },
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.status === 401 || res.status === 403) handleAuthFail(usedKey);
+          else setConn(res.ok ? "live" : "error");
+          return { ok: res.ok, status: res.status, data };
+        } catch (e) {
+          console.error("[API]", path, e);
+          setConn("offline");
+          return { ok: false, status: 0, data: {} };
+        } finally {
+          clearTimeout(timeout);
+        }
+      }
 
-/* Connection indicator */
-function setConn(state) {
-  const dot = $('refreshDot'), label = $('refreshLabel');
-  if (!dot || !label) return;
-  if (state === 'live') {
-    dot.className = 'h-2 w-2 rounded-full bg-emerald-400 animate-pulse';
-    label.textContent = 'Live · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  } else if (state === 'offline') {
-    dot.className = 'h-2 w-2 rounded-full bg-red-500';
-    label.textContent = 'Offline · retrying';
-  } else {
-    dot.className = 'h-2 w-2 rounded-full bg-amber-400';
-    label.textContent = 'Server error · retrying';
-  }
-}
+      /* Connection indicator */
+      function setConn(state) {
+        const dot = $("refreshDot"),
+          label = $("refreshLabel");
+        if (!dot || !label) return;
+        if (state === "live") {
+          dot.className = "h-2 w-2 rounded-full bg-emerald-400 animate-pulse";
+          label.textContent =
+            "Live · " +
+            new Date().toLocaleTimeString("en-IN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            });
+        } else if (state === "offline") {
+          dot.className = "h-2 w-2 rounded-full bg-red-500";
+          label.textContent = "Offline · retrying";
+        } else {
+          dot.className = "h-2 w-2 rounded-full bg-amber-400";
+          label.textContent = "Server error · retrying";
+        }
+      }
 
-/* ============================================================
+      /* ============================================================
    TOAST
 ============================================================ */
-function showToast(message, type = 'success') {
-  const container = $('toast-container');
-  const ok = type === 'success';
-  const icon = ok
-    ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-    : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+      function showToast(message, type = "success") {
+        const container = $("toast-container");
+        const ok = type === "success";
+        const icon = ok
+          ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+          : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
 
-  const toast = document.createElement('div');
-  toast.setAttribute('role', 'status');
-  toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${ok ? 'border-emerald-200' : 'border-red-200'} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
-  toast.innerHTML = `<div class="${ok ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50'} p-1 rounded-full">${icon}</div><div>${esc(message)}</div>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.replace('toast-enter', 'toast-exit');
-    setTimeout(() => toast.remove(), 300);
-  }, 3500);
-}
+        const toast = document.createElement("div");
+        toast.setAttribute("role", "status");
+        toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${ok ? "border-emerald-200" : "border-red-200"} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
+        toast.innerHTML = `<div class="${ok ? "text-emerald-500 bg-emerald-50" : "text-red-500 bg-red-50"} p-1 rounded-full">${icon}</div><div>${esc(message)}</div>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.replace("toast-enter", "toast-exit");
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      }
 
-/* ============================================================
+      /* ============================================================
    SOUND  (browsers only allow audio after a click, so we keep
    an AudioContext that is unlocked by the first interaction)
 ============================================================ */
-let audioCtx = null;
-let soundOn  = store.get('bigbite_sound') !== 'off';
+      let audioCtx = null;
+      let soundOn = store.get("bigbite_sound") !== "off";
 
-function getAudio() {
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-  } catch (e) { audioCtx = null; }
-  return audioCtx;
-}
+      function getAudio() {
+        try {
+          audioCtx =
+            audioCtx ||
+            new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+        } catch (e) {
+          audioCtx = null;
+        }
+        return audioCtx;
+      }
 
-function beep() {
-  if (!soundOn) return;
-  const ctx = getAudio();
-  if (!ctx) return;
-  const t0 = ctx.currentTime;
-  [880, 1175].forEach((freq, i) => {
-    const o = ctx.createOscillator(), g = ctx.createGain(), s = t0 + i * 0.2;
-    o.type = 'sine';
-    o.frequency.value = freq;
-    g.gain.setValueAtTime(0.0001, s);
-    g.gain.exponentialRampToValueAtTime(0.25, s + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, s + 0.18);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(s); o.stop(s + 0.2);
-  });
-}
+      function beep() {
+        if (!soundOn) return;
+        const ctx = getAudio();
+        if (!ctx) return;
+        const t0 = ctx.currentTime;
+        [880, 1175].forEach((freq, i) => {
+          const o = ctx.createOscillator(),
+            g = ctx.createGain(),
+            s = t0 + i * 0.2;
+          o.type = "sine";
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0.0001, s);
+          g.gain.exponentialRampToValueAtTime(0.25, s + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, s + 0.18);
+          o.connect(g);
+          g.connect(ctx.destination);
+          o.start(s);
+          o.stop(s + 0.2);
+        });
+      }
 
-function paintSoundBtn() {
-  $('soundBtn').innerHTML = soundOn ? '&#128276; Sound on' : '&#128263; Sound off';
-}
-$('soundBtn').addEventListener('click', () => {
-  soundOn = !soundOn;
-  store.set('bigbite_sound', soundOn ? 'on' : 'off');
-  paintSoundBtn();
-  if (soundOn) beep();
-});
-document.addEventListener('click', () => { if (soundOn) getAudio(); }, { once: true });
-paintSoundBtn();
+      function paintSoundBtn() {
+        $("soundBtn").innerHTML = soundOn
+          ? "&#128276; Sound on"
+          : "&#128263; Sound off";
+      }
+      $("soundBtn").addEventListener("click", () => {
+        soundOn = !soundOn;
+        store.set("bigbite_sound", soundOn ? "on" : "off");
+        paintSoundBtn();
+        if (soundOn) beep();
+      });
+      document.addEventListener(
+        "click",
+        () => {
+          if (soundOn) getAudio();
+        },
+        { once: true },
+      );
+      paintSoundBtn();
 
-/* ============================================================
+      /* ============================================================
    LIVE ORDERS
 ============================================================ */
-const EMPTY_ORDERS = `
+      const EMPTY_ORDERS = `
   <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
     <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
   </div>`;
 
-/* Accept both camelCase and snake_case from the API, and a JSON-string "items". */
-function normOrder(o) {
-  let items = o.items;
-  if (typeof items === 'string') { try { items = JSON.parse(items); } catch (e) { items = []; } }
-  if (!Array.isArray(items)) items = [];
-  items = items.map(i => ({
-    name:       i.name ?? 'Item',
-    qty:        Number(i.qty ?? i.quantity ?? 1) || 1,
-    price:      Number(i.price ?? 0) || 0,
-    veg:        i.veg ?? i.isVeg ?? i.is_veg,
-    size:       i.size,
-    extraCheese:i.extraCheese ?? i.extra_cheese,
-  }));
-  const computed = items.reduce((sum, i) => sum + i.price * i.qty, 0);
-  return {
-    id:        o.id,
-    table:     o.table ?? o.table_no ?? '?',
-    orderNo:   o.orderNo ?? o.order_no ?? '',
-    createdAt: o.createdAt ?? o.created_at ?? '',
-    total:     Number(o.total) || computed,
-    note:      o.note ?? o.notes ?? '',
-    status:    String(o.status || 'pending').toLowerCase(),
-    items,
-  };
-}
+      /* Accept both camelCase and snake_case from the API, and a JSON-string "items". */
+      function normOrder(o) {
+        let items = o.items;
+        if (typeof items === "string") {
+          try {
+            items = JSON.parse(items);
+          } catch (e) {
+            items = [];
+          }
+        }
+        if (!Array.isArray(items)) items = [];
+        items = items.map((i) => ({
+          name: i.name ?? "Item",
+          qty: Number(i.qty ?? i.quantity ?? 1) || 1,
+          price: Number(i.price ?? 0) || 0,
+          veg: i.veg ?? i.isVeg ?? i.is_veg,
+          size: i.size,
+          extraCheese: i.extraCheese ?? i.extra_cheese,
+        }));
+        const computed = items.reduce((sum, i) => sum + i.price * i.qty, 0);
+        return {
+          id: o.id,
+          table: o.table ?? o.table_no ?? "?",
+          orderNo: o.orderNo ?? o.order_no ?? "",
+          createdAt: o.createdAt ?? o.created_at ?? "",
+          total: Number(o.total) || computed,
+          note: o.note ?? o.notes ?? "",
+          status: String(o.status || "pending").toLowerCase(),
+          items,
+        };
+      }
 
-const pendingActions = new Set();   // order ids currently being updated
+      const pendingActions = new Set(); // order ids currently being updated
 
-function renderOrder(o) {
-  const id = String(o.id);
-  const busy = pendingActions.has(id);
-  const preparing = o.status === 'preparing';
+      function renderOrder(o) {
+        const id = String(o.id);
+        const busy = pendingActions.has(id);
+        const preparing = o.status === "preparing";
 
-  const itemsHtml = o.items.map(i => {
-    const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
-    const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
-    return `<li class="flex justify-between gap-3">
+        const itemsHtml =
+          o.items
+            .map((i) => {
+              const dot =
+                i.veg === false
+                  ? "bg-red-500"
+                  : i.veg === true
+                    ? "bg-green-500"
+                    : "bg-slate-400";
+              const extra = [i.size, i.extraCheese ? "Extra cheese" : ""]
+                .filter(Boolean)
+                .join(", ");
+              return `<li class="flex justify-between gap-3">
       <span class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full ${dot}"></span>
-        <span>${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}</span>
+        <span>${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ""}</span>
       </span>
       <span class="text-slate-500 whitespace-nowrap">${money(i.price * i.qty)}</span>
     </li>`;
-  }).join('') || '<li class="text-slate-400">No item details</li>';
+            })
+            .join("") || '<li class="text-slate-400">No item details</li>';
 
-  const noteHtml = o.note
-    ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
-    : '<div class="mb-2"></div>';
+        const noteHtml = o.note
+          ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
+          : '<div class="mb-2"></div>';
 
-  const actions = preparing
-    ? `<button data-act="served" data-id="${esc(id)}" data-table="${esc(o.table)}"
+        const actions = preparing
+          ? `<button data-act="served" data-id="${esc(id)}" data-table="${esc(o.table)}"
          class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
          &#127869;&#65039; Mark served
        </button>`
-    : `<button data-act="preparing" data-id="${esc(id)}" data-table="${esc(o.table)}"
+          : `<button data-act="preparing" data-id="${esc(id)}" data-table="${esc(o.table)}"
          class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
          &#10003; Accept
        </button>
@@ -593,12 +1040,12 @@ function renderOrder(o) {
          &#127869;&#65039;
        </button>`;
 
-  return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm ${busy ? 'opacity-50 pointer-events-none' : ''}" id="order-${esc(id)}">
+        return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm ${busy ? "opacity-50 pointer-events-none" : ""}" id="order-${esc(id)}">
     <div class="flex justify-between items-start mb-4 gap-3">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${esc(String(o.table).padStart(2, '0'))}</span>
-        ${preparing ? '<span class="bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">PREPARING</span>' : ''}
-        <span class="text-xs font-medium text-slate-500">${o.orderNo !== '' ? '#' + esc(o.orderNo) + ' &middot; ' : ''}<span class="time-ago" data-t="${esc(o.createdAt)}">${esc(timeAgo(o.createdAt))}</span></span>
+        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${esc(String(o.table).padStart(2, "0"))}</span>
+        ${preparing ? '<span class="bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">PREPARING</span>' : ""}
+        <span class="text-xs font-medium text-slate-500">${o.orderNo !== "" ? "#" + esc(o.orderNo) + " &middot; " : ""}<span class="time-ago" data-t="${esc(o.createdAt)}">${esc(timeAgo(o.createdAt))}</span></span>
       </div>
       <span class="text-sm font-extrabold text-slate-900 whitespace-nowrap">${money(o.total)}</span>
     </div>
@@ -606,267 +1053,367 @@ function renderOrder(o) {
     ${noteHtml}
     <div class="flex gap-3">${actions}</div>
   </div>`;
-}
+      }
 
-let knownOrderIds = null;
-let lastOrdersSig = '';
-let ordersSeq = 0;
+      let knownOrderIds = null;
+      let lastOrdersSig = "";
+      let ordersSeq = 0;
 
-async function loadOrders(force = false) {
-  if (!KEY) return;
-  const seq = ++ordersSeq;
-  const { ok, data } = await api('/api/orders');
-  if (seq !== ordersSeq || !ok) return;           // stale or failed
+      async function loadOrders(force = false) {
+        if (!KEY) return;
+        const seq = ++ordersSeq;
+        const { ok, data } = await api("/api/orders");
+        if (seq !== ordersSeq || !ok) return; // stale or failed
 
-  const list = Array.isArray(data) ? data : (Array.isArray(data.orders) ? data.orders : null);
-  if (!list) return;
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data.orders)
+            ? data.orders
+            : null;
+        if (!list) return;
 
-  const orders = list.map(normOrder).filter(o => o.id !== undefined && o.id !== null);
+        const orders = list
+          .map(normOrder)
+          .filter((o) => o.id !== undefined && o.id !== null);
 
-  // Only touch the DOM when something changed (avoids flicker / lost hover).
-  const sig = JSON.stringify(orders) + [...pendingActions].join(',');
-  if (force || sig !== lastOrdersSig) {
-    $('live-orders-container').innerHTML = orders.length ? orders.map(renderOrder).join('') : EMPTY_ORDERS;
-    lastOrdersSig = sig;
-  }
+        // Only touch the DOM when something changed (avoids flicker / lost hover).
+        const sig = JSON.stringify(orders) + [...pendingActions].join(",");
+        if (force || sig !== lastOrdersSig) {
+          $("live-orders-container").innerHTML = orders.length
+            ? orders.map(renderOrder).join("")
+            : EMPTY_ORDERS;
+          lastOrdersSig = sig;
+        }
 
-  // Badge + tab title
-  const waiting = orders.filter(o => ['new', 'pending'].includes(o.status)).length;
-  const badge = $('orderCount');
-  badge.textContent = orders.length;
-  badge.classList.toggle('hidden', orders.length === 0);
-  document.title = (waiting ? `(${waiting}) ` : '') + 'Big Bite · Owner Dashboard';
+        // Badge + tab title
+        const waiting = orders.filter((o) =>
+          ["new", "pending"].includes(o.status),
+        ).length;
+        const badge = $("orderCount");
+        badge.textContent = orders.length;
+        badge.classList.toggle("hidden", orders.length === 0);
+        document.title =
+          (waiting ? `(${waiting}) ` : "") + "Big Bite · Owner Dashboard";
 
-  // New-order alert
-  const ids = new Set(orders.map(o => String(o.id)));
-  if (knownOrderIds) {
-    const fresh = orders.filter(o => !knownOrderIds.has(String(o.id)));
-    if (fresh.length) {
-      showToast(fresh.length > 1
-        ? `\u{1F195} ${fresh.length} new orders!`
-        : `\u{1F195} New order from Table ${fresh[0].table}!`);
-      beep();
-    }
-  }
-  knownOrderIds = ids;
-}
+        // New-order alert
+        const ids = new Set(orders.map((o) => String(o.id)));
+        if (knownOrderIds) {
+          const fresh = orders.filter((o) => !knownOrderIds.has(String(o.id)));
+          if (fresh.length) {
+            showToast(
+              fresh.length > 1
+                ? `\u{1F195} ${fresh.length} new orders!`
+                : `\u{1F195} New order from Table ${fresh[0].table}!`,
+            );
+            beep();
+          }
+        }
+        knownOrderIds = ids;
+      }
 
-async function handleOrderAction(orderId, status, tableLabel) {
-  if (pendingActions.has(orderId)) return;
-  pendingActions.add(orderId);
-  const el = $('order-' + orderId);
-  if (el) el.classList.add('opacity-50', 'pointer-events-none');
+      async function handleOrderAction(orderId, status, tableLabel) {
+        if (pendingActions.has(orderId)) return;
+        pendingActions.add(orderId);
+        const el = $("order-" + orderId);
+        if (el) el.classList.add("opacity-50", "pointer-events-none");
 
-  const { ok, status: http, data } = await api('/api/orders/' + encodeURIComponent(orderId), {
-    method: 'PATCH',
-    body: JSON.stringify({ status }),
-  });
-  pendingActions.delete(orderId);
+        const {
+          ok,
+          status: http,
+          data,
+        } = await api("/api/orders/" + encodeURIComponent(orderId), {
+          method: "PATCH",
+          body: JSON.stringify({ status }),
+        });
+        pendingActions.delete(orderId);
 
-  if (ok) {
-    const msg = status === 'preparing' ? `Table ${tableLabel} — order accepted`
-              : status === 'served'    ? `Table ${tableLabel} — marked as served`
-              :                          `Table ${tableLabel} — order declined`;
-    showToast(msg, status === 'cancelled' ? 'error' : 'success');
-    await loadOrders(true);
-    loadStats();
-  } else {
-    if (el) el.classList.remove('opacity-50', 'pointer-events-none');
-    if (KEY) showToast(data && data.error ? String(data.error) : 'Could not update order — try again', 'error');
-    if (http === 409) loadOrders(true);   // another device already changed it
-  }
-}
+        if (ok) {
+          const msg =
+            status === "preparing"
+              ? `Table ${tableLabel} — order accepted`
+              : status === "served"
+                ? `Table ${tableLabel} — marked as served`
+                : `Table ${tableLabel} — order declined`;
+          showToast(msg, status === "cancelled" ? "error" : "success");
+          await loadOrders(true);
+          loadStats();
+        } else {
+          if (el) el.classList.remove("opacity-50", "pointer-events-none");
+          if (KEY)
+            showToast(
+              data && data.error
+                ? String(data.error)
+                : "Could not update order — try again",
+              "error",
+            );
+          if (http === 409) loadOrders(true); // another device already changed it
+        }
+      }
 
-$('live-orders-container').addEventListener('click', async e => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
-  const { id, act, table } = btn.dataset;
-  if (act === 'cancelled') {
-    const yes = await askConfirm({
-      title: `Decline order for Table ${table}?`,
-      text: 'The order will be cancelled. This cannot be undone.',
-      okLabel: 'Decline order', cancelLabel: 'Keep order',
-    });
-    if (!yes) return;
-  }
-  handleOrderAction(id, act, table);
-});
-$('refreshOrdersBtn').addEventListener('click', () => loadOrders(true));
+      $("live-orders-container").addEventListener("click", async (e) => {
+        const btn = e.target.closest("button[data-act]");
+        if (!btn) return;
+        const { id, act, table } = btn.dataset;
+        if (act === "cancelled") {
+          const yes = await askConfirm({
+            title: `Decline order for Table ${table}?`,
+            text: "The order will be cancelled. This cannot be undone.",
+            okLabel: "Decline order",
+            cancelLabel: "Keep order",
+          });
+          if (!yes) return;
+        }
+        handleOrderAction(id, act, table);
+      });
+      $("refreshOrdersBtn").addEventListener("click", () => loadOrders(true));
 
-/* keep "x min ago" labels fresh between polls */
-function tickTimes() {
-  document.querySelectorAll('.time-ago').forEach(el => { el.textContent = timeAgo(el.dataset.t); });
-}
+      /* keep "x min ago" labels fresh between polls */
+      function tickTimes() {
+        document.querySelectorAll(".time-ago").forEach((el) => {
+          el.textContent = timeAgo(el.dataset.t);
+        });
+      }
 
-/* ============================================================
+      /* ============================================================
    STATS + CHART
 ============================================================ */
-let revenueChart = null;
+      let revenueChart = null;
 
-function initChart() {
-  const ctx = $('revenueChart').getContext('2d');
-  revenueChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: [],
-      datasets: [{
-        label: 'Revenue (\u20B9)',
-        data: [],
-        backgroundColor: c => {
-          const area = c.chart.chartArea;
-          if (!area) return 'rgba(239,68,68,0.8)';
-          const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
-          g.addColorStop(0, 'rgba(239,68,68,0.85)');
-          g.addColorStop(1, 'rgba(239,68,68,0.1)');
-          return g;
-        },
-        borderColor: 'rgba(239,68,68,1)',
-        borderWidth: 1,
-        borderRadius: 6,
-        maxBarThickness: 45,
-      }],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
-          borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
-          titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
-          callbacks: { label: c => '\u20B9 ' + Number(c.parsed.y).toLocaleString('en-IN') },
-        },
-      },
-      scales: {
-        y: {
-          beginAtZero: true, grid: { color: '#f1f5f9' },
-          ticks: {
-            color: '#64748b', font: { weight: '600' },
-            callback: v => '\u20B9' + (v >= 1000 ? (+(v / 1000).toFixed(1)) + 'k' : v),
+      function initChart() {
+        const ctx = $("revenueChart").getContext("2d");
+        revenueChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: "Revenue (\u20B9)",
+                data: [],
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return "rgba(239,68,68,0.8)";
+                  const g = c.chart.ctx.createLinearGradient(
+                    0,
+                    area.top,
+                    0,
+                    area.bottom,
+                  );
+                  g.addColorStop(0, "rgba(239,68,68,0.85)");
+                  g.addColorStop(1, "rgba(239,68,68,0.1)");
+                  return g;
+                },
+                borderColor: "rgba(239,68,68,1)",
+                borderWidth: 1,
+                borderRadius: 6,
+                maxBarThickness: 45,
+              },
+            ],
           },
-        },
-        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
-      },
-      animation: { duration: 800, easing: 'easeOutQuart' },
-    },
-  });
-}
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#0f172a",
+                titleColor: "#fff",
+                bodyColor: "#f8fafc",
+                borderColor: "#334155",
+                borderWidth: 1,
+                padding: 12,
+                displayColors: false,
+                titleFont: { size: 13, weight: "bold" },
+                bodyFont: { size: 14, weight: "bold" },
+                callbacks: {
+                  label: (c) =>
+                    "\u20B9 " + Number(c.parsed.y).toLocaleString("en-IN"),
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: "#f1f5f9" },
+                ticks: {
+                  color: "#64748b",
+                  font: { weight: "600" },
+                  callback: (v) =>
+                    "\u20B9" + (v >= 1000 ? +(v / 1000).toFixed(1) + "k" : v),
+                },
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: "#64748b", font: { weight: "600" } },
+              },
+            },
+            animation: { duration: 800, easing: "easeOutQuart" },
+          },
+        });
+      }
 
-const fmtShort = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
+      const fmtShort = (n) =>
+        n >= 1000 ? "\u20B9\u00A0" + (n / 1000).toFixed(1) + "k" : money(n);
 
-async function loadStats() {
-  if (!KEY) return;
-  const { ok, data: s } = await api('/api/stats');
-  if (!ok || !s || s.error) return;
+      async function loadStats() {
+        if (!KEY) return;
+        const { ok, data: s } = await api("/api/stats");
+        if (!ok || !s || s.error) return;
 
-  $('today-sales').textContent        = money(s.todaySales);$('active-order-count').textContent = s.activeOrders ?? 0;
-  $('items-served').textContent       = s.itemsServed ?? 0;
-  $('completed-text').textContent     = `Across ${s.completedOrders ?? 0} completed orders`;
+        $("today-sales").textContent = money(s.todaySales);
+        $("active-order-count").textContent = s.activeOrders ?? 0;
+        $("items-served").textContent = s.itemsServed ?? 0;
+        $("completed-text").textContent =
+          `Across ${s.completedOrders ?? 0} completed orders`;
 
-  if (revenueChart && s.revenue && Array.isArray(s.revenue.labels)) {
-    revenueChart.data.labels           = s.revenue.labels;
-    revenueChart.data.datasets[0].data = s.revenue.values || [];
-    revenueChart.update();
-  }
+        if (revenueChart && s.revenue && Array.isArray(s.revenue.labels)) {
+          revenueChart.data.labels = s.revenue.labels;
+          revenueChart.data.datasets[0].data = s.revenue.values || [];
+          revenueChart.update();
+        }
 
-  if (Array.isArray(s.topSellers)) {
-    $('top-sellers').innerHTML = s.topSellers.length
-      ? s.topSellers.map((t, i) => i === 0
-          ? `<div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
+        if (Array.isArray(s.topSellers)) {
+          $("top-sellers").innerHTML = s.topSellers.length
+            ? s.topSellers
+                .map((t, i) =>
+                  i === 0
+                    ? `<div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
                <div class="flex items-center gap-4">
                  <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-sm font-bold text-white">1</div>
                  <span class="text-sm font-bold text-brand-900">${esc(t.name)}</span></div>
                <span class="text-sm font-extrabold text-brand-600">${fmtShort(t.revenue)}</span></div>`
-          : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+                    : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
                <div class="flex items-center gap-4">
                  <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i + 1}</div>
                  <span class="text-sm font-bold text-slate-700">${esc(t.name)}</span></div>
-               <span class="text-sm font-semibold text-slate-500">${fmtShort(t.revenue)}</span></div>`
-        ).join('')
-      : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
-  }
-}
+               <span class="text-sm font-semibold text-slate-500">${fmtShort(t.revenue)}</span></div>`,
+                )
+                .join("")
+            : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
+        }
+      }
 
-
-
-/* ============================================================
+      /* ============================================================
    MENU
 ============================================================ */
-function setVegUI(isVeg) {
-  $('vegToggle').checked = isVeg;
-  $('vegDot').style.transform = isVeg ? 'translateX(16px)' : 'translateX(0)';
-  $('vegDot').classList.toggle('bg-green-500', isVeg);
-  $('vegDot').classList.toggle('bg-red-500', !isVeg);$('vegTrack').classList.toggle('bg-green-100', isVeg);
-  $('vegTrack').classList.toggle('bg-slate-200', !isVeg);$('vegLabel').textContent = isVeg ? 'Veg' : 'Non-Veg';
-  $('vegLabel').classList.toggle('text-emerald-600', isVeg);$('vegLabel').classList.toggle('text-slate-500', !isVeg);
-}
-$('vegToggle').addEventListener('change', e => setVegUI(e.target.checked));
+      function setVegUI(isVeg) {
+        $("vegToggle").checked = isVeg;
+        $("vegDot").style.transform = isVeg
+          ? "translateX(16px)"
+          : "translateX(0)";
+        $("vegDot").classList.toggle("bg-green-500", isVeg);
+        $("vegDot").classList.toggle("bg-red-500", !isVeg);
+        $("vegTrack").classList.toggle("bg-green-100", isVeg);
+        $("vegTrack").classList.toggle("bg-slate-200", !isVeg);
+        $("vegLabel").textContent = isVeg ? "Veg" : "Non-Veg";
+        $("vegLabel").classList.toggle("text-emerald-600", isVeg);
+        $("vegLabel").classList.toggle("text-slate-500", !isVeg);
+      }
+      $("vegToggle").addEventListener("change", (e) =>
+        setVegUI(e.target.checked),
+      );
 
-const CATEGORIES = [
-  'Soups', 'Salads', 'Veg Starters', 'Non Veg Starters', 'Tandoori / Kebabs', 'Veg Main Course',
-  'Non Veg Main Course', 'Rice Dishes', 'Biryani', 'Thali', 'Fish Fry Side Dishes', 'Noodles', 'Momo',
-  'Thai Special', 'Indian Breads', 'Grilled Sandwiches', 'Wraps', 'Burger Special', 'Delicious Twist',
-  'Pizza Special', 'Mojitos', 'Shakes', 'Fresh Juices', 'Hot Beverages', 'Fruit Salad',
-];
-function fillCategories() {
-  const html = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join('');
-  $('dishCategory').innerHTML = html;
-  $('editCategory').innerHTML = html;
-}
-fillCategories();
+      const CATEGORIES = [
+        "Soups",
+        "Salads",
+        "Veg Starters",
+        "Non Veg Starters",
+        "Tandoori / Kebabs",
+        "Veg Main Course",
+        "Non Veg Main Course",
+        "Rice Dishes",
+        "Biryani",
+        "Thali",
+        "Fish Fry Side Dishes",
+        "Noodles",
+        "Momo",
+        "Thai Special",
+        "Indian Breads",
+        "Grilled Sandwiches",
+        "Wraps",
+        "Burger Special",
+        "Delicious Twist",
+        "Pizza Special",
+        "Mojitos",
+        "Shakes",
+        "Fresh Juices",
+        "Hot Beverages",
+        "Fruit Salad",
+      ];
+      function fillCategories() {
+        const html = CATEGORIES.map((c) => `<option>${esc(c)}</option>`).join(
+          "",
+        );
+        $("dishCategory").innerHTML = html;
+        $("editCategory").innerHTML = html;
+      }
+      fillCategories();
 
-let menuItems = [];
-const menuById = new Map();
-const isVegItem = m => {
-  const value = m.is_veg ?? m.isVeg ?? m.veg;
-  return value === true || value === 'true' || value === 1 || value === '1';
-};
+      let menuItems = [];
+      const menuById = new Map();
+      const isVegItem = (m) => {
+        const value = m.is_veg ?? m.isVeg ?? m.veg;
+        return (
+          value === true || value === "true" || value === 1 || value === "1"
+        );
+      };
 
-const isAvailable = m => {
-  const value = m.is_available ?? m.available;
-  return !(value === false || value === 'false' || value === 0 || value === '0');
-};
+      const isAvailable = (m) => {
+        const value = m.is_available ?? m.available;
+        return !(
+          value === false ||
+          value === "false" ||
+          value === 0 ||
+          value === "0"
+        );
+      };
 
-function normalizeMenuItem(m) {
-  return {
-    ...m,
-    id: m.id,
-    name: m.name ?? m.item_name ?? '',
-    category: m.category ?? 'Uncategorized',
-    price: Number(m.price ?? 0),
-    isVeg: isVegItem(m),
-    is_veg: isVegItem(m),
-    available: isAvailable(m),
-    is_available: isAvailable(m),
-  };
-}
+      function normalizeMenuItem(m) {
+        return {
+          ...m,
+          id: m.id,
+          name: m.name ?? m.item_name ?? "",
+          category: m.category ?? "Uncategorized",
+          price: Number(m.price ?? 0),
+          isVeg: isVegItem(m),
+          is_veg: isVegItem(m),
+          available: isAvailable(m),
+          is_available: isAvailable(m),
+        };
+      }
 
-function renderMenu() {
-  const q = $('menuSearch').value.trim().toLowerCase();
-  const rows = q
-    ? menuItems.filter(m => String(m.name).toLowerCase().includes(q) || String(m.category).toLowerCase().includes(q))
-    : menuItems;
+      function renderMenu() {
+        const q = $("menuSearch").value.trim().toLowerCase();
+        const rows = q
+          ? menuItems.filter(
+              (m) =>
+                String(m.name).toLowerCase().includes(q) ||
+                String(m.category).toLowerCase().includes(q),
+            )
+          : menuItems;
 
-  const soldOut = menuItems.filter(m => !isAvailable(m)).length;
-  $('menuCount').textContent = (q ? `${rows.length} of ${menuItems.length} dishes` : `${menuItems.length} dishes`)
-    + (soldOut ? ` \u00B7 ${soldOut} sold out` : '');
+        const soldOut = menuItems.filter((m) => !isAvailable(m)).length;
+        $("menuCount").textContent =
+          (q
+            ? `${rows.length} of ${menuItems.length} dishes`
+            : `${menuItems.length} dishes`) +
+          (soldOut ? ` \u00B7 ${soldOut} sold out` : "");
 
-  $('menu-table-body').innerHTML = rows.length
-    ? rows.map(m => {
-        const on = isAvailable(m);
-        return `
-        <tr class="hover:bg-slate-50 transition-colors ${on ? '' : 'bg-slate-50'}">
-          <td class="px-5 py-4 font-bold ${on ? 'text-slate-900' : 'text-slate-400'}">${esc(m.name)}${on ? '' : ' <span class="ml-1 text-[10px] font-bold uppercase bg-slate-200 text-slate-500 rounded px-1.5 py-0.5 align-middle">Sold out</span>'}</td>
+        $("menu-table-body").innerHTML = rows.length
+          ? rows
+              .map((m) => {
+                const on = isAvailable(m);
+                return `
+        <tr class="hover:bg-slate-50 transition-colors ${on ? "" : "bg-slate-50"}">
+          <td class="px-5 py-4 font-bold ${on ? "text-slate-900" : "text-slate-400"}">${esc(m.name)}${on ? "" : ' <span class="ml-1 text-[10px] font-bold uppercase bg-slate-200 text-slate-500 rounded px-1.5 py-0.5 align-middle">Sold out</span>'}</td>
           <td class="px-5 py-4 font-medium text-slate-600">${esc(m.category)}</td>
           <td class="px-5 py-4 font-medium whitespace-nowrap">
-            <span class="inline-block w-2.5 h-2.5 rounded-full ${isVegItem(m) ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>${isVegItem(m) ? 'Veg' : 'Non-Veg'}
+            <span class="inline-block w-2.5 h-2.5 rounded-full ${isVegItem(m) ? "bg-green-500" : "bg-red-500"} mr-2 shadow-sm"></span>${isVegItem(m) ? "Veg" : "Non-Veg"}
           </td>
           <td class="px-5 py-4 font-bold text-slate-900 whitespace-nowrap">${money(m.price)}</td>
           <td class="px-5 py-4">
-            <button type="button" role="switch" aria-checked="${on}" aria-label="${on ? 'Mark ' : 'Put back: '}${esc(m.name)}${on ? ' sold out' : ''}" data-act="toggle" data-id="${esc(m.id)}"
-              class="relative inline-flex h-6 w-11 items-center rounded-full border transition-colors cursor-pointer ${on ? 'bg-emerald-500 border-emerald-500' : 'bg-slate-200 border-slate-300'}">
-              <span class="inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-6' : 'translate-x-1'}"></span>
+            <button type="button" role="switch" aria-checked="${on}" aria-label="${on ? "Mark " : "Put back: "}${esc(m.name)}${on ? " sold out" : ""}" data-act="toggle" data-id="${esc(m.id)}"
+              class="relative inline-flex h-6 w-11 items-center rounded-full border transition-colors cursor-pointer ${on ? "bg-emerald-500 border-emerald-500" : "bg-slate-200 border-slate-300"}">
+              <span class="inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${on ? "translate-x-6" : "translate-x-1"}"></span>
             </button>
           </td>
           <td class="px-5 py-4 text-right whitespace-nowrap">
@@ -876,269 +1423,432 @@ function renderMenu() {
               class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">Delete</button>
           </td>
         </tr>`;
-      }).join('')
-    : `<tr><td colspan="6" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? 'No dishes match your search.' : 'No menu items yet. Add one above, or use Import dishes.'}</td></tr>`;
-}
+              })
+              .join("")
+          : `<tr><td colspan="6" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? "No dishes match your search." : "No menu items yet. Add one above, or use Import dishes."}</td></tr>`;
+      }
 
-async function loadMenu() {
-  if (!KEY) return;
-  const { ok, data } = await api('/api/menu');
-  const list = Array.isArray(data)
-    ? data
-    : (data && (Array.isArray(data.menu) ? data.menu : Array.isArray(data.items) ? data.items : Array.isArray(data.menu_items) ? data.menu_items : null));
-  if (!ok || !list) {
-    if (KEY) $('menu-table-body').innerHTML = '<tr><td colspan="6" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
-    return;
-  }
-  menuItems = list.map(normalizeMenuItem);
-  menuById.clear();
-  menuItems.forEach(m => menuById.set(String(m.id), m));
-  renderMenu();
-}
+      async function loadMenu() {
+        if (!KEY) return;
+        const { ok, data } = await api("/api/menu");
+        const list = Array.isArray(data)
+          ? data
+          : data &&
+            (Array.isArray(data.menu)
+              ? data.menu
+              : Array.isArray(data.items)
+                ? data.items
+                : Array.isArray(data.menu_items)
+                  ? data.menu_items
+                  : null);
+        if (!ok || !list) {
+          if (KEY)
+            $("menu-table-body").innerHTML =
+              '<tr><td colspan="6" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
+          return;
+        }
+        menuItems = list.map(normalizeMenuItem);
+        menuById.clear();
+        menuItems.forEach((m) => menuById.set(String(m.id), m));
+        renderMenu();
+      }
 
-$('menuSearch').addEventListener('input', renderMenu);
+      $("menuSearch").addEventListener("input", renderMenu);
 
-/* Add dish */
-$('add-menu-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = $('addBtn');
-  const body = {
-    name:         $('dishName').value.trim(),
-    price:        Number($('dishPrice').value),
-    category:     $('dishCategory').value,
-    isVeg:        $('vegToggle').checked,
-    is_veg:       $('vegToggle').checked,
-    available:    true,
-    is_available: true,
-  };
-  if (!body.name) return showToast('Enter a dish name', 'error');
-  if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
+      /* Add dish */
+      $("add-menu-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("addBtn");
+        const body = {
+          name: $("dishName").value.trim(),
+          price: Number($("dishPrice").value),
+          category: $("dishCategory").value,
+          isVeg: $("vegToggle").checked,
+          is_veg: $("vegToggle").checked,
+          available: true,
+          is_available: true,
+        };
+        if (!body.name) return showToast("Enter a dish name", "error");
+        if (!Number.isInteger(body.price) || body.price < 0)
+          return showToast("Price must be a whole number", "error");
 
-  btn.disabled = true;
-  const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
-  btn.disabled = false;
+        btn.disabled = true;
+        const { ok, data } = await api("/api/menu", {
+          method: "POST",
+          body: JSON.stringify(body),
+        });
+        btn.disabled = false;
 
-  if (!ok) {
-    const err = String((data && data.error) || '');
-    return showToast(/duplicate|exists|unique/i.test(err) ? 'This dish already exists' : (err || 'Could not add dish'), 'error');
-  }
-  $('add-menu-form').reset();
-  setVegUI(false);
-  showToast(`"${body.name}" added to menu`);
-  loadMenu();
-});
+        if (!ok) {
+          const err = String((data && data.error) || "");
+          return showToast(
+            /duplicate|exists|unique/i.test(err)
+              ? "This dish already exists"
+              : err || "Could not add dish",
+            "error",
+          );
+        }
+        $("add-menu-form").reset();
+        setVegUI(false);
+        showToast(`"${body.name}" added to menu`);
+        loadMenu();
+      });
 
-/* Menu table buttons (event delegation) */
-let editingId = null;
-const togglingIds = new Set();
+      /* Menu table buttons (event delegation) */
+      let editingId = null;
+      const togglingIds = new Set();
 
-function setSelect(sel, value) {
-  if (![...sel.options].some(o => o.value === value)) sel.add(new Option(value, value));  // keep custom categories
-  sel.value = value;
-}
+      function setSelect(sel, value) {
+        if (![...sel.options].some((o) => o.value === value))
+          sel.add(new Option(value, value)); // keep custom categories
+        sel.value = value;
+      }
 
-async function toggleAvailable(m) {
-  const id = String(m.id);
-  if (togglingIds.has(id)) return;
-  togglingIds.add(id);
-  const next = !isAvailable(m);
-  m.available = next;
-  m.is_available = next;
-  renderMenu();                                   // instant feedback
-  const { ok, data } = await api('/api/menu/' + encodeURIComponent(id), {
-    method: 'PATCH', body: JSON.stringify({ available: next, is_available: next }),
-  });
-  togglingIds.delete(id);
-  if (ok) {
-    showToast(next ? `"${m.name}" is back on the menu` : `"${m.name}" marked sold out`);
-  } else {
-    m.available = !next;                          // put it back
-    m.is_available = !next;
-    renderMenu();
-    if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not change availability', 'error');
-  }
-}
+      async function toggleAvailable(m) {
+        const id = String(m.id);
+        if (togglingIds.has(id)) return;
+        togglingIds.add(id);
+        const next = !isAvailable(m);
+        m.available = next;
+        m.is_available = next;
+        renderMenu(); // instant feedback
+        const { ok, data } = await api("/api/menu/" + encodeURIComponent(id), {
+          method: "PATCH",
+          body: JSON.stringify({ available: next, is_available: next }),
+        });
+        togglingIds.delete(id);
+        if (ok) {
+          showToast(
+            next
+              ? `"${m.name}" is back on the menu`
+              : `"${m.name}" marked sold out`,
+          );
+        } else {
+          m.available = !next; // put it back
+          m.is_available = !next;
+          renderMenu();
+          if (KEY)
+            showToast(
+              data && data.error
+                ? String(data.error)
+                : "Could not change availability",
+              "error",
+            );
+        }
+      }
 
-async function deleteDish(m) {
-  const yes = await askConfirm({
-    title: 'Delete this dish?',
-    text: `"${m.name}" will be removed from the menu. This cannot be undone. If it is only unavailable for now, mark it sold out instead.`,
-    okLabel: 'Delete dish', cancelLabel: 'Keep it',
-  });
-  if (!yes) return;
-  const { ok, data } = await api('/api/menu/' + encodeURIComponent(m.id), { method: 'DELETE' });
-  if (ok) { showToast(`"${m.name}" removed`); loadMenu(); }
-  else if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not delete item', 'error');
-}
+      async function deleteDish(m) {
+        const yes = await askConfirm({
+          title: "Delete this dish?",
+          text: `"${m.name}" will be removed from the menu. This cannot be undone. If it is only unavailable for now, mark it sold out instead.`,
+          okLabel: "Delete dish",
+          cancelLabel: "Keep it",
+        });
+        if (!yes) return;
+        const { ok, data } = await api(
+          "/api/menu/" + encodeURIComponent(m.id),
+          { method: "DELETE" },
+        );
+        if (ok) {
+          showToast(`"${m.name}" removed`);
+          loadMenu();
+        } else if (KEY)
+          showToast(
+            data && data.error ? String(data.error) : "Could not delete item",
+            "error",
+          );
+      }
 
-$('menu-table-body').addEventListener('click', e => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
-  const m = menuById.get(btn.dataset.id);
-  if (!m) return;
-  if (btn.dataset.act === 'toggle') return toggleAvailable(m);
-  if (btn.dataset.act === 'delete') return deleteDish(m);
-  editingId = String(m.id);
-  $('editName').value  = m.name;
-  $('editPrice').value = m.price;
-  setSelect($('editCategory'), m.category);$('editVeg').checked = isVegItem(m);
-  openModal('editModal');
-  setTimeout(() => $('editName').focus(), 50);
-});
+      $("menu-table-body").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-act]");
+        if (!btn) return;
+        const m = menuById.get(btn.dataset.id);
+        if (!m) return;
+        if (btn.dataset.act === "toggle") return toggleAvailable(m);
+        if (btn.dataset.act === "delete") return deleteDish(m);
+        editingId = String(m.id);
+        $("editName").value = m.name;
+        $("editPrice").value = m.price;
+        setSelect($("editCategory"), m.category);
+        $("editVeg").checked = isVegItem(m);
+        openModal("editModal");
+        setTimeout(() => $("editName").focus(), 50);
+      });
 
-/* Edit dish */
-$('editForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const body = {
-    name:     $('editName').value.trim(),
-    price:    Number($('editPrice').value),
-    category: $('editCategory').value,
-    isVeg:    $('editVeg').checked,
-    is_veg:   $('editVeg').checked,
-  };
-  if (!body.name) return showToast('Enter a dish name', 'error');
-  if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
+      /* Edit dish */
+      $("editForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const body = {
+          name: $("editName").value.trim(),
+          price: Number($("editPrice").value),
+          category: $("editCategory").value,
+          isVeg: $("editVeg").checked,
+          is_veg: $("editVeg").checked,
+        };
+        if (!body.name) return showToast("Enter a dish name", "error");
+        if (!Number.isInteger(body.price) || body.price < 0)
+          return showToast("Price must be a whole number", "error");
 
-  const btn = $('editSaveBtn');
-  btn.disabled = true;
-  const { ok, data } = await api('/api/menu/' + encodeURIComponent(editingId), {
-    method: 'PATCH', body: JSON.stringify(body),
-  });
-  btn.disabled = false;
+        const btn = $("editSaveBtn");
+        btn.disabled = true;
+        const { ok, data } = await api(
+          "/api/menu/" + encodeURIComponent(editingId),
+          {
+            method: "PATCH",
+            body: JSON.stringify(body),
+          },
+        );
+        btn.disabled = false;
 
-  if (ok) { closeModal('editModal'); showToast('Menu item updated'); loadMenu(); }
-  else showToast((data && data.error) ? String(data.error) : 'Could not update item', 'error');
-});
+        if (ok) {
+          closeModal("editModal");
+          showToast("Menu item updated");
+          loadMenu();
+        } else
+          showToast(
+            data && data.error ? String(data.error) : "Could not update item",
+            "error",
+          );
+      });
 
-/* Import dishes (paste from Excel / Google Sheets / typed) */
-const normKey   = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-const CAT_LOOKUP = new Map(CATEGORIES.map(c => [normKey(c), c]));
-const VEG_YES = new Set(['veg', 'v', 'vegetarian', 'yes', 'y', 'true', '1']);
-const VEG_NO  = new Set(['nonveg', 'nv', 'nonvegetarian', 'no', 'n', 'false', '0']);
+      /* Import dishes (paste from Excel / Google Sheets / typed) */
+      const normKey = (s) =>
+        String(s ?? "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "");
+      const CAT_LOOKUP = new Map(CATEGORIES.map((c) => [normKey(c), c]));
+      const VEG_YES = new Set([
+        "veg",
+        "v",
+        "vegetarian",
+        "yes",
+        "y",
+        "true",
+        "1",
+      ]);
+      const VEG_NO = new Set([
+        "nonveg",
+        "nv",
+        "nonvegetarian",
+        "no",
+        "n",
+        "false",
+        "0",
+      ]);
 
-function parseImport(text) {
-  const dishes = [], problems = [];
-  let first = true;
-  text.split(/\r?\n/).forEach((line, idx) => {
-    if (!line.trim()) return;
-    const cols = (line.includes('\t') ? line.split('\t') : line.includes('|') ? line.split('|') : line.split(','))
-      .map(c => c.trim());
-    const [name, priceRaw, catRaw, vegRaw] = cols;
-    const price = parseFloat(String(priceRaw ?? '').replace(/[^\d.]/g, ''));
-    const isHeader = first && /^(dish|name|item)/i.test(name || '') && Number.isNaN(price);
-    first = false;
-    if (isHeader) return;
+      function parseImport(text) {
+        const dishes = [],
+          problems = [];
+        let first = true;
+        text.split(/\r?\n/).forEach((line, idx) => {
+          if (!line.trim()) return;
+          const cols = (
+            line.includes("\t")
+              ? line.split("\t")
+              : line.includes("|")
+                ? line.split("|")
+                : line.split(",")
+          ).map((c) => c.trim());
+          const [name, priceRaw, catRaw, vegRaw] = cols;
+          const price = parseFloat(
+            String(priceRaw ?? "").replace(/[^\d.]/g, ""),
+          );
+          const isHeader =
+            first &&
+            /^(dish|name|item)/i.test(name || "") &&
+            Number.isNaN(price);
+          first = false;
+          if (isHeader) return;
 
-    const n = idx + 1;
-    const cat = CAT_LOOKUP.get(normKey(catRaw));
-    const vk = normKey(vegRaw);
-    if (!name)                                    return problems.push(`Line ${n}: dish name is missing`);
-    if (name.length > 80)                         return problems.push(`Line ${n}: name is too long`);
-    if (!Number.isInteger(price) || price < 0)    return problems.push(`Line ${n} (${name}): price must be a whole number`);
-    if (!cat)                                     return problems.push(`Line ${n} (${name}): unknown category "${catRaw || ''}"`);
-    if (!VEG_YES.has(vk) && !VEG_NO.has(vk))      return problems.push(`Line ${n} (${name}): write veg or nonveg`);
-    const isVeg = VEG_YES.has(vk);
-    dishes.push({ name, price, category: cat, isVeg, is_veg: isVeg, available: true, is_available: true });
-  });
-  return { dishes, problems };
-}
+          const n = idx + 1;
+          const cat = CAT_LOOKUP.get(normKey(catRaw));
+          const vk = normKey(vegRaw);
+          if (!name) return problems.push(`Line ${n}: dish name is missing`);
+          if (name.length > 80)
+            return problems.push(`Line ${n}: name is too long`);
+          if (!Number.isInteger(price) || price < 0)
+            return problems.push(
+              `Line ${n} (${name}): price must be a whole number`,
+            );
+          if (!cat)
+            return problems.push(
+              `Line ${n} (${name}): unknown category "${catRaw || ""}"`,
+            );
+          if (!VEG_YES.has(vk) && !VEG_NO.has(vk))
+            return problems.push(`Line ${n} (${name}): write veg or nonveg`);
+          const isVeg = VEG_YES.has(vk);
+          dishes.push({
+            name,
+            price,
+            category: cat,
+            isVeg,
+            is_veg: isVeg,
+            available: true,
+            is_available: true,
+          });
+        });
+        return { dishes, problems };
+      }
 
-function refreshImportPreview() {
-  const { dishes, problems } = parseImport($('importText').value);
-  const pv = $('importPreview');
-  if (!$('importText').value.trim()) {
-    pv.textContent = ''; pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500';
-  } else if (dishes.length > 500) {
-    pv.textContent = 'Import up to 500 dishes at a time'; pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] text-red-500';
-  } else {
-    pv.textContent = `${dishes.length} dish${dishes.length === 1 ? '' : 'es'} ready` + (problems.length ? ` \u00B7 ${problems.length} line${problems.length === 1 ? '' : 's'} will be skipped` : '');
-    pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] ' + (dishes.length ? 'text-emerald-600' : 'text-red-500');
-  }
-  $('importProblems').innerHTML = problems.slice(0, 20).map(p => `<div>${esc(p)}</div>`).join('')
-    + (problems.length > 20 ? `<div>\u2026and ${problems.length - 20} more</div>` : '');
-  $('importBtn').disabled = dishes.length === 0 || dishes.length > 500;
-}
+      function refreshImportPreview() {
+        const { dishes, problems } = parseImport($("importText").value);
+        const pv = $("importPreview");
+        if (!$("importText").value.trim()) {
+          pv.textContent = "";
+          pv.className =
+            "text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500";
+        } else if (dishes.length > 500) {
+          pv.textContent = "Import up to 500 dishes at a time";
+          pv.className =
+            "text-xs font-semibold mt-2 min-h-[1.25rem] text-red-500";
+        } else {
+          pv.textContent =
+            `${dishes.length} dish${dishes.length === 1 ? "" : "es"} ready` +
+            (problems.length
+              ? ` \u00B7 ${problems.length} line${problems.length === 1 ? "" : "s"} will be skipped`
+              : "");
+          pv.className =
+            "text-xs font-semibold mt-2 min-h-[1.25rem] " +
+            (dishes.length ? "text-emerald-600" : "text-red-500");
+        }
+        $("importProblems").innerHTML =
+          problems
+            .slice(0, 20)
+            .map((p) => `<div>${esc(p)}</div>`)
+            .join("") +
+          (problems.length > 20
+            ? `<div>\u2026and ${problems.length - 20} more</div>`
+            : "");
+        $("importBtn").disabled = dishes.length === 0 || dishes.length > 500;
+      }
 
-$('importCats').textContent = CATEGORIES.join(' \u00B7 ');
-$('importText').addEventListener('input', refreshImportPreview);
-$('importOpenBtn').addEventListener('click', () => { openModal('importModal'); refreshImportPreview(); setTimeout(() =>$('importText').focus(), 50); });
+      $("importCats").textContent = CATEGORIES.join(" \u00B7 ");
+      $("importText").addEventListener("input", refreshImportPreview);
+      $("importOpenBtn").addEventListener("click", () => {
+        openModal("importModal");
+        refreshImportPreview();
+        setTimeout(() => $("importText").focus(), 50);
+      });
 
-$('importBtn').addEventListener('click', async () => {
-  const { dishes } = parseImport($('importText').value);
-  if (!dishes.length) return;
-  const btn = $('importBtn');
-  btn.disabled = true; btn.textContent = 'Importing\u2026';
-  const res = await api('/api/menu', { method: 'POST', body: JSON.stringify({ items: dishes }) });
-  btn.textContent = 'Import dishes';
-  if (res.ok) {
-    const skipped = (res.data.skipped || []).length;
-    closeModal('importModal');
-    $('importText').value = '';
-    showToast(`${res.data.added} dish${res.data.added === 1 ? '' : 'es'} added` + (skipped ? ` \u00B7 ${skipped} already on the menu` : ''));
-    loadMenu();
-  } else {
-    btn.disabled = false;
-    showToast((res.data && res.data.error) ? String(res.data.error) : 'Could not import dishes', 'error');
-  }
-});
+      $("importBtn").addEventListener("click", async () => {
+        const { dishes } = parseImport($("importText").value);
+        if (!dishes.length) return;
+        const btn = $("importBtn");
+        btn.disabled = true;
+        btn.textContent = "Importing\u2026";
+        const res = await api("/api/menu", {
+          method: "POST",
+          body: JSON.stringify({ items: dishes }),
+        });
+        btn.textContent = "Import dishes";
+        if (res.ok) {
+          const skipped = (res.data.skipped || []).length;
+          closeModal("importModal");
+          $("importText").value = "";
+          showToast(
+            `${res.data.added} dish${res.data.added === 1 ? "" : "es"} added` +
+              (skipped ? ` \u00B7 ${skipped} already on the menu` : ""),
+          );
+          loadMenu();
+        } else {
+          btn.disabled = false;
+          showToast(
+            res.data && res.data.error
+              ? String(res.data.error)
+              : "Could not import dishes",
+            "error",
+          );
+        }
+      });
 
-/* Confirm dialog: askConfirm({...}) resolves true / false */
-let confirmResolve = null;
-function askConfirm({ title, text, okLabel = 'Confirm', cancelLabel = 'Cancel' }) {
-  return new Promise(resolve => {
-    if (confirmResolve) confirmResolve(false);
-    confirmResolve = resolve;
-    $('confirmTitle').textContent = title;
-    $('confirmText').textContent  = text;
-    $('confirmOkBtn').textContent = okLabel;
-    $('confirmCancelBtn').textContent = cancelLabel;
-    openModal('confirmModal');
-    setTimeout(() => $('confirmCancelBtn').focus(), 50);   }); }$('confirmOkBtn').addEventListener('click', () => {
-  const r = confirmResolve; confirmResolve = null;
-  $('confirmModal').style.display = 'none';
-  if (r) r(true);
-});
-$('confirmCancelBtn').addEventListener('click', () => closeModal('confirmModal'));
+      /* Confirm dialog: askConfirm({...}) resolves true / false */
+      let confirmResolve = null;
+      function askConfirm({
+        title,
+        text,
+        okLabel = "Confirm",
+        cancelLabel = "Cancel",
+      }) {
+        return new Promise((resolve) => {
+          if (confirmResolve) confirmResolve(false);
+          confirmResolve = resolve;
+          $("confirmTitle").textContent = title;
+          $("confirmText").textContent = text;
+          $("confirmOkBtn").textContent = okLabel;
+          $("confirmCancelBtn").textContent = cancelLabel;
+          openModal("confirmModal");
+          setTimeout(() => $("confirmCancelBtn").focus(), 50);
+        });
+      }
+      $("confirmOkBtn").addEventListener("click", () => {
+        const r = confirmResolve;
+        confirmResolve = null;
+        $("confirmModal").style.display = "none";
+        if (r) r(true);
+      });
+      $("confirmCancelBtn").addEventListener("click", () =>
+        closeModal("confirmModal"),
+      );
 
-/* Modal helpers */
-function openModal(id)  { $(id).style.display = 'flex'; }
-function closeModal(id) {
-  $(id).style.display = 'none';
-  if (id === 'confirmModal' && confirmResolve) { const r = confirmResolve; confirmResolve = null; r(false); }
-}
-const MODALS = ['editModal', 'confirmModal', 'importModal'];
-document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.close)));
-MODALS.forEach(id => $(id).addEventListener('click', e => { if (e.target ===$(id)) closeModal(id); }));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') MODALS.forEach(closeModal); });
+      /* Modal helpers */
+      function openModal(id) {
+        $(id).style.display = "flex";
+      }
+      function closeModal(id) {
+        $(id).style.display = "none";
+        if (id === "confirmModal" && confirmResolve) {
+          const r = confirmResolve;
+          confirmResolve = null;
+          r(false);
+        }
+      }
+      const MODALS = ["editModal", "confirmModal", "importModal"];
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) =>
+          b.addEventListener("click", () => closeModal(b.dataset.close)),
+        );
+      MODALS.forEach((id) =>
+        $(id).addEventListener("click", (e) => {
+          if (e.target === $(id)) closeModal(id);
+        }),
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") MODALS.forEach(closeModal);
+      });
 
-/* ============================================================
+      /* ============================================================
    STARTUP
 ============================================================ */
-function startApp() {
-  $('loginScreen').style.display  = 'none';
-  $('dashboardApp').style.display = 'flex';$('loginError').textContent = '';
+      function startApp() {
+        $("loginScreen").style.display = "none";
+        $("dashboardApp").style.display = "flex";
+        $("loginError").textContent = "";
 
-  if (!revenueChart) initChart();
+        if (!revenueChart) initChart();
 
-  loadOrders(true);
-  loadStats();
-  loadMenu();
+        loadOrders(true);
+        loadStats();
+        loadMenu();
 
-  stopPolling();
-  timers = [
-    setInterval(loadOrders, CONFIG.ORDERS_POLL_MS),
-    setInterval(loadStats,  CONFIG.STATS_POLL_MS),
-    setInterval(tickTimes,  30000),
-  ];
-}
+        stopPolling();
+        timers = [
+          setInterval(loadOrders, CONFIG.ORDERS_POLL_MS),
+          setInterval(loadStats, CONFIG.STATS_POLL_MS),
+          setInterval(tickTimes, 30000),
+        ];
+      }
 
-/* Refresh immediately when the owner comes back to this tab */
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && KEY) { loadOrders(); loadStats(); }
-});
+      /* Refresh immediately when the owner comes back to this tab */
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && KEY) {
+          loadOrders();
+          loadStats();
+        }
+      });
 
-if (KEY) startApp(); else showLogin();
-</script>
-
-</body>
+      if (KEY) startApp();
+      else showLogin();
+    </script>
+  </body>
 </html>
