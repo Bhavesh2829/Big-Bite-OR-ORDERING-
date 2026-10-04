@@ -4039,7 +4039,7 @@ async function placeOrder() {
         sig:            tableSig,
         idempotencyKey: idemKey,
         note:           ($("orderNote")?.value || "").trim(),
-        items:          cart.map(i => ({ name: i.base, size: i.size, extraCheese: i.extraCheese, qty: i.qty })),
+        items:          cart.map(i => ({ name: i.base, size: i.size, extraCheese: i.extraCheese, qty: i.qty, price: i.price || 0 })),
       }),
     });
 
