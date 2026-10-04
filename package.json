@@ -1,5 +1,0 @@
-{
-  "name": "big-bite",
-  "version": "1.0.0",
-  "dependencies": { "@supabase/supabase-js": "^2.45.0" }
-}

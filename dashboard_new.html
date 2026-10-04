@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Bite · Owner Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] },
+        colors: { brand: { 50:'#fef2f2',100:'#fee2e2',500:'#ef4444',600:'#dc2626' } } } }
+    };
+  </script>
+
+  <style>
+    body { background:#f8fafc; color:#0f172a; }
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:#f1f5f9; }
+    ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
+    ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
+    @keyframes slideIn  { from { transform:translateY(100%); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    @keyframes fadeOut  { from { opacity:1; } to { opacity:0; } }
+    .toast-enter { animation: slideIn 0.3s ease-out forwards; }
+    .toast-exit  { animation: fadeOut 0.3s ease-out forwards; }
+    #loginScreen { display:flex; }
+  </style>
+</head>
+
+<body class="min-h-screen antialiased font-sans">
+
+<!-- ============================================================
+     LOGIN / AUTH GATE
+     Owner opens: https://yoursite.vercel.app/dashboard.html?key=SECRET
+     The key is read from URL and sent as x-owner-key header on every request.
+     If missing or wrong, this screen is shown.
+============================================================ -->
+<div id="loginScreen" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
+    <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-red-500"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2 class="text-xl font-black text-slate-900 mb-1">Owner Access Required</h2>
+    <p class="text-sm text-slate-500 mb-6">Open this page using your unique private dashboard link.</p>
+    <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 text-left mb-4">
+      <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Your link format</p>
+      <p class="text-xs font-mono text-slate-700 break-all">https://yourdomain.vercel.app/dashboard.html?key=<span class="text-red-500">YOUR_SECRET_KEY</span></p>
+    </div>
+    <p class="text-xs text-slate-400">Contact your developer if you lost your link.</p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     MAIN DASHBOARD
+============================================================ -->
+<div id="dashboardApp" class="hidden min-h-screen p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
+    <div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
+        Big Bite <span class="text-brand-500">.</span>
+      </h1>
+      <div class="mt-2 flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">QR Ordering System</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-semibold uppercase tracking-wide">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          Live Dashboard
+        </span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Auto-refresh indicator -->
+      <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+        <span id="refreshDot" class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="refreshLabel">Live</span>
+      </div>
+      <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">
+        Powered by <span class="text-slate-600">Webtizo Studio</span>
+      </div>
+      <div class="h-8 w-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- ── ROW 1: Stats Cards ── -->
+    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
+        <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&mdash;</div>
+        <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 s</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
+          Active Orders
+          <span class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
+        </h3>
+        <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
+        <div class="text-xs text-slate-500 mt-2 font-medium">Currently being prepared</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
+        <div class="text-3xl font-extrabold text-slate-900" id="items-served">&mdash;</div>
+        <div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Loading&hellip;</div>
+      </div>
+    </div>
+
+    <!-- ── ROW 2 Col 1: Live Orders (2/3 width) ── -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-lg font-bold text-slate-900">Incoming Orders</h2>
+        <button onclick="loadOrders()" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">Refresh</button>
+      </div>
+      <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="live-orders-container">
+        <!-- orders rendered by JS -->
+        <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
+          <div class="w-8 h-8 border-2 border-slate-200 border-t-brand-500 rounded-full animate-spin mb-4"></div>
+          <p class="text-sm font-medium">Loading orders&hellip;</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROW 2 Col 2: Revenue Chart ── -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
+      <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
+      <div class="flex-1 relative">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ── ROW 3 Col 1: Menu Configuration (2/3 width) ── -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
+      <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
+
+      <!-- Add Item Form -->
+      <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end" onsubmit="addMenuItem(event)">
+        <div class="flex-1 w-full">
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
+          <input type="text" id="dishName" required
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
+            placeholder="e.g. Tandoori Chicken" />
+        </div>
+        <div class="w-full md:w-32">
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
+          <input type="number" id="dishPrice" min="0" required
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"
+            placeholder="0" />
+        </div>
+        <div class="w-full md:w-48">
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
+          <select id="dishCategory"
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm appearance-none">
+            <option>Soups</option>
+            <option>Salads</option>
+            <option>Veg Starters</option>
+            <option>Non Veg Starters</option>
+            <option>Tandoori / Kebabs</option>
+            <option>Veg Main Course</option>
+            <option>Non Veg Main Course</option>
+            <option>Rice Dishes</option>
+            <option>Biryani</option>
+            <option>Thali</option>
+            <option>Fish Fry Side Dishes</option>
+            <option>Noodles</option>
+            <option>Momo</option>
+            <option>Thai Special</option>
+            <option>Indian Breads</option>
+            <option>Grilled Sandwiches</option>
+            <option>Wraps</option>
+            <option>Burger Special</option>
+            <option>Delicious Twist</option>
+            <option>Pizza Special</option>
+            <option>Mojitos</option>
+            <option>Shakes</option>
+            <option>Fresh Juices</option>
+            <option>Hot Beverages</option>
+            <option>Fruit Salad</option>
+          </select>
+        </div>
+        <div class="w-full md:w-auto flex flex-col justify-center pb-2">
+          <label class="flex items-center cursor-pointer gap-3 select-none">
+            <div class="relative">
+              <input type="checkbox" id="vegToggle" class="sr-only" />
+              <div class="block bg-slate-200 w-10 h-6 rounded-full border border-slate-300 shadow-inner"></div>
+              <div id="vegDot" class="absolute left-1 top-1 bg-red-500 w-4 h-4 rounded-full transition-transform duration-200 shadow-sm"></div>
+            </div>
+            <span class="text-xs font-bold text-slate-500 uppercase" id="vegLabel">Non-Veg</span>
+          </label>
+        </div>
+        <div class="w-full md:w-auto">
+          <button type="submit" class="w-full md:w-auto bg-brand-500 text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-sm transition-colors">
+            ADD ITEM
+          </button>
+        </div>
+      </form>
+
+      <!-- Menu Table -->
+      <div class="overflow-x-auto rounded-lg border border-slate-200">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
+            <tr>
+              <th class="px-5 py-4">Dish Name</th>
+              <th class="px-5 py-4">Category</th>
+              <th class="px-5 py-4">Type</th>
+              <th class="px-5 py-4">Price</th>
+              <th class="px-5 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="menu-table-body" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ROW 3 Col 2: Top Sellers ── -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1">
+      <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
+      <div class="space-y-3" id="top-sellers">
+        <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+
+<!-- Toast Container -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+
+<script>
+"use strict";
+
+/* ============================================================
+   BACKEND CONFIG
+   ──────────────────────────────────────────────────────────
+   API_BASE   : Leave empty if frontend & backend on same domain.
+                Set to "https://yourapp.vercel.app" for separate deploy.
+
+   OWNER AUTH : The owner opens dashboard.html?key=SECRET_KEY
+                The key is sent as the x-owner-key header on every
+                API request. Your backend must validate it.
+                Generate your key: crypto.randomUUID() in browser console,
+                or use any random string (32+ chars).
+
+   REFRESH    : Intervals in ms for auto-polling.
+
+   API ENDPOINTS USED:
+     GET    /api/orders            — list pending orders (auth required)
+     PATCH  /api/orders/:id        — update order status (auth required)
+     GET    /api/stats             — dashboard stats    (auth required)
+     GET    /api/menu              — list menu items    (auth required)
+     POST   /api/menu              — add menu item      (auth required)
+     PATCH  /api/menu/:id          — edit menu item     (auth required)
+     DELETE /api/menu/:id          — delete menu item   (auth required)
+
+   PATCH /api/orders/:id body:    { status: "preparing"|"cancelled" }
+   POST  /api/menu body:          { name, price, category, isVeg }
+   PATCH /api/menu/:id body:      { name?, price? }
+============================================================ */
+const CONFIG = {
+  API_BASE:            "",     // ← "https://yourapi.vercel.app" if separate
+  ORDERS_POLL_MS:      5000,   // how often to refresh incoming orders
+  STATS_POLL_MS:       15000,  // how often to refresh stats & chart
+};
+
+/* ============================================================
+   AUTH: read key from URL ?key=
+   Owner bookmark: https://yourdomain.vercel.app/dashboard.html?key=SECRET
+============================================================ */
+const KEY = new URLSearchParams(location.search).get('key') || '';
+
+if (!KEY) {
+  document.getElementById('loginScreen').style.display = 'flex';
+} else {
+  document.getElementById('dashboardApp').classList.remove('hidden');
+}
+
+/* ============================================================
+   API HELPER
+   Returns: { ok: true/false, data: parsed JSON, status: HTTP status }
+============================================================ */
+async function api(path, opt = {}) {
+  try {
+    const res = await fetch(CONFIG.API_BASE + path, {
+      ...opt,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-owner-key':  KEY,
+        ...(opt.headers || {}),
+      },
+    });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    console.error('[API]', path, e);
+    return { ok: false, status: 0, data: {} };
+  }
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+const $     = id => document.getElementById(id);
+const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
+const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function timeAgo(iso) {
+  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1)  return 'Just now';
+  if (m < 60) return m + ' min ago';
+  return Math.floor(m / 60) + ' hr ago';
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(message, type = 'success') {
+  const container  = $('toast-container');
+  const isSuccess  = type === 'success';
+  const iconSvg    = isSuccess
+    ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+    : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+  const iconCls  = isSuccess ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50';
+  const bordrCls = isSuccess ? 'border-emerald-200'             : 'border-red-200';
+
+  const toast = document.createElement('div');
+  toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${bordrCls} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
+  toast.innerHTML = `<div class="${iconCls} p-1 rounded-full">${iconSvg}</div><div>${esc(message)}</div>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.replace('toast-enter', 'toast-exit');
+    setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 300);
+  }, 3000);
+}
+
+/* ============================================================
+   LIVE ORDERS
+============================================================ */
+const EMPTY_ORDERS = `
+  <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
+  </div>`;
+
+function renderOrder(o) {
+  const itemsHtml = o.items.map(i => {
+    const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
+    const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
+    return `<li class="flex justify-between">
+      <span class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full ${dot}"></span>
+        ${i.qty}&times; ${esc(i.name)}${extra ? ` <span class="text-xs text-slate-400">(${esc(extra)})</span>` : ''}
+      </span>
+      <span class="text-slate-500">${money(i.price * i.qty)}</span>
+    </li>`;
+  }).join('');
+
+  const noteHtml = o.note
+    ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
+    : '<div class="mb-2"></div>';
+
+  return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm" id="order-${o.id}">
+    <div class="flex justify-between items-start mb-4">
+      <div class="flex items-center gap-3">
+        <span class="bg-brand-50 border border-brand-200 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">TABLE ${String(o.table).padStart(2,'0')}</span>
+        <span class="text-xs font-medium text-slate-500">#${esc(String(o.orderNo))} &middot; ${timeAgo(o.createdAt)}</span>
+      </div>
+      <span class="text-sm font-extrabold text-slate-900">${money(o.total)}</span>
+    </div>
+    <ul class="text-sm text-slate-700 space-y-2 mb-3 font-medium">${itemsHtml}</ul>
+    ${noteHtml}
+    <div class="flex gap-3">
+      <button onclick="handleOrderAction('${esc(String(o.id))}','preparing','${esc(String(o.table))}')"
+        class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
+        &#10003; Accept
+      </button>
+      <button onclick="handleOrderAction('${esc(String(o.id))}','cancelled','${esc(String(o.table))}')"
+        class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer">
+        Decline
+      </button>
+      <button onclick="handleOrderAction('${esc(String(o.id))}','served','${esc(String(o.table))}')"
+        class="px-3 bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer" title="Mark Served">
+        &#127869;&#65039;
+      </button>
+    </div>
+  </div>`;
+}
+
+let knownOrderIds = null;
+let shownAuthError = false;
+
+async function loadOrders() {
+  const { ok, status, data } = await api('/api/orders');
+
+  if (!ok) {
+    if (status === 401 || status === 403) {
+      if (!shownAuthError) {
+        showToast('Invalid or expired dashboard key', 'error');
+        shownAuthError = true;
+      }
+    }
+    return;
+  }
+
+  if (!Array.isArray(data)) return;
+
+  const container = $('live-orders-container');
+  container.innerHTML = data.length ? data.map(renderOrder).join('') : EMPTY_ORDERS;
+
+  // New-order notification
+  const ids = new Set(data.map(o => String(o.id)));
+  if (knownOrderIds) {
+    const fresh = data.filter(o => !knownOrderIds.has(String(o.id)));
+    if (fresh.length) {
+      showToast(`&#127381; New order from Table ${fresh[0].table}!`);
+      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA==').play().catch(()=>{}); } catch(e) {}
+    }
+  }
+  knownOrderIds = ids;
+}
+
+async function handleOrderAction(orderId, status, tableLabel) {
+  const el = $('order-' + orderId);
+  if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+
+  const { ok } = await api('/api/orders/' + orderId, {
+    method: 'PATCH',
+    body:   JSON.stringify({ status }),
+  });
+
+  if (ok) {
+    const msg = status === 'preparing'
+      ? `Table ${tableLabel} — order accepted ✓`
+      : status === 'served'
+      ? `Table ${tableLabel} — marked as served &#127869;&#65039;`
+      : `Table ${tableLabel} — order declined`;
+    showToast(msg, status === 'cancelled' ? 'error' : 'success');
+    await loadOrders();
+    loadStats();
+  } else {
+    if (el) { el.style.opacity = '1'; el.style.pointerEvents = ''; }
+    showToast('Could not update order — try again', 'error');
+  }
+}
+
+/* ============================================================
+   STATS + CHART
+============================================================ */
+let revenueChart;
+
+async function loadStats() {
+  const { ok, data: s } = await api('/api/stats');
+  if (!ok || s.error) return;
+
+  $('today-sales').textContent      = money(s.todaySales);
+  $('active-order-count').textContent = s.activeOrders;
+  $('items-served').textContent     = s.itemsServed;
+  $('completed-text').textContent   = `Across ${s.completedOrders} completed orders`;
+
+  // Chart
+  if (revenueChart && s.revenue) {
+    revenueChart.data.labels              = s.revenue.labels;
+    revenueChart.data.datasets[0].data    = s.revenue.values;
+    revenueChart.update();
+  }
+
+  // Top sellers
+  const fmt = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
+  if (Array.isArray(s.topSellers)) {
+    $('top-sellers').innerHTML = s.topSellers.length
+      ? s.topSellers.map((t, i) => i === 0
+          ? `<div class="flex items-center justify-between p-3 bg-brand-50 rounded-xl border border-brand-100">
+               <div class="flex items-center gap-4">
+                 <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-sm font-bold text-white">1</div>
+                 <span class="text-sm font-bold text-brand-900">${esc(t.name)}</span></div>
+               <span class="text-sm font-extrabold text-brand-600">${fmt(t.revenue)}</span></div>`
+          : `<div class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all">
+               <div class="flex items-center gap-4">
+                 <div class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">${i+1}</div>
+                 <span class="text-sm font-bold text-slate-700">${esc(t.name)}</span></div>
+               <span class="text-sm font-semibold text-slate-500">${fmt(t.revenue)}</span></div>`
+        ).join('')
+      : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
+  }
+}
+
+/* ============================================================
+   MENU
+============================================================ */
+const vegToggle = () => $('vegToggle');
+const vegDot    = () => $('vegDot');
+const vegLabel  = () => $('vegLabel');
+
+document.addEventListener('DOMContentLoaded', () => {
+  $('vegToggle').addEventListener('change', function () {
+    if (this.checked) {
+      vegDot().style.transform = 'translateX(100%)';
+      vegDot().classList.replace('bg-red-500','bg-green-500');
+      vegLabel().textContent = 'Veg';
+      vegLabel().classList.add('text-emerald-600');
+      vegLabel().classList.remove('text-slate-500');
+    } else {
+      vegDot().style.transform = 'translateX(0)';
+      vegDot().classList.replace('bg-green-500','bg-red-500');
+      vegLabel().textContent = 'Non-Veg';
+      vegLabel().classList.add('text-slate-500');
+      vegLabel().classList.remove('text-emerald-600');
+    }
+  });
+});
+
+let menuCache = {};
+
+async function loadMenu() {
+  const { ok, data } = await api('/api/menu');
+  if (!ok || !Array.isArray(data)) {
+    $('menu-table-body').innerHTML = '<tr><td colspan="5" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu.</td></tr>';
+    return;
+  }
+  menuCache = Object.fromEntries(data.map(m => [m.id, m]));
+  $('menu-table-body').innerHTML = data.length
+    ? data.map(m => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="px-5 py-4 font-bold text-slate-900">${esc(m.name)}</td>
+          <td class="px-5 py-4 font-medium text-slate-600">${esc(m.category)}</td>
+          <td class="px-5 py-4 font-medium">
+            <span class="inline-block w-2.5 h-2.5 rounded-full ${m.is_veg ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>
+            ${m.is_veg ? 'Veg' : 'Non-Veg'}
+          </td>
+          <td class="px-5 py-4 font-bold text-slate-900">${money(m.price)}</td>
+          <td class="px-5 py-4 text-right">
+            <button onclick="editMenuItem(${m.id})"
+              class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors cursor-pointer">
+              Edit
+            </button>
+            <button onclick="deleteMenuItem(${m.id})"
+              class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">
+              Delete
+            </button>
+          </td>
+        </tr>`).join('')
+    : '<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">No menu items yet. Add one above.</td></tr>';
+}
+
+async function addMenuItem(e) {
+  e.preventDefault();
+  const body = {
+    name:     $('dishName').value.trim(),
+    price:    Number($('dishPrice').value),
+    category: $('dishCategory').value,
+    isVeg:    $('vegToggle').checked,
+  };
+  const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
+  if (!ok) {
+    const msg = (data.error || '').includes('duplicate') ? 'Dish already exists' : (data.error || 'Could not add dish');
+    return showToast(msg, 'error');
+  }
+  $('add-menu-form').reset();
+  $('vegToggle').checked = false;
+  $('vegToggle').dispatchEvent(new Event('change'));
+  showToast(`"${body.name}" added to menu!`);
+  loadMenu();
+}
+
+async function editMenuItem(id) {
+  const m = menuCache[id];
+  if (!m) return;
+  const name  = prompt('Dish name:', m.name);  if (name  === null) return;
+  const price = prompt('Price (\u20B9):', m.price); if (price === null) return;
+  const { ok } = await api('/api/menu/' + id, { method: 'PATCH', body: JSON.stringify({ name, price: Number(price) }) });
+  if (ok) { showToast('Menu item updated.'); loadMenu(); }
+  else showToast('Could not update item', 'error');
+}
+
+async function deleteMenuItem(id) {
+  const m = menuCache[id];
+  if (!m) return;
+  if (!confirm(`Delete "${m.name}" from the menu?`)) return;
+  const { ok } = await api('/api/menu/' + id, { method: 'DELETE' });
+  if (ok) { showToast(`"${m.name}" removed.`); loadMenu(); }
+  else showToast('Could not delete item', 'error');
+}
+
+/* ============================================================
+   CHART.JS INIT + STARTUP
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  if (!KEY) return;  // don't init chart on login screen
+
+  const ctx      = $('revenueChart').getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(239,68,68,0.85)');
+  gradient.addColorStop(1, 'rgba(239,68,68,0.1)');
+
+  revenueChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Revenue (\u20B9)',
+        data:  [],
+        backgroundColor: gradient,
+        borderColor:  'rgba(239,68,68,1)',
+        borderWidth:  1,
+        borderRadius: 6,
+        maxBarThickness: 45,
+      }],
+    },
+    options: {
+      responsive:          true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#f8fafc',
+          borderColor: '#334155', borderWidth: 1, padding: 12, displayColors: false,
+          titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 14, weight: 'bold' },
+          callbacks: { label: c => '\u20B9 ' + c.parsed.y.toLocaleString('en-IN') },
+        },
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#f1f5f9' },
+             ticks: { color: '#64748b', font: { weight: '600' }, callback: v => '\u20B9' + (v/1000) + 'k' } },
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
+      },
+      animation: { duration: 800, easing: 'easeOutQuart' },
+    },
+  });
+
+  // Initial load
+  loadOrders();
+  loadStats();
+  loadMenu();
+
+  // Auto-refresh
+  setInterval(loadOrders, CONFIG.ORDERS_POLL_MS);
+  setInterval(loadStats,  CONFIG.STATS_POLL_MS);
+});
+</script>
+
+</body>
+</html>
