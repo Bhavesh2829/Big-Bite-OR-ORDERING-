@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Big Bite · Owner Dashboard</title>
   <meta name="robots" content="noindex,nofollow" />
-
+​
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
+​
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-
+​
   <script>
     tailwind.config = {
       theme: { extend: {
@@ -23,7 +23,7 @@
       } }
     };
   </script>
-
+​
   <style>
     body { background:#f8fafc; color:#0f172a; }
     ::-webkit-scrollbar { width:6px; height:6px; }
@@ -40,9 +40,9 @@
     }
   </style>
 </head>
-
+​
 <body class="min-h-screen antialiased font-sans">
-
+​
 <!-- ============================================================
      LOGIN SCREEN
      Owner can open  /dashboard.html?key=SECRET  (key is saved on this device)
@@ -68,13 +68,13 @@
     <p class="text-xs text-slate-400 mt-5">Lost your key? Contact your developer.</p>
   </div>
 </div>
-
-
+​
+​
 <!-- ============================================================
      MAIN DASHBOARD
 ============================================================ -->
 <div id="dashboardApp" class="min-h-screen p-4 md:p-6 lg:p-8 flex-col gap-6" style="display:none">
-
+​
   <!-- Header -->
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
     <div>
@@ -105,18 +105,18 @@
       </div>
     </div>
   </header>
-
+​
   <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+​
     <!-- Stats cards -->
     <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-
+​
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Today's Sales</h3>
         <div class="text-3xl font-extrabold text-slate-900" id="today-sales">&#8377;&nbsp;&mdash;</div>
         <div class="text-xs text-slate-400 mt-2 font-medium">Updated every 15 seconds</div>
       </div>
-
+​
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-2">
           Active Orders
@@ -125,14 +125,14 @@
         <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
         <div class="text-xs text-slate-500 mt-2 font-medium">New and being prepared</div>
       </div>
-
+​
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Items Served Today</h3>
         <div class="text-3xl font-extrabold text-slate-900" id="items-served">&mdash;</div>
         <div class="text-xs text-slate-500 mt-2 font-medium" id="completed-text">Loading&hellip;</div>
       </div>
     </div>
-
+​
     <!-- Live orders -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2 flex flex-col h-[500px]">
       <div class="flex justify-between items-center mb-6">
@@ -149,7 +149,7 @@
         </div>
       </div>
     </div>
-
+​
     <!-- Revenue chart -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 flex flex-col h-[500px]">
       <h2 class="text-lg font-bold text-slate-900 mb-6">6-Day Revenue Trend</h2>
@@ -157,11 +157,11 @@
         <canvas id="revenueChart"></canvas>
       </div>
     </div>
-
+​
     <!-- Menu configuration -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Menu Configuration</h2>
-
+​
       <form id="add-menu-form" class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1 w-full">
           <label for="dishName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish Name</label>
@@ -196,7 +196,7 @@
           </button>
         </div>
       </form>
-
+​
       <!-- Search -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <input type="search" id="menuSearch" placeholder="Search dish or category&hellip;"
@@ -206,7 +206,7 @@
           <button type="button" id="importOpenBtn" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm transition-colors">Import dishes</button>
         </div>
       </div>
-
+​
       <div class="overflow-x-auto rounded-lg border border-slate-200 max-h-[520px] overflow-y-auto">
         <table class="w-full text-left text-sm text-slate-600">
           <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0">
@@ -225,7 +225,7 @@
         </table>
       </div>
     </div>
-
+​
     <!-- Top sellers -->
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-1 self-start">
       <h2 class="text-lg font-bold text-slate-900 mb-6">Top Sellers This Week</h2>
@@ -233,11 +233,11 @@
         <p class="text-sm text-slate-400 font-medium p-3">Loading&hellip;</p>
       </div>
     </div>
-
+​
   </main>
 </div>
-
-
+​
+​
 <!-- ── Edit dish modal ── -->
 <div id="editModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
   <form id="editForm" class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
@@ -260,7 +260,7 @@
     </div>
   </form>
 </div>
-
+​
 <!-- ── Confirm modal (delete dish, decline order) ── -->
 <div id="confirmModal" class="fixed inset-0 z-[950] bg-slate-900/50 items-center justify-center p-4" style="display:none" role="dialog" aria-modal="true">
   <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
@@ -272,7 +272,7 @@
     </div>
   </div>
 </div>
-
+​
 <!-- ── Import dishes modal ── -->
 <div id="importModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
   <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg">
@@ -293,14 +293,14 @@
     </div>
   </div>
 </div>
-
+​
 <!-- Toast container -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3"></div>
-
-
+​
+​
 <script>
 "use strict";
-
+​
 /* ============================================================
    CONFIG
    ──────────────────────────────────────────────────────────
@@ -309,7 +309,7 @@
               domains, set e.g. "https://yourapi.vercel.app" and
               enable CORS (allow header x-owner-key + methods
               GET, POST, PATCH, DELETE, OPTIONS) on the API.
-
+​
    API ENDPOINTS USED (all need header x-owner-key):
      GET    /api/orders       GET   /api/stats
      PATCH  /api/orders/:id   body { status: "preparing" | "cancelled" | "served" }
@@ -323,7 +323,7 @@ const CONFIG = {
   STATS_POLL_MS:  15000,
   TIMEOUT_MS:     12000,
 };
-
+​
 /* ============================================================
    SMALL HELPERS
 ============================================================ */
@@ -331,13 +331,13 @@ const $     = id => document.getElementById(id);
 const money = n  => '\u20B9\u00A0' + Number(n || 0).toLocaleString('en-IN');
 const esc   = s  => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-
+​
 const store = {
   get(k)    { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
   del(k)    { try { localStorage.removeItem(k); } catch (e) {} },
 };
-
+​
 function timeAgo(iso) {
   const t = new Date(iso).getTime();
   if (!iso || isNaN(t)) return '';
@@ -348,13 +348,13 @@ function timeAgo(iso) {
   if (h < 24) return h + ' hr ago';
   return Math.floor(h / 24) + ' d ago';
 }
-
+​
 /* ============================================================
    AUTH  (key from ?key= in the URL, saved on this device)
 ============================================================ */
 const KEY_STORE = 'bigbite_owner_key';
 let KEY = '';
-
+​
 (function readKey() {
   const urlKey = new URLSearchParams(location.search).get('key');
   if (urlKey) {
@@ -367,10 +367,10 @@ let KEY = '';
     KEY = store.get(KEY_STORE) || '';
   }
 })();
-
+​
 let timers = [];
 function stopPolling() { timers.forEach(clearInterval); timers = []; }
-
+​
 function showLogin(msg) {
   stopPolling();
   ['editModal', 'confirmModal', 'importModal'].forEach(id => { const m = document.getElementById(id); if (m) m.style.display = 'none'; });
@@ -380,7 +380,7 @@ function showLogin(msg) {
   $('keyInput').value = '';
   setTimeout(() => $('keyInput').focus(), 50);
 }
-
+​
 function handleAuthFail(usedKey) {
   if (!KEY || usedKey !== KEY) return;      // ignore stale responses
   KEY = '';
@@ -388,7 +388,7 @@ function handleAuthFail(usedKey) {
   knownOrderIds = null;
   showLogin('That key is invalid or has expired. Enter the correct key.');
 }
-
+​
 $('loginForm').addEventListener('submit', e => {
   e.preventDefault();
   const k = $('keyInput').value.trim();
@@ -397,14 +397,14 @@ $('loginForm').addEventListener('submit', e => {
   store.set(KEY_STORE, k);
   startApp();
 });
-
+​
 $('logoutBtn').addEventListener('click', () => {
   KEY = '';
   store.del(KEY_STORE);
   knownOrderIds = null;
   showLogin('You have been logged out.');
 });
-
+​
 /* ============================================================
    API HELPER  →  { ok, status, data }
 ============================================================ */
@@ -435,7 +435,7 @@ async function api(path, opt = {}) {
     clearTimeout(timeout);
   }
 }
-
+​
 /* Connection indicator */
 function setConn(state) {
   const dot = $('refreshDot'), label = $('refreshLabel');
@@ -451,7 +451,7 @@ function setConn(state) {
     label.textContent = 'Server error · retrying';
   }
 }
-
+​
 /* ============================================================
    TOAST
 ============================================================ */
@@ -461,7 +461,7 @@ function showToast(message, type = 'success') {
   const icon = ok
     ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
     : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-
+​
   const toast = document.createElement('div');
   toast.setAttribute('role', 'status');
   toast.className = `toast-enter flex items-center gap-3 px-4 py-3 bg-white border ${ok ? 'border-emerald-200' : 'border-red-200'} rounded-xl shadow-lg text-sm font-bold text-slate-800 min-w-[250px]`;
@@ -472,14 +472,14 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.remove(), 300);
   }, 3500);
 }
-
+​
 /* ============================================================
    SOUND  (browsers only allow audio after a click, so we keep
    an AudioContext that is unlocked by the first interaction)
 ============================================================ */
 let audioCtx = null;
 let soundOn  = store.get('bigbite_sound') !== 'off';
-
+​
 function getAudio() {
   try {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
@@ -487,7 +487,7 @@ function getAudio() {
   } catch (e) { audioCtx = null; }
   return audioCtx;
 }
-
+​
 function beep() {
   if (!soundOn) return;
   const ctx = getAudio();
@@ -504,7 +504,7 @@ function beep() {
     o.start(s); o.stop(s + 0.2);
   });
 }
-
+​
 function paintSoundBtn() {
   $('soundBtn').innerHTML = soundOn ? '&#128276; Sound on' : '&#128263; Sound off';
 }
@@ -516,7 +516,7 @@ $('soundBtn').addEventListener('click', () => {
 });
 document.addEventListener('click', () => { if (soundOn) getAudio(); }, { once: true });
 paintSoundBtn();
-
+​
 /* ============================================================
    LIVE ORDERS
 ============================================================ */
@@ -525,7 +525,7 @@ const EMPTY_ORDERS = `
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mb-4 opacity-50"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
     <p class="text-sm font-bold text-slate-500">No new orders right now.</p>
   </div>`;
-
+​
 /* Accept both camelCase and snake_case from the API, and a JSON-string "items". */
 function normOrder(o) {
   let items = o.items;
@@ -551,14 +551,14 @@ function normOrder(o) {
     items,
   };
 }
-
+​
 const pendingActions = new Set();   // order ids currently being updated
-
+​
 function renderOrder(o) {
   const id = String(o.id);
   const busy = pendingActions.has(id);
   const preparing = o.status === 'preparing';
-
+​
   const itemsHtml = o.items.map(i => {
     const dot   = i.veg === false ? 'bg-red-500' : (i.veg === true ? 'bg-green-500' : 'bg-slate-400');
     const extra = [i.size, i.extraCheese ? 'Extra cheese' : ''].filter(Boolean).join(', ');
@@ -570,11 +570,11 @@ function renderOrder(o) {
       <span class="text-slate-500 whitespace-nowrap">${money(i.price * i.qty)}</span>
     </li>`;
   }).join('') || '<li class="text-slate-400">No item details</li>';
-
+​
   const noteHtml = o.note
     ? `<div class="text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 mb-4 font-medium">&#128221; ${esc(o.note)}</div>`
     : '<div class="mb-2"></div>';
-
+​
   const actions = preparing
     ? `<button data-act="served" data-id="${esc(id)}" data-table="${esc(o.table)}"
          class="flex-1 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-colors cursor-pointer">
@@ -592,7 +592,7 @@ function renderOrder(o) {
          class="px-3 bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer">
          &#127869;&#65039;
        </button>`;
-
+​
   return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 transition-all hover:border-brand-200 hover:shadow-sm ${busy ? 'opacity-50 pointer-events-none' : ''}" id="order-${esc(id)}">
     <div class="flex justify-between items-start mb-4 gap-3">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -607,36 +607,36 @@ function renderOrder(o) {
     <div class="flex gap-3">${actions}</div>
   </div>`;
 }
-
+​
 let knownOrderIds = null;
 let lastOrdersSig = '';
 let ordersSeq = 0;
-
+​
 async function loadOrders(force = false) {
   if (!KEY) return;
   const seq = ++ordersSeq;
   const { ok, data } = await api('/api/orders');
   if (seq !== ordersSeq || !ok) return;           // stale or failed
-
+​
   const list = Array.isArray(data) ? data : (Array.isArray(data.orders) ? data.orders : null);
   if (!list) return;
-
+​
   const orders = list.map(normOrder).filter(o => o.id !== undefined && o.id !== null);
-
+​
   // Only touch the DOM when something changed (avoids flicker / lost hover).
   const sig = JSON.stringify(orders) + [...pendingActions].join(',');
   if (force || sig !== lastOrdersSig) {
     $('live-orders-container').innerHTML = orders.length ? orders.map(renderOrder).join('') : EMPTY_ORDERS;
     lastOrdersSig = sig;
   }
-
+​
   // Badge + tab title
   const waiting = orders.filter(o => ['new', 'pending'].includes(o.status)).length;
   const badge = $('orderCount');
   badge.textContent = orders.length;
   badge.classList.toggle('hidden', orders.length === 0);
   document.title = (waiting ? `(${waiting}) ` : '') + 'Big Bite · Owner Dashboard';
-
+​
   // New-order alert
   const ids = new Set(orders.map(o => String(o.id)));
   if (knownOrderIds) {
@@ -650,19 +650,19 @@ async function loadOrders(force = false) {
   }
   knownOrderIds = ids;
 }
-
+​
 async function handleOrderAction(orderId, status, tableLabel) {
   if (pendingActions.has(orderId)) return;
   pendingActions.add(orderId);
   const el = $('order-' + orderId);
   if (el) el.classList.add('opacity-50', 'pointer-events-none');
-
+​
   const { ok, status: http, data } = await api('/api/orders/' + encodeURIComponent(orderId), {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
   pendingActions.delete(orderId);
-
+​
   if (ok) {
     const msg = status === 'preparing' ? `Table ${tableLabel} — order accepted`
               : status === 'served'    ? `Table ${tableLabel} — marked as served`
@@ -676,7 +676,7 @@ async function handleOrderAction(orderId, status, tableLabel) {
     if (http === 409) loadOrders(true);   // another device already changed it
   }
 }
-
+​
 $('live-orders-container').addEventListener('click', async e => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
@@ -692,17 +692,17 @@ $('live-orders-container').addEventListener('click', async e => {
   handleOrderAction(id, act, table);
 });
 $('refreshOrdersBtn').addEventListener('click', () => loadOrders(true));
-
+​
 /* keep "x min ago" labels fresh between polls */
 function tickTimes() {
   document.querySelectorAll('.time-ago').forEach(el => { el.textContent = timeAgo(el.dataset.t); });
 }
-
+​
 /* ============================================================
    STATS + CHART
 ============================================================ */
 let revenueChart = null;
-
+​
 function initChart() {
   const ctx = $('revenueChart').getContext('2d');
   revenueChart = new Chart(ctx, {
@@ -752,25 +752,25 @@ function initChart() {
     },
   });
 }
-
+​
 const fmtShort = n => n >= 1000 ? '\u20B9\u00A0' + (n / 1000).toFixed(1) + 'k' : money(n);
-
+​
 async function loadStats() {
   if (!KEY) return;
   const { ok, data: s } = await api('/api/stats');
   if (!ok || !s || s.error) return;
-
+​
   $('today-sales').textContent        = money(s.todaySales);
   $('active-order-count').textContent = s.activeOrders ?? 0;
   $('items-served').textContent       = s.itemsServed ?? 0;
   $('completed-text').textContent     = `Across ${s.completedOrders ?? 0} completed orders`;
-
+​
   if (revenueChart && s.revenue && Array.isArray(s.revenue.labels)) {
     revenueChart.data.labels           = s.revenue.labels;
     revenueChart.data.datasets[0].data = s.revenue.values || [];
     revenueChart.update();
   }
-
+​
   if (Array.isArray(s.topSellers)) {
     $('top-sellers').innerHTML = s.topSellers.length
       ? s.topSellers.map((t, i) => i === 0
@@ -788,7 +788,7 @@ async function loadStats() {
       : '<p class="text-sm text-slate-400 font-medium p-3">No sales data yet.</p>';
   }
 }
-
+​
 /* ============================================================
    MENU
 ============================================================ */
@@ -804,7 +804,7 @@ function setVegUI(isVeg) {
   $('vegLabel').classList.toggle('text-slate-500', !isVeg);
 }
 $('vegToggle').addEventListener('change', e => setVegUI(e.target.checked));
-
+​
 const CATEGORIES = [
   'Soups', 'Salads', 'Veg Starters', 'Non Veg Starters', 'Tandoori / Kebabs', 'Veg Main Course',
   'Non Veg Main Course', 'Rice Dishes', 'Biryani', 'Thali', 'Fish Fry Side Dishes', 'Noodles', 'Momo',
@@ -817,23 +817,43 @@ function fillCategories() {
   $('editCategory').innerHTML = html;
 }
 fillCategories();
-
+​
 let menuItems = [];
 const menuById = new Map();
-const isVegItem = m => (m.is_veg ?? m.isVeg) === true;
-
-const isAvailable = m => m.available !== false;
-
+const isVegItem = m => {
+  const value = m.is_veg ?? m.isVeg ?? m.veg;
+  return value === true || value === 'true' || value === 1 || value === '1';
+};
+​
+const isAvailable = m => {
+  const value = m.is_available ?? m.available;
+  return !(value === false || value === 'false' || value === 0 || value === '0');
+};
+​
+function normalizeMenuItem(m) {
+  return {
+    ...m,
+    id: m.id,
+    name: m.name ?? m.item_name ?? '',
+    category: m.category ?? 'Uncategorized',
+    price: Number(m.price ?? 0),
+    isVeg: isVegItem(m),
+    is_veg: isVegItem(m),
+    available: isAvailable(m),
+    is_available: isAvailable(m),
+  };
+}
+​
 function renderMenu() {
   const q = $('menuSearch').value.trim().toLowerCase();
   const rows = q
     ? menuItems.filter(m => String(m.name).toLowerCase().includes(q) || String(m.category).toLowerCase().includes(q))
     : menuItems;
-
+​
   const soldOut = menuItems.filter(m => !isAvailable(m)).length;
   $('menuCount').textContent = (q ? `${rows.length} of ${menuItems.length} dishes` : `${menuItems.length} dishes`)
     + (soldOut ? ` \u00B7 ${soldOut} sold out` : '');
-
+​
   $('menu-table-body').innerHTML = rows.length
     ? rows.map(m => {
         const on = isAvailable(m);
@@ -861,40 +881,45 @@ function renderMenu() {
       }).join('')
     : `<tr><td colspan="6" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? 'No dishes match your search.' : 'No menu items yet. Add one above, or use Import dishes.'}</td></tr>`;
 }
-
+​
 async function loadMenu() {
   if (!KEY) return;
   const { ok, data } = await api('/api/menu');
-  const list = Array.isArray(data) ? data : (data && Array.isArray(data.menu) ? data.menu : null);
+  const list = Array.isArray(data)
+    ? data
+    : (data && (Array.isArray(data.menu) ? data.menu : Array.isArray(data.items) ? data.items : Array.isArray(data.menu_items) ? data.menu_items : null));
   if (!ok || !list) {
     if (KEY) $('menu-table-body').innerHTML = '<tr><td colspan="6" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
     return;
   }
-  menuItems = list;
+  menuItems = list.map(normalizeMenuItem);
   menuById.clear();
-  list.forEach(m => menuById.set(String(m.id), m));
+  menuItems.forEach(m => menuById.set(String(m.id), m));
   renderMenu();
 }
-
+​
 $('menuSearch').addEventListener('input', renderMenu);
-
+​
 /* Add dish */
 $('add-menu-form').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('addBtn');
   const body = {
-    name:     $('dishName').value.trim(),
-    price:    Number($('dishPrice').value),
-    category: $('dishCategory').value,
-    isVeg:    $('vegToggle').checked,
+    name:         $('dishName').value.trim(),
+    price:        Number($('dishPrice').value),
+    category:     $('dishCategory').value,
+    isVeg:        $('vegToggle').checked,
+    is_veg:       $('vegToggle').checked,
+    available:    true,
+    is_available: true,
   };
   if (!body.name) return showToast('Enter a dish name', 'error');
   if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
-
+​
   btn.disabled = true;
   const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
   btn.disabled = false;
-
+​
   if (!ok) {
     const err = String((data && data.error) || '');
     return showToast(/duplicate|exists|unique/i.test(err) ? 'This dish already exists' : (err || 'Could not add dish'), 'error');
@@ -904,36 +929,38 @@ $('add-menu-form').addEventListener('submit', async e => {
   showToast(`"${body.name}" added to menu`);
   loadMenu();
 });
-
+​
 /* Menu table buttons (event delegation) */
 let editingId = null;
 const togglingIds = new Set();
-
+​
 function setSelect(sel, value) {
   if (![...sel.options].some(o => o.value === value)) sel.add(new Option(value, value));  // keep custom categories
   sel.value = value;
 }
-
+​
 async function toggleAvailable(m) {
   const id = String(m.id);
   if (togglingIds.has(id)) return;
   togglingIds.add(id);
   const next = !isAvailable(m);
   m.available = next;
+  m.is_available = next;
   renderMenu();                                   // instant feedback
   const { ok, data } = await api('/api/menu/' + encodeURIComponent(id), {
-    method: 'PATCH', body: JSON.stringify({ available: next }),
+    method: 'PATCH', body: JSON.stringify({ available: next, is_available: next }),
   });
   togglingIds.delete(id);
   if (ok) {
     showToast(next ? `"${m.name}" is back on the menu` : `"${m.name}" marked sold out`);
   } else {
     m.available = !next;                          // put it back
+    m.is_available = !next;
     renderMenu();
     if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not change availability', 'error');
   }
 }
-
+​
 async function deleteDish(m) {
   const yes = await askConfirm({
     title: 'Delete this dish?',
@@ -945,7 +972,7 @@ async function deleteDish(m) {
   if (ok) { showToast(`"${m.name}" removed`); loadMenu(); }
   else if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not delete item', 'error');
 }
-
+​
 $('menu-table-body').addEventListener('click', e => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
@@ -961,7 +988,7 @@ $('menu-table-body').addEventListener('click', e => {
   openModal('editModal');
   setTimeout(() => $('editName').focus(), 50);
 });
-
+​
 /* Edit dish */
 $('editForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -970,27 +997,28 @@ $('editForm').addEventListener('submit', async e => {
     price:    Number($('editPrice').value),
     category: $('editCategory').value,
     isVeg:    $('editVeg').checked,
+    is_veg:   $('editVeg').checked,
   };
   if (!body.name) return showToast('Enter a dish name', 'error');
   if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
-
+​
   const btn = $('editSaveBtn');
   btn.disabled = true;
   const { ok, data } = await api('/api/menu/' + encodeURIComponent(editingId), {
     method: 'PATCH', body: JSON.stringify(body),
   });
   btn.disabled = false;
-
+​
   if (ok) { closeModal('editModal'); showToast('Menu item updated'); loadMenu(); }
   else showToast((data && data.error) ? String(data.error) : 'Could not update item', 'error');
 });
-
+​
 /* Import dishes (paste from Excel / Google Sheets / typed) */
 const normKey   = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const CAT_LOOKUP = new Map(CATEGORIES.map(c => [normKey(c), c]));
 const VEG_YES = new Set(['veg', 'v', 'vegetarian', 'yes', 'y', 'true', '1']);
 const VEG_NO  = new Set(['nonveg', 'nv', 'nonvegetarian', 'no', 'n', 'false', '0']);
-
+​
 function parseImport(text) {
   const dishes = [], problems = [];
   let first = true;
@@ -1003,7 +1031,7 @@ function parseImport(text) {
     const isHeader = first && /^(dish|name|item)/i.test(name || '') && Number.isNaN(price);
     first = false;
     if (isHeader) return;
-
+​
     const n = idx + 1;
     const cat = CAT_LOOKUP.get(normKey(catRaw));
     const vk = normKey(vegRaw);
@@ -1012,11 +1040,12 @@ function parseImport(text) {
     if (!Number.isInteger(price) || price < 0)    return problems.push(`Line ${n} (${name}): price must be a whole number`);
     if (!cat)                                     return problems.push(`Line ${n} (${name}): unknown category "${catRaw || ''}"`);
     if (!VEG_YES.has(vk) && !VEG_NO.has(vk))      return problems.push(`Line ${n} (${name}): write veg or nonveg`);
-    dishes.push({ name, price, category: cat, isVeg: VEG_YES.has(vk) });
+    const isVeg = VEG_YES.has(vk);
+    dishes.push({ name, price, category: cat, isVeg, is_veg: isVeg, available: true, is_available: true });
   });
   return { dishes, problems };
 }
-
+​
 function refreshImportPreview() {
   const { dishes, problems } = parseImport($('importText').value);
   const pv = $('importPreview');
@@ -1032,11 +1061,11 @@ function refreshImportPreview() {
     + (problems.length > 20 ? `<div>\u2026and ${problems.length - 20} more</div>` : '');
   $('importBtn').disabled = dishes.length === 0 || dishes.length > 500;
 }
-
+​
 $('importCats').textContent = CATEGORIES.join(' \u00B7 ');
 $('importText').addEventListener('input', refreshImportPreview);
 $('importOpenBtn').addEventListener('click', () => { openModal('importModal'); refreshImportPreview(); setTimeout(() => $('importText').focus(), 50); });
-
+​
 $('importBtn').addEventListener('click', async () => {
   const { dishes } = parseImport($('importText').value);
   if (!dishes.length) return;
@@ -1055,7 +1084,7 @@ $('importBtn').addEventListener('click', async () => {
     showToast((res.data && res.data.error) ? String(res.data.error) : 'Could not import dishes', 'error');
   }
 });
-
+​
 /* Confirm dialog: askConfirm({...}) resolves true / false */
 let confirmResolve = null;
 function askConfirm({ title, text, okLabel = 'Confirm', cancelLabel = 'Cancel' }) {
@@ -1076,7 +1105,7 @@ $('confirmOkBtn').addEventListener('click', () => {
   if (r) r(true);
 });
 $('confirmCancelBtn').addEventListener('click', () => closeModal('confirmModal'));
-
+​
 /* Modal helpers */
 function openModal(id)  { $(id).style.display = 'flex'; }
 function closeModal(id) {
@@ -1087,7 +1116,7 @@ const MODALS = ['editModal', 'confirmModal', 'importModal'];
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.close)));
 MODALS.forEach(id => $(id).addEventListener('click', e => { if (e.target === $(id)) closeModal(id); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') MODALS.forEach(closeModal); });
-
+​
 /* ============================================================
    STARTUP
 ============================================================ */
@@ -1095,13 +1124,13 @@ function startApp() {
   $('loginScreen').style.display  = 'none';
   $('dashboardApp').style.display = 'flex';
   $('loginError').textContent = '';
-
+​
   if (!revenueChart) initChart();
-
+​
   loadOrders(true);
   loadStats();
   loadMenu();
-
+​
   stopPolling();
   timers = [
     setInterval(loadOrders, CONFIG.ORDERS_POLL_MS),
@@ -1109,14 +1138,14 @@ function startApp() {
     setInterval(tickTimes,  30000),
   ];
 }
-
+​
 /* Refresh immediately when the owner comes back to this tab */
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && KEY) { loadOrders(); loadStats(); }
 });
-
+​
 if (KEY) startApp(); else showLogin();
 </script>
-
+​
 </body>
 </html>
