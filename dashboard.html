@@ -123,7 +123,7 @@
           <span class="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
         </h3>
         <div class="text-3xl font-extrabold text-brand-500" id="active-order-count">&mdash;</div>
-        <div class="text-xs text-slate-500 mt-2 font-medium">Currently being prepared</div>
+        <div class="text-xs text-slate-500 mt-2 font-medium">New and being prepared</div>
       </div>
 
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -178,33 +178,7 @@
         <div class="w-full md:w-48">
           <label for="dishCategory" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
           <select id="dishCategory"
-            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm">
-            <option>Soups</option>
-            <option>Salads</option>
-            <option>Veg Starters</option>
-            <option>Non Veg Starters</option>
-            <option>Tandoori / Kebabs</option>
-            <option>Veg Main Course</option>
-            <option>Non Veg Main Course</option>
-            <option>Rice Dishes</option>
-            <option>Biryani</option>
-            <option>Thali</option>
-            <option>Fish Fry Side Dishes</option>
-            <option>Noodles</option>
-            <option>Momo</option>
-            <option>Thai Special</option>
-            <option>Indian Breads</option>
-            <option>Grilled Sandwiches</option>
-            <option>Wraps</option>
-            <option>Burger Special</option>
-            <option>Delicious Twist</option>
-            <option>Pizza Special</option>
-            <option>Mojitos</option>
-            <option>Shakes</option>
-            <option>Fresh Juices</option>
-            <option>Hot Beverages</option>
-            <option>Fruit Salad</option>
-          </select>
+            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-sm"></select>
         </div>
         <div class="w-full md:w-auto flex flex-col justify-center pb-2">
           <label class="flex items-center cursor-pointer gap-3 select-none">
@@ -227,7 +201,10 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <input type="search" id="menuSearch" placeholder="Search dish or category&hellip;"
           class="w-full sm:w-72 bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm" />
-        <span id="menuCount" class="text-xs font-semibold text-slate-400"></span>
+        <div class="flex items-center gap-3">
+          <span id="menuCount" class="text-xs font-semibold text-slate-400"></span>
+          <button type="button" id="importOpenBtn" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm transition-colors">Import dishes</button>
+        </div>
       </div>
 
       <div class="overflow-x-auto rounded-lg border border-slate-200 max-h-[520px] overflow-y-auto">
@@ -238,11 +215,12 @@
               <th class="px-5 py-4">Category</th>
               <th class="px-5 py-4">Type</th>
               <th class="px-5 py-4">Price</th>
+              <th class="px-5 py-4">Available</th>
               <th class="px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody id="menu-table-body" class="divide-y divide-slate-100">
-            <tr><td colspan="5" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td></tr>
+            <tr><td colspan="6" class="px-5 py-8 text-center text-slate-400 text-sm">Loading menu&hellip;</td></tr>
           </tbody>
         </table>
       </div>
@@ -261,7 +239,7 @@
 
 
 <!-- ── Edit dish modal ── -->
-<div id="editModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4" style="display:none">
+<div id="editModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
   <form id="editForm" class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
     <h3 class="text-lg font-bold text-slate-900 mb-4">Edit dish</h3>
     <label for="editName" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Dish name</label>
@@ -269,7 +247,13 @@
       class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
     <label for="editPrice" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Price (&#8377;)</label>
     <input id="editPrice" type="number" min="0" step="1" required
-      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-6 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
+      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
+    <label for="editCategory" class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Category</label>
+    <select id="editCategory"
+      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium mb-4 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"></select>
+    <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-6 cursor-pointer">
+      <input type="checkbox" id="editVeg" class="h-4 w-4 accent-green-600" /> Vegetarian
+    </label>
     <div class="flex gap-3">
       <button type="button" data-close="editModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
       <button type="submit" id="editSaveBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60">Save changes</button>
@@ -277,14 +261,35 @@
   </form>
 </div>
 
-<!-- ── Delete confirm modal ── -->
-<div id="deleteModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4" style="display:none">
+<!-- ── Confirm modal (delete dish, decline order) ── -->
+<div id="confirmModal" class="fixed inset-0 z-[950] bg-slate-900/50 items-center justify-center p-4" style="display:none" role="dialog" aria-modal="true">
   <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-    <h3 class="text-lg font-bold text-slate-900 mb-2">Delete this dish?</h3>
-    <p class="text-sm text-slate-500 mb-6" id="deleteText"></p>
+    <h3 class="text-lg font-bold text-slate-900 mb-2" id="confirmTitle"></h3>
+    <p class="text-sm text-slate-500 mb-6" id="confirmText"></p>
     <div class="flex gap-3">
-      <button type="button" data-close="deleteModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Keep it</button>
-      <button type="button" id="deleteConfirmBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-60">Delete dish</button>
+      <button type="button" id="confirmCancelBtn" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+      <button type="button" id="confirmOkBtn" class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Import dishes modal ── -->
+<div id="importModal" class="fixed inset-0 z-[900] bg-slate-900/50 items-center justify-center p-4 overflow-y-auto" style="display:none">
+  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg">
+    <h3 class="text-lg font-bold text-slate-900 mb-1">Import dishes</h3>
+    <p class="text-sm text-slate-500 mb-3">Paste one dish per line as <span class="font-mono text-xs bg-slate-100 rounded px-1 py-0.5">name, price, category, veg or nonveg</span>. You can paste straight from Excel or Google Sheets.</p>
+    <textarea id="importText" rows="9" spellcheck="false"
+      class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+      placeholder="Green Salad, 100, Salads, veg&#10;Chicken Manchow Soup, 140, Soups, nonveg"></textarea>
+    <div id="importPreview" class="text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500"></div>
+    <div id="importProblems" class="text-xs text-red-500 max-h-24 overflow-y-auto"></div>
+    <details class="mt-2">
+      <summary class="text-xs font-semibold text-slate-500 cursor-pointer">Valid categories</summary>
+      <p id="importCats" class="text-xs text-slate-500 mt-1 leading-relaxed"></p>
+    </details>
+    <div class="flex gap-3 mt-5">
+      <button type="button" data-close="importModal" class="flex-1 bg-white border border-slate-300 text-slate-700 text-sm font-bold py-2.5 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+      <button type="button" id="importBtn" disabled class="flex-1 bg-brand-500 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-brand-600 transition-colors disabled:opacity-50">Import dishes</button>
     </div>
   </div>
 </div>
@@ -309,7 +314,7 @@
      GET    /api/orders       GET   /api/stats
      PATCH  /api/orders/:id   body { status: "preparing" | "cancelled" | "served" }
      GET    /api/menu         POST  /api/menu        body { name, price, category, isVeg }
-     PATCH  /api/menu/:id     body { name, price }
+     PATCH  /api/menu/:id     body { name?, price?, category?, isVeg?, available? }   (POST also accepts { items: [...] } to import many)
      DELETE /api/menu/:id
 ============================================================ */
 const CONFIG = {
@@ -368,6 +373,7 @@ function stopPolling() { timers.forEach(clearInterval); timers = []; }
 
 function showLogin(msg) {
   stopPolling();
+  ['editModal', 'confirmModal', 'importModal'].forEach(id => { const m = document.getElementById(id); if (m) m.style.display = 'none'; });
   $('dashboardApp').style.display = 'none';
   $('loginScreen').style.display  = 'flex';
   $('loginError').textContent     = msg || '';
@@ -539,7 +545,7 @@ function normOrder(o) {
     table:     o.table ?? o.table_no ?? '?',
     orderNo:   o.orderNo ?? o.order_no ?? '',
     createdAt: o.createdAt ?? o.created_at ?? '',
-    total:     o.total ?? computed,
+    total:     Number(o.total) || computed,
     note:      o.note ?? o.notes ?? '',
     status:    String(o.status || 'pending').toLowerCase(),
     items,
@@ -625,7 +631,7 @@ async function loadOrders(force = false) {
   }
 
   // Badge + tab title
- const waiting = orders.filter(o => ['new', 'pending'].includes(o.status)).length; 
+  const waiting = orders.filter(o => ['new', 'pending'].includes(o.status)).length;
   const badge = $('orderCount');
   badge.textContent = orders.length;
   badge.classList.toggle('hidden', orders.length === 0);
@@ -651,7 +657,7 @@ async function handleOrderAction(orderId, status, tableLabel) {
   const el = $('order-' + orderId);
   if (el) el.classList.add('opacity-50', 'pointer-events-none');
 
-  const { ok, data } = await api('/api/orders/' + encodeURIComponent(orderId), {
+  const { ok, status: http, data } = await api('/api/orders/' + encodeURIComponent(orderId), {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
@@ -667,13 +673,23 @@ async function handleOrderAction(orderId, status, tableLabel) {
   } else {
     if (el) el.classList.remove('opacity-50', 'pointer-events-none');
     if (KEY) showToast(data && data.error ? String(data.error) : 'Could not update order — try again', 'error');
+    if (http === 409) loadOrders(true);   // another device already changed it
   }
 }
 
-$('live-orders-container').addEventListener('click', e => {
+$('live-orders-container').addEventListener('click', async e => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
-  handleOrderAction(btn.dataset.id, btn.dataset.act, btn.dataset.table);
+  const { id, act, table } = btn.dataset;
+  if (act === 'cancelled') {
+    const yes = await askConfirm({
+      title: `Decline order for Table ${table}?`,
+      text: 'The order will be cancelled. This cannot be undone.',
+      okLabel: 'Decline order', cancelLabel: 'Keep order',
+    });
+    if (!yes) return;
+  }
+  handleOrderAction(id, act, table);
 });
 $('refreshOrdersBtn').addEventListener('click', () => loadOrders(true));
 
@@ -789,9 +805,24 @@ function setVegUI(isVeg) {
 }
 $('vegToggle').addEventListener('change', e => setVegUI(e.target.checked));
 
+const CATEGORIES = [
+  'Soups', 'Salads', 'Veg Starters', 'Non Veg Starters', 'Tandoori / Kebabs', 'Veg Main Course',
+  'Non Veg Main Course', 'Rice Dishes', 'Biryani', 'Thali', 'Fish Fry Side Dishes', 'Noodles', 'Momo',
+  'Thai Special', 'Indian Breads', 'Grilled Sandwiches', 'Wraps', 'Burger Special', 'Delicious Twist',
+  'Pizza Special', 'Mojitos', 'Shakes', 'Fresh Juices', 'Hot Beverages', 'Fruit Salad',
+];
+function fillCategories() {
+  const html = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join('');
+  $('dishCategory').innerHTML = html;
+  $('editCategory').innerHTML = html;
+}
+fillCategories();
+
 let menuItems = [];
 const menuById = new Map();
 const isVegItem = m => (m.is_veg ?? m.isVeg) === true;
+
+const isAvailable = m => m.available !== false;
 
 function renderMenu() {
   const q = $('menuSearch').value.trim().toLowerCase();
@@ -799,25 +830,36 @@ function renderMenu() {
     ? menuItems.filter(m => String(m.name).toLowerCase().includes(q) || String(m.category).toLowerCase().includes(q))
     : menuItems;
 
-  $('menuCount').textContent = q ? `${rows.length} of ${menuItems.length} dishes` : `${menuItems.length} dishes`;
+  const soldOut = menuItems.filter(m => !isAvailable(m)).length;
+  $('menuCount').textContent = (q ? `${rows.length} of ${menuItems.length} dishes` : `${menuItems.length} dishes`)
+    + (soldOut ? ` \u00B7 ${soldOut} sold out` : '');
 
   $('menu-table-body').innerHTML = rows.length
-    ? rows.map(m => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="px-5 py-4 font-bold text-slate-900">${esc(m.name)}</td>
+    ? rows.map(m => {
+        const on = isAvailable(m);
+        return `
+        <tr class="hover:bg-slate-50 transition-colors ${on ? '' : 'bg-slate-50'}">
+          <td class="px-5 py-4 font-bold ${on ? 'text-slate-900' : 'text-slate-400'}">${esc(m.name)}${on ? '' : ' <span class="ml-1 text-[10px] font-bold uppercase bg-slate-200 text-slate-500 rounded px-1.5 py-0.5 align-middle">Sold out</span>'}</td>
           <td class="px-5 py-4 font-medium text-slate-600">${esc(m.category)}</td>
           <td class="px-5 py-4 font-medium whitespace-nowrap">
             <span class="inline-block w-2.5 h-2.5 rounded-full ${isVegItem(m) ? 'bg-green-500' : 'bg-red-500'} mr-2 shadow-sm"></span>${isVegItem(m) ? 'Veg' : 'Non-Veg'}
           </td>
           <td class="px-5 py-4 font-bold text-slate-900 whitespace-nowrap">${money(m.price)}</td>
+          <td class="px-5 py-4">
+            <button type="button" role="switch" aria-checked="${on}" aria-label="${on ? 'Mark ' : 'Put back: '}${esc(m.name)}${on ? ' sold out' : ''}" data-act="toggle" data-id="${esc(m.id)}"
+              class="relative inline-flex h-6 w-11 items-center rounded-full border transition-colors cursor-pointer ${on ? 'bg-emerald-500 border-emerald-500' : 'bg-slate-200 border-slate-300'}">
+              <span class="inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-6' : 'translate-x-1'}"></span>
+            </button>
+          </td>
           <td class="px-5 py-4 text-right whitespace-nowrap">
             <button data-act="edit" data-id="${esc(m.id)}"
               class="text-slate-500 font-semibold hover:text-brand-500 px-3 py-1.5 text-xs border border-slate-200 rounded-md mr-2 bg-white shadow-sm transition-colors cursor-pointer">Edit</button>
             <button data-act="delete" data-id="${esc(m.id)}"
               class="text-red-600 font-semibold hover:bg-red-50 px-3 py-1.5 text-xs border border-transparent rounded-md transition-colors cursor-pointer">Delete</button>
           </td>
-        </tr>`).join('')
-    : `<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? 'No dishes match your search.' : 'No menu items yet. Add one above.'}</td></tr>`;
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="6" class="px-5 py-6 text-center text-slate-400 text-sm">${menuItems.length ? 'No dishes match your search.' : 'No menu items yet. Add one above, or use Import dishes.'}</td></tr>`;
 }
 
 async function loadMenu() {
@@ -825,7 +867,7 @@ async function loadMenu() {
   const { ok, data } = await api('/api/menu');
   const list = Array.isArray(data) ? data : (data && Array.isArray(data.menu) ? data.menu : null);
   if (!ok || !list) {
-    if (KEY) $('menu-table-body').innerHTML = '<tr><td colspan="5" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
+    if (KEY) $('menu-table-body').innerHTML = '<tr><td colspan="6" class="px-5 py-6 text-center text-red-400 text-sm font-medium">Failed to load menu. Check your connection and refresh.</td></tr>';
     return;
   }
   menuItems = list;
@@ -847,7 +889,7 @@ $('add-menu-form').addEventListener('submit', async e => {
     isVeg:    $('vegToggle').checked,
   };
   if (!body.name) return showToast('Enter a dish name', 'error');
-  if (!Number.isFinite(body.price) || body.price < 0) return showToast('Enter a valid price', 'error');
+  if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
 
   btn.disabled = true;
   const { ok, data } = await api('/api/menu', { method: 'POST', body: JSON.stringify(body) });
@@ -864,38 +906,78 @@ $('add-menu-form').addEventListener('submit', async e => {
 });
 
 /* Menu table buttons (event delegation) */
-let editingId = null, deletingId = null;
+let editingId = null;
+const togglingIds = new Set();
+
+function setSelect(sel, value) {
+  if (![...sel.options].some(o => o.value === value)) sel.add(new Option(value, value));  // keep custom categories
+  sel.value = value;
+}
+
+async function toggleAvailable(m) {
+  const id = String(m.id);
+  if (togglingIds.has(id)) return;
+  togglingIds.add(id);
+  const next = !isAvailable(m);
+  m.available = next;
+  renderMenu();                                   // instant feedback
+  const { ok, data } = await api('/api/menu/' + encodeURIComponent(id), {
+    method: 'PATCH', body: JSON.stringify({ available: next }),
+  });
+  togglingIds.delete(id);
+  if (ok) {
+    showToast(next ? `"${m.name}" is back on the menu` : `"${m.name}" marked sold out`);
+  } else {
+    m.available = !next;                          // put it back
+    renderMenu();
+    if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not change availability', 'error');
+  }
+}
+
+async function deleteDish(m) {
+  const yes = await askConfirm({
+    title: 'Delete this dish?',
+    text: `"${m.name}" will be removed from the menu. This cannot be undone. If it is only unavailable for now, mark it sold out instead.`,
+    okLabel: 'Delete dish', cancelLabel: 'Keep it',
+  });
+  if (!yes) return;
+  const { ok, data } = await api('/api/menu/' + encodeURIComponent(m.id), { method: 'DELETE' });
+  if (ok) { showToast(`"${m.name}" removed`); loadMenu(); }
+  else if (KEY) showToast((data && data.error) ? String(data.error) : 'Could not delete item', 'error');
+}
 
 $('menu-table-body').addEventListener('click', e => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
   const m = menuById.get(btn.dataset.id);
   if (!m) return;
-  if (btn.dataset.act === 'edit') {
-    editingId = String(m.id);
-    $('editName').value  = m.name;
-    $('editPrice').value = m.price;
-    openModal('editModal');
-    setTimeout(() => $('editName').focus(), 50);
-  } else {
-    deletingId = String(m.id);
-    $('deleteText').textContent = `"${m.name}" will be removed from the menu. This can't be undone.`;
-    openModal('deleteModal');
-  }
+  if (btn.dataset.act === 'toggle') return toggleAvailable(m);
+  if (btn.dataset.act === 'delete') return deleteDish(m);
+  editingId = String(m.id);
+  $('editName').value  = m.name;
+  $('editPrice').value = m.price;
+  setSelect($('editCategory'), m.category);
+  $('editVeg').checked = isVegItem(m);
+  openModal('editModal');
+  setTimeout(() => $('editName').focus(), 50);
 });
 
 /* Edit dish */
 $('editForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const name = $('editName').value.trim();
-  const price = Number($('editPrice').value);
-  if (!name) return showToast('Enter a dish name', 'error');
-  if (!Number.isFinite(price) || price < 0) return showToast('Enter a valid price', 'error');
+  const body = {
+    name:     $('editName').value.trim(),
+    price:    Number($('editPrice').value),
+    category: $('editCategory').value,
+    isVeg:    $('editVeg').checked,
+  };
+  if (!body.name) return showToast('Enter a dish name', 'error');
+  if (!Number.isInteger(body.price) || body.price < 0) return showToast('Price must be a whole number', 'error');
 
   const btn = $('editSaveBtn');
   btn.disabled = true;
   const { ok, data } = await api('/api/menu/' + encodeURIComponent(editingId), {
-    method: 'PATCH', body: JSON.stringify({ name, price }),
+    method: 'PATCH', body: JSON.stringify(body),
   });
   btn.disabled = false;
 
@@ -903,24 +985,108 @@ $('editForm').addEventListener('submit', async e => {
   else showToast((data && data.error) ? String(data.error) : 'Could not update item', 'error');
 });
 
-/* Delete dish */
-$('deleteConfirmBtn').addEventListener('click', async () => {
-  const m = menuById.get(deletingId);
-  const btn = $('deleteConfirmBtn');
-  btn.disabled = true;
-  const { ok, data } = await api('/api/menu/' + encodeURIComponent(deletingId), { method: 'DELETE' });
-  btn.disabled = false;
+/* Import dishes (paste from Excel / Google Sheets / typed) */
+const normKey   = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const CAT_LOOKUP = new Map(CATEGORIES.map(c => [normKey(c), c]));
+const VEG_YES = new Set(['veg', 'v', 'vegetarian', 'yes', 'y', 'true', '1']);
+const VEG_NO  = new Set(['nonveg', 'nv', 'nonvegetarian', 'no', 'n', 'false', '0']);
 
-  if (ok) { closeModal('deleteModal'); showToast(`"${m ? m.name : 'Dish'}" removed`); loadMenu(); }
-  else showToast((data && data.error) ? String(data.error) : 'Could not delete item', 'error');
+function parseImport(text) {
+  const dishes = [], problems = [];
+  let first = true;
+  text.split(/\r?\n/).forEach((line, idx) => {
+    if (!line.trim()) return;
+    const cols = (line.includes('\t') ? line.split('\t') : line.includes('|') ? line.split('|') : line.split(','))
+      .map(c => c.trim());
+    const [name, priceRaw, catRaw, vegRaw] = cols;
+    const price = parseFloat(String(priceRaw ?? '').replace(/[^\d.]/g, ''));
+    const isHeader = first && /^(dish|name|item)/i.test(name || '') && Number.isNaN(price);
+    first = false;
+    if (isHeader) return;
+
+    const n = idx + 1;
+    const cat = CAT_LOOKUP.get(normKey(catRaw));
+    const vk = normKey(vegRaw);
+    if (!name)                                    return problems.push(`Line ${n}: dish name is missing`);
+    if (name.length > 80)                         return problems.push(`Line ${n}: name is too long`);
+    if (!Number.isInteger(price) || price < 0)    return problems.push(`Line ${n} (${name}): price must be a whole number`);
+    if (!cat)                                     return problems.push(`Line ${n} (${name}): unknown category "${catRaw || ''}"`);
+    if (!VEG_YES.has(vk) && !VEG_NO.has(vk))      return problems.push(`Line ${n} (${name}): write veg or nonveg`);
+    dishes.push({ name, price, category: cat, isVeg: VEG_YES.has(vk) });
+  });
+  return { dishes, problems };
+}
+
+function refreshImportPreview() {
+  const { dishes, problems } = parseImport($('importText').value);
+  const pv = $('importPreview');
+  if (!$('importText').value.trim()) {
+    pv.textContent = ''; pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] text-slate-500';
+  } else if (dishes.length > 500) {
+    pv.textContent = 'Import up to 500 dishes at a time'; pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] text-red-500';
+  } else {
+    pv.textContent = `${dishes.length} dish${dishes.length === 1 ? '' : 'es'} ready` + (problems.length ? ` \u00B7 ${problems.length} line${problems.length === 1 ? '' : 's'} will be skipped` : '');
+    pv.className = 'text-xs font-semibold mt-2 min-h-[1.25rem] ' + (dishes.length ? 'text-emerald-600' : 'text-red-500');
+  }
+  $('importProblems').innerHTML = problems.slice(0, 20).map(p => `<div>${esc(p)}</div>`).join('')
+    + (problems.length > 20 ? `<div>\u2026and ${problems.length - 20} more</div>` : '');
+  $('importBtn').disabled = dishes.length === 0 || dishes.length > 500;
+}
+
+$('importCats').textContent = CATEGORIES.join(' \u00B7 ');
+$('importText').addEventListener('input', refreshImportPreview);
+$('importOpenBtn').addEventListener('click', () => { openModal('importModal'); refreshImportPreview(); setTimeout(() => $('importText').focus(), 50); });
+
+$('importBtn').addEventListener('click', async () => {
+  const { dishes } = parseImport($('importText').value);
+  if (!dishes.length) return;
+  const btn = $('importBtn');
+  btn.disabled = true; btn.textContent = 'Importing\u2026';
+  const res = await api('/api/menu', { method: 'POST', body: JSON.stringify({ items: dishes }) });
+  btn.textContent = 'Import dishes';
+  if (res.ok) {
+    const skipped = (res.data.skipped || []).length;
+    closeModal('importModal');
+    $('importText').value = '';
+    showToast(`${res.data.added} dish${res.data.added === 1 ? '' : 'es'} added` + (skipped ? ` \u00B7 ${skipped} already on the menu` : ''));
+    loadMenu();
+  } else {
+    btn.disabled = false;
+    showToast((res.data && res.data.error) ? String(res.data.error) : 'Could not import dishes', 'error');
+  }
 });
+
+/* Confirm dialog: askConfirm({...}) resolves true / false */
+let confirmResolve = null;
+function askConfirm({ title, text, okLabel = 'Confirm', cancelLabel = 'Cancel' }) {
+  return new Promise(resolve => {
+    if (confirmResolve) confirmResolve(false);
+    confirmResolve = resolve;
+    $('confirmTitle').textContent = title;
+    $('confirmText').textContent  = text;
+    $('confirmOkBtn').textContent = okLabel;
+    $('confirmCancelBtn').textContent = cancelLabel;
+    openModal('confirmModal');
+    setTimeout(() => $('confirmCancelBtn').focus(), 50);
+  });
+}
+$('confirmOkBtn').addEventListener('click', () => {
+  const r = confirmResolve; confirmResolve = null;
+  $('confirmModal').style.display = 'none';
+  if (r) r(true);
+});
+$('confirmCancelBtn').addEventListener('click', () => closeModal('confirmModal'));
 
 /* Modal helpers */
 function openModal(id)  { $(id).style.display = 'flex'; }
-function closeModal(id) { $(id).style.display = 'none'; }
+function closeModal(id) {
+  $(id).style.display = 'none';
+  if (id === 'confirmModal' && confirmResolve) { const r = confirmResolve; confirmResolve = null; r(false); }
+}
+const MODALS = ['editModal', 'confirmModal', 'importModal'];
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.close)));
-['editModal', 'deleteModal'].forEach(id => $(id).addEventListener('click', e => { if (e.target === $(id)) closeModal(id); }));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('editModal'); closeModal('deleteModal'); } });
+MODALS.forEach(id => $(id).addEventListener('click', e => { if (e.target === $(id)) closeModal(id); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') MODALS.forEach(closeModal); });
 
 /* ============================================================
    STARTUP

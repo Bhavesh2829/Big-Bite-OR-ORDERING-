@@ -93,8 +93,9 @@ export default async function handler(req, res) {
     for (const o of served) {
       const t = new Date(o.created_at).getTime();
       if (Number.isNaN(t)) continue;
-      const total = Number(o.total) || 0;
       const items = itemsOf(o);
+      // Older orders were saved with total 0, so fall back to the item prices.
+      const total = Number(o.total) || items.reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty ?? i.quantity ?? 1) || 1), 0);
 
       const idx = Math.floor((t - chartFrom) / DAY_MS);
       if (idx >= 0 && idx < 6) values[idx] += total;
