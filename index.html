@@ -319,50 +319,50 @@
         </p>
       </div>
     </main>
-
     <!-- ============================================================
      FLOATING CART FAB
-     Shows when cart has items.
 ============================================================ -->
     <div
       id="cartFAB"
-      class="fixed bottom-6 left-5 right-5 z-40 transform translate-y-[150%] transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] transform translate-y-[150%] transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none"
     >
-      <div class="max-w-md mx-auto w-full">
+      <div class="max-w-md mx-auto w-full pointer-events-auto">
         <button
+          type="button"
           onclick="openCart()"
-          class="w-full bg-slate-900 text-white rounded-2xl p-3 flex justify-between items-center shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all border border-slate-800 cursor-pointer"
+          aria-label="View cart"
+          class="w-full bg-slate-900 text-white rounded-2xl p-2.5 pl-3 flex justify-between items-center shadow-2xl shadow-slate-900/30 ring-1 ring-white/10 active:scale-[0.98] transition-all cursor-pointer"
         >
-          <div class="flex items-center gap-3.5 pl-1">
+          <div class="flex items-center gap-3">
             <div
-              class="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10"
+              class="relative w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center ring-1 ring-white/10"
             >
-              <i class="ph-bold ph-shopping-bag text-lg text-white"></i>
+              <i class="ph-bold ph-shopping-bag text-xl text-white"></i>
               <span
                 id="cartBadgeFAB"
-                class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-slate-900"
+                class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-slate-900"
                 >0</span
               >
             </div>
             <div class="text-left">
               <p
-                class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest leading-none"
+                class="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none"
               >
                 Current Order
               </p>
               <p
                 id="fabTotal"
-                class="text-base font-black leading-tight mt-0.5 text-white"
+                class="text-lg font-black leading-tight mt-1 text-white tabular-nums"
               >
                 &#8377;0
               </p>
             </div>
           </div>
           <div
-            class="bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-sm shadow-red-600/30 transition-all"
+            class="bg-red-600 px-5 py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-red-600/30"
           >
             <span>View Cart</span>
-            <i class="ph-bold ph-caret-up text-[10px]"></i>
+            <i class="ph-bold ph-caret-up text-[11px]"></i>
           </div>
         </button>
       </div>
@@ -374,7 +374,7 @@
     <div
       id="modalBackdrop"
       onclick="closeCart()"
-      class="fixed inset-0 bg-slate-900/45 backdrop-blur-xs z-[60] opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] opacity-0 pointer-events-none transition-opacity duration-300"
     ></div>
 
     <!-- ============================================================
@@ -382,28 +382,39 @@
 ============================================================ -->
     <div
       id="cartModal"
-      class="fixed bottom-0 left-0 right-0 bg-[#FAFAFA] rounded-t-[2.55rem] z-[70] transform translate-y-full transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col max-h-[85vh] shadow-[0_-20px_50px_rgba(0,0,0,0.15)] border-t border-slate-200/85"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cartTitle"
+      class="fixed bottom-0 left-0 right-0 z-[70] transform translate-y-full transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none"
     >
-      <div class="max-w-md w-full mx-auto flex flex-col h-full">
+      <div
+        class="pointer-events-auto max-w-md w-full mx-auto bg-[#FAFAFA] rounded-t-[2rem] flex flex-col min-h-0 overflow-hidden shadow-[0_-20px_60px_rgba(15,23,42,0.25)] border-t border-x border-slate-200/80"
+        style="max-height: 88vh; max-height: 88dvh"
+      >
         <!-- Drag handle -->
-        <div
-          class="w-full flex justify-center pt-3 pb-1 cursor-pointer"
+        <button
+          type="button"
           onclick="closeCart()"
+          aria-label="Close cart"
+          class="w-full flex justify-center pt-3 pb-2 cursor-pointer shrink-0"
         >
-          <div class="w-10 h-1 bg-slate-300 rounded-full"></div>
-        </div>
+          <span class="block w-11 h-1.5 bg-slate-300 rounded-full"></span>
+        </button>
 
         <!-- Modal header -->
         <div
-          class="px-6 pb-4 pt-2 flex justify-between items-center border-b border-slate-200/60"
+          class="px-6 pb-4 pt-1 flex justify-between items-center border-b border-slate-200/70 shrink-0"
         >
           <div>
-            <h2 class="text-xl font-black text-slate-900 tracking-tight">
+            <h2
+              id="cartTitle"
+              class="text-xl font-black text-slate-900 tracking-tight"
+            >
               Your Order
             </h2>
             <p
               id="modalTableText"
-              class="text-xs text-red-600 font-extrabold tracking-wider uppercase mt-0.5"
+              class="inline-block mt-1 text-[11px] text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full font-extrabold tracking-wider uppercase"
             >
               Table 01
             </p>
@@ -411,28 +422,34 @@
           <button
             type="button"
             onclick="closeCart()"
-            class="w-8 h-8 bg-slate-200/80 hover:bg-slate-300 text-slate-700 rounded-full flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+            aria-label="Close"
+            class="w-10 h-10 bg-slate-200/70 hover:bg-slate-300 text-slate-700 rounded-full flex items-center justify-center active:scale-95 transition-all cursor-pointer"
           >
-            <i class="ph-bold ph-x text-sm"></i>
+            <i class="ph-bold ph-x text-base"></i>
           </button>
         </div>
 
-        <!-- Cart items list -->
+        <!-- Cart items list (the only part that scrolls) -->
         <div
           id="cartItemsList"
-          class="flex-1 overflow-y-auto px-6 py-4 space-y-3 no-scrollbar"
+          class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-4 space-y-3 no-scrollbar"
         ></div>
 
-        <!-- Footer: note + total + CTA -->
+        <!-- Footer: note + total + CTA (always visible) -->
         <div
-          class="p-6 bg-white border-t border-slate-200/60 safe-pb shadow-[0_-10px_30px_rgba(0,0,0,0.03)]"
+          class="shrink-0 px-6 pt-5 pb-6 bg-white border-t border-slate-200/70 safe-pb shadow-[0_-10px_30px_rgba(0,0,0,0.04)]"
         >
+          <label
+            for="orderNote"
+            class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5"
+            >Cooking note (optional)</label
+          >
           <textarea
             id="orderNote"
             maxlength="200"
             rows="2"
-            placeholder="Any request? (less spicy, no onion\u2026)"
-            class="w-full mb-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:outline-none focus:border-red-600"
+            placeholder="Any request? Less spicy, no onion&hellip;"
+            class="w-full mb-5 resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-all"
           ></textarea>
 
           <div class="space-y-2 mb-5">
@@ -440,15 +457,15 @@
               class="flex justify-between items-center text-xs text-slate-500 font-medium"
             >
               <span>Subtotal</span>
-              <span id="subTotal" class="font-bold text-slate-700"
+              <span id="subTotal" class="font-bold text-slate-700 tabular-nums"
                 >&#8377;0</span
               >
             </div>
             <div
-              class="flex justify-between items-center text-xs text-slate-500 font-medium pb-2 border-b border-slate-100"
+              class="flex justify-between items-center text-xs text-slate-500 font-medium pb-3 border-b border-dashed border-slate-200"
             >
-              <span>Taxes & Charges (5%)</span>
-              <span class="font-bold text-slate-700">Included</span>
+              <span>Taxes &amp; Charges (5%)</span>
+              <span class="font-bold text-emerald-600">Included</span>
             </div>
             <div class="flex justify-between items-center pt-1">
               <span class="text-slate-900 font-extrabold text-sm"
@@ -456,7 +473,7 @@
               >
               <span
                 id="sheetTotal"
-                class="font-black text-2xl text-slate-900 tracking-tight"
+                class="font-black text-2xl text-slate-900 tracking-tight tabular-nums"
                 >&#8377;0</span
               >
             </div>
@@ -466,7 +483,7 @@
             id="placeOrderBtn"
             type="button"
             onclick="placeOrder()"
-            class="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg shadow-red-600/30 active:scale-[0.98] transition-all flex justify-center items-center gap-2 cursor-pointer"
+            class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg shadow-red-600/30 active:scale-[0.98] transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
           >
             <span>Place Order</span>
             <i class="ph-bold ph-arrow-right text-base"></i>
@@ -482,23 +499,24 @@
 ============================================================ -->
     <div
       id="orderSuccess"
-      class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300"
+      role="dialog"
+      aria-modal="true"
+      class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto transition-all duration-300"
     >
       <div
-        class="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-slate-100 text-center transform transition-all"
+        class="max-w-md w-full my-auto bg-white rounded-3xl p-7 sm:p-8 shadow-2xl border border-slate-100 text-center"
       >
-        <!-- Success Icon -->
+        <!-- Success icon -->
         <div
-          class="w-20 h-20 mx-auto mb-5 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-emerald-100"
+          class="w-20 h-20 mx-auto mb-5 bg-emerald-50 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-emerald-100"
         >
-          🎉
+          &#127881;
         </div>
 
-        <!-- Heading & Summary -->
         <h2 class="text-2xl font-black text-slate-900 tracking-tight">
           Order Placed Successfully!
         </h2>
-        <p class="text-slate-500 text-sm mt-1.5">
+        <p class="text-slate-500 text-sm mt-2 leading-relaxed">
           Order
           <span
             id="osNo"
@@ -511,13 +529,15 @@
           ></span>
         </p>
 
-        <!-- Status Box -->
+        <!-- Live status -->
         <div
           id="osStatus"
+          role="status"
+          aria-live="polite"
           class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-800 flex items-center justify-center gap-2"
         ></div>
 
-        <!-- Google Form Review Section -->
+        <!-- Review -->
         <div class="mt-6 pt-5 border-t border-slate-100">
           <p class="text-xs font-semibold text-slate-500 mb-3">
             Loved the food? Share your feedback!
@@ -526,30 +546,33 @@
             href="https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-bold text-sm transition-colors border border-blue-100 cursor-pointer"
+            class="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 active:scale-[0.98] font-bold text-sm transition-all border border-blue-100 cursor-pointer"
           >
-            <span>⭐</span> Fill Out Google Review Form
+            <span>&#11088;</span> Leave a Google Review
           </a>
         </div>
 
-        <!-- Action Button -->
-        <div class="mt-5">
+        <!-- Action -->
+        <div class="mt-4">
           <button
             type="button"
             onclick="closeOrderSuccess()"
-            class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-sm font-bold shadow-lg shadow-slate-900/10 cursor-pointer transition-all"
+            class="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-2xl text-sm font-bold shadow-lg shadow-slate-900/10 active:scale-[0.98] cursor-pointer transition-all"
           >
             Order More Items
           </button>
         </div>
       </div>
     </div>
+
     <!-- ============================================================
      TOAST NOTIFICATION
 ============================================================ -->
     <div
       id="toast"
-      class="fixed top-[88px] left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 transform -translate-y-12 opacity-0 transition-all duration-300 ease-out z-[100] pointer-events-none border border-slate-800"
+      role="status"
+      aria-live="polite"
+      class="fixed top-[88px] left-1/2 -translate-x-1/2 max-w-[92vw] bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform -translate-y-12 opacity-0 transition-all duration-300 ease-out z-[100] pointer-events-none border border-slate-700"
     >
       <div
         class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shrink-0"
@@ -558,12 +581,11 @@
       </div>
       <p
         id="toastText"
-        class="text-xs font-bold tracking-wide whitespace-nowrap pr-1 text-slate-100"
+        class="text-xs font-bold tracking-wide pr-1 text-slate-100 truncate"
       >
         Added to order
       </p>
     </div>
-
     <!-- ============================================================
      MAIN JAVASCRIPT
 ============================================================ -->
