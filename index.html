@@ -314,8 +314,26 @@
           <i class="ph ph-magnifying-glass text-2xl text-slate-400"></i>
         </div>
         <p class="text-slate-600 font-bold text-sm">No dishes found</p>
-        <p class="text-slate-400 text-xs mt-1">
+         <p class="text-slate-400 text-xs mt-1">
           Try a different keyword or filter
+        </p>
+      </div>
+
+      <!-- Powered by footer (menu page) -->
+      <div class="relative z-20 pt-8 pb-6 text-center pointer-events-auto">
+        <p
+          class="text-[10px] font-medium text-slate-400 tracking-wide uppercase"
+        >
+          Powered by
+          <a
+            href="https://webtizo.com/qr-ordering-system/"
+            target="_blank"
+            rel="noopener"
+            class="relative z-20 inline-block px-1 py-1 font-bold text-slate-700 hover:text-red-500 underline underline-offset-2 transition-colors"
+            style="pointer-events: auto; cursor: pointer"
+          >
+            Webtizo Studio
+          </a>
         </p>
       </div>
     </main>
@@ -561,6 +579,10 @@
           >
             Order More Items
           </button>
+          <p
+            id="osCountdown"
+            class="mt-3 text-[11px] font-medium text-slate-400"
+          ></p>
         </div>
       </div>
     </div>
@@ -587,22 +609,6 @@
       </p>
     </div>
 
-    <div class="relative z-20 pt-6 pb-10 text-center pointer-events-auto">
-  <p
-    class="text-[10px] font-medium text-slate-400 tracking-wide uppercase"
-  >
-    Powered by
-    <a
-      href="https://webtizo.com/qr-ordering-system/"
-      target="_blank"
-      rel="noopener"
-      class="relative z-20 inline-block px-1 py-1 font-bold text-slate-700 hover:text-red-500 underline underline-offset-2 transition-colors"
-      style="pointer-events: auto; cursor: pointer"
-    >
-      Webtizo Studio
-    </a>
-  </p>
-</div>
     <!-- ============================================================
      MAIN JAVASCRIPT
 ============================================================ -->
@@ -1337,6 +1343,7 @@
         $("osTotal").textContent = "\u20B9" + o.total;
         $("osStatus").textContent = STATUS_TEXT[o.status] || o.status;
         $("orderSuccess").classList.remove("hidden");
+        startSuccessTimer();
 
         clearInterval(pollTimer);
         pollTimer = setInterval(async () => {
@@ -1351,34 +1358,59 @@
         }, CONFIG.ORDER_POLL_MS);
       }
 
-      function closeOrderSuccess() {
-        // 1. Hide the success modal
-        const successModal = document.getElementById("orderSuccess");
-        if (successModal) {
-          successModal.classList.add("hidden");
-        }
+      /* ---- Auto-close the success screen after 5 seconds ---- */
+      const SUCCESS_AUTO_CLOSE_SEC = 5; // change 5 to any seconds you want
+      let successTimer = null;
 
-        // 2. Clear the cart array and reset cart UI
-        if (typeof cart !== "undefined") {
-          cart = [];
-        }
-        if (typeof updateCartUI === "function") {
-          updateCartUI();
-        }
-
-        // 3. Ensure the menu screen is visible and active
-        const menuScreen = document.getElementById("menuScreen");
-        if (menuScreen) {
-          menuScreen.classList.remove("hidden");
-        }
-
-        // 4. Close any lingering checkout or cart modals if open
-        const checkoutModal = document.getElementById("checkoutModal");
-        if (checkoutModal) {
-          checkoutModal.classList.add("hidden");
-        }
+      function cancelSuccessTimer() {
+        clearInterval(successTimer);
+        successTimer = null;
+        const c = $("osCountdown");
+        if (c) c.textContent = "";
       }
 
+      function startSuccessTimer() {
+        cancelSuccessTimer();
+        let left = SUCCESS_AUTO_CLOSE_SEC;
+        const c = $("osCountdown");
+        const paint = () => {
+          if (c) c.textContent = "Returning to menu in " + left + "s";
+        };
+        paint();
+        successTimer = setInterval(() => {
+          left -= 1;
+          if (left <= 0) {
+            closeOrderSuccess();
+          } else {
+            paint();
+          }
+        }, 1000);
+      }
+
+      function closeOrderSuccess() {
+        // stop timers
+        cancelSuccessTimer();
+        clearInterval(pollTimer);
+
+        // hide the success screen -> customer is back on the food menu
+        $("orderSuccess").classList.add("hidden");
+
+        // do not re-open this order's screen on the next page refresh
+        try {
+          localStorage.removeItem("bigbite_last_order");
+        } catch (e) {}
+
+        // make sure the cart is empty and the menu is on screen
+        cart = [];
+        idemKey = null;
+        saveCart();
+        updateCartUI();
+        syncFab();
+        closeCart();
+        $("customerView").classList.remove("hidden");
+        $("tableSelectionView").classList.add("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
       async function resumeLastOrder() {
         try {
           const id = localStorage.getItem("bigbite_last_order");
