@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Big Bite · Owner Dashboard</title>
+    <link rel="icon" type="image/gif" href="/big-bite-logo.gif" />
     <meta name="robots" content="noindex,nofollow" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -789,14 +790,17 @@
         setTimeout(() => $("keyInput").focus(), 50);
       }
 
-      function handleAuthFail(usedKey) {
-        if (!KEY || usedKey !== KEY) return; // ignore stale responses
-        KEY = "";
-        store.del(KEY_STORE);
-        knownOrderIds = null;
-        showLogin("That key is invalid or has expired. Enter the correct key.");
-      }
-
+function handleAuthFail(usedKey) {
+  if (usedKey !== KEY) return; // ignore stale responses from an old key
+  KEY = "";
+  store.del(KEY_STORE);
+  knownOrderIds = null;
+  showLogin(
+    usedKey
+      ? "That key is invalid or has expired. Enter the correct key."
+      : ""
+  );
+}
       $("loginForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const k = $("keyInput").value.trim();
@@ -1821,6 +1825,7 @@
    STARTUP
 ============================================================ */
       function startApp() {
+          if (!KEY) { showLogin(); return; }
         $("loginScreen").style.display = "none";
         $("dashboardApp").style.display = "flex";
         $("loginError").textContent = "";
