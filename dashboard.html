@@ -461,7 +461,7 @@
           >
             <table class="w-full text-left text-sm text-slate-600">
               <thead
-                class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0"
+                class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold sticky top-0 z-10 shadow-[0_1px_0_#e2e8f0]"
               >
                 <tr>
                   <th class="px-5 py-4">Dish Name</th>
@@ -790,17 +790,17 @@
         setTimeout(() => $("keyInput").focus(), 50);
       }
 
-function handleAuthFail(usedKey) {
-  if (usedKey !== KEY) return; // ignore stale responses from an old key
-  KEY = "";
-  store.del(KEY_STORE);
-  knownOrderIds = null;
-  showLogin(
-    usedKey
-      ? "That key is invalid or has expired. Enter the correct key."
-      : ""
-  );
-}
+      function handleAuthFail(usedKey) {
+        if (usedKey !== KEY) return; // ignore stale responses from an old key
+        KEY = "";
+        store.del(KEY_STORE);
+        knownOrderIds = null;
+        showLogin(
+          usedKey
+            ? "That key is invalid or has expired. Enter the correct key."
+            : "",
+        );
+      }
       $("loginForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const k = $("keyInput").value.trim();
@@ -1825,7 +1825,10 @@ function handleAuthFail(usedKey) {
    STARTUP
 ============================================================ */
       function startApp() {
-          if (!KEY) { showLogin(); return; }
+        if (!KEY) {
+          showLogin();
+          return;
+        }
         $("loginScreen").style.display = "none";
         $("dashboardApp").style.display = "flex";
         $("loginError").textContent = "";
